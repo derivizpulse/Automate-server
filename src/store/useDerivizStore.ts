@@ -466,13 +466,6 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
         };
       });
       pushToast(isReschedule ? "Deletion date rescheduled." : "Deletion date updated.", "info");
-      const db = get().databases.find((d) => d.id === id);
-      get().enqueueOperation({
-        dbId: id,
-        dbName: db?.name ?? id,
-        server: db?.server ?? "—",
-        kind: isReschedule ? "reschedule" : "schedule_delete",
-      });
     },
 
     deleteNow: (id) => {
