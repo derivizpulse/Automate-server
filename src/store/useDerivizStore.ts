@@ -1,7 +1,15 @@
 import { create } from "zustand";
 import { initialDatabases } from "../data/mockDatabases";
+import { initialActivityLog } from "../data/mockActivityLog";
+import { initialOperationJobs } from "../data/mockOperations";
 import { initialBlobs } from "../data/mockBlobs";
-import { addDaysIso, classifyDatabaseName, parseDatabaseContext } from "../lib/classify";
+import {
+  addDaysIso,
+  backupDeleteWindowDays,
+  classifyDatabaseName,
+  parseDatabaseContext,
+  supportsBackupAndDelete,
+} from "../lib/classify";
 import type {
   ActivityEntry,
   BlobRow,
@@ -31,6 +39,14 @@ function formatBackupArtifactLabel(
 }
 
 /** Build a complete audit entry with DB + server resolved from state when possible */
+function formatDeletionDay(iso: string): string {
+  return new Date(iso).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 function makeActivityEntry(
   get: () => { databases: DatabaseRow[] },
   message: string,
@@ -64,10 +80,9 @@ const trigger1Filter = (db: DatabaseRow) =>
 
 const csEnvs = new Set<DatabaseRow["environment"]>(["SB", "ITL"]);
 
-/** Backup & Delete is only valid for _LIVE databases; SB/ITL use Scheduled Delete. */
+/** Backup & Delete applies to LIVE, SB, and ITL; other envs use Scheduled Delete. */
 function normalizeLifecycleAction(db: DatabaseRow): DatabaseRow {
-  const isLive = parseDatabaseContext(db.name).isLive;
-  if (db.action === "Backup & Delete" && !isLive) {
+  if (db.action === "Backup & Delete" && !supportsBackupAndDelete(db)) {
     return {
       ...db,
       action: "Scheduled Delete",
@@ -223,16 +238,7 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
       "db-10": addDaysIso(new Date(), -4),
       "db-14": addDaysIso(new Date(), -62),
     },
-    activityLog: [
-      {
-        id: newId(),
-        at: new Date().toISOString(),
-        message: "Deriviz initialized — 19 databases across 4 server groups",
-        dbName: "—",
-        server: "All",
-        category: "system",
-      },
-    ],
+    activityLog: initialActivityLog.map((e) => ({ ...e })),
     toasts: [],
     /** Seeded for UI: real product receives these timestamps from the integration. */
     trigger1LastFired: "2026-04-10T11:00:00.000Z",
@@ -243,7 +249,7 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
     lastTrigger2Summary:
       "Last run: _LIVE → Backup & delete (+30d) · Build VM → Delete (+5d) · SB and ITL → Scheduled delete (+7d), excluding opted-out DBs.",
 
-    operationJobs: [],
+    operationJobs: initialOperationJobs.map((j) => ({ ...j })),
 
     enqueueOperation: ({ dbId, dbName, server, kind, batchId }) => {
       const id = newId();
@@ -270,6 +276,7 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
       set((s) => {
         const completedDeleteDbIds: { id: string; at: string }[] = [];
         const operationJobs = s.operationJobs.map((job) => {
+          if (job.id.startsWith("op-")) return job;
           if (
             job.status === "succeeded" ||
             job.status === "failed" ||
@@ -404,8 +411,16 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
     scheduleDeletionByDate: (id, deletionDateIso, forcedAction, actionDateIso) => {
       const now = new Date();
       const actionIso = actionDateIso ?? addDaysIso(now, 0);
+      const before = get().databases.find((d) => d.id === id);
+      const isReschedule = Boolean(before?.deletionDate);
+      const windowDays =
+        Math.max(
+          1,
+          Math.round(
+            (new Date(deletionDateIso).getTime() - new Date(actionIso).getTime()) / 86_400_000
+          )
+        ) || 1;
       set((s) => {
-        const before = s.databases.find((d) => d.id === id);
         const databases = s.databases.map((db) => {
           if (db.id !== id) return db;
           let action = forcedAction
@@ -415,37 +430,32 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
               : db.action === "Delete"
                 ? ("Delete" as const)
                 : ("Scheduled Delete" as const);
-          if (
-            action === "Backup & Delete" &&
-            !parseDatabaseContext(db.name).isLive
-          ) {
+          if (action === "Backup & Delete" && !supportsBackupAndDelete(db)) {
             action = "Scheduled Delete";
           }
-          const days =
-            Math.max(
-              1,
-              Math.round(
-                (new Date(deletionDateIso).getTime() - new Date(actionIso).getTime()) / 86_400_000
-              )
-            ) || 1;
           return {
             ...db,
             action,
             actionDate: actionIso,
             deletionDate: deletionDateIso,
-            windowDays: days,
+            windowDays,
           };
         });
-        const triggerLabel = new Date(actionIso).toLocaleString(undefined, {
-          dateStyle: "medium",
-          timeStyle: "short",
-        });
-        const deletionLabel = new Date(deletionDateIso).toLocaleDateString();
-        const msg = `Scheduled — triggers ${triggerLabel} · deletion ${deletionLabel}${
-          before && before.deletionDate
-            ? ` (was ${new Date(before.deletionDate).toLocaleDateString()})`
-            : ""
-        }`;
+        const nextDeletionLabel = formatDeletionDay(deletionDateIso);
+        const prevWindow = before?.windowDays ?? null;
+        const msg = isReschedule
+          ? `Rescheduled deletion date — ${formatDeletionDay(before!.deletionDate!)} → ${nextDeletionLabel}${
+              prevWindow != null && prevWindow !== windowDays
+                ? ` (retention window: ${prevWindow} → ${windowDays} days)`
+                : ""
+            }`
+          : (() => {
+              const triggerLabel = new Date(actionIso).toLocaleString(undefined, {
+                dateStyle: "medium",
+                timeStyle: "short",
+              });
+              return `Scheduled — triggers ${triggerLabel} · deletion ${nextDeletionLabel}`;
+            })();
         return {
           databases,
           activityLog: [
@@ -455,13 +465,13 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
           excludedIds: s.excludedIds.filter((x) => x !== id),
         };
       });
-      pushToast("Deletion date updated.", "info");
+      pushToast(isReschedule ? "Deletion date rescheduled." : "Deletion date updated.", "info");
       const db = get().databases.find((d) => d.id === id);
       get().enqueueOperation({
         dbId: id,
         dbName: db?.name ?? id,
         server: db?.server ?? "—",
-        kind: "schedule_delete",
+        kind: isReschedule ? "reschedule" : "schedule_delete",
       });
     },
 
@@ -696,7 +706,7 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
             return { ...db, autoBackedUp: true };
           }
           if (action === "Backup & Delete") {
-            if (!parseDatabaseContext(db.name).isLive) {
+            if (!supportsBackupAndDelete(db)) {
               return {
                 ...db,
                 action: "Scheduled Delete" as const,
@@ -705,12 +715,13 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
                 windowDays: 7,
               };
             }
+            const windowDays = backupDeleteWindowDays(db.name);
             return {
               ...db,
               action: "Backup & Delete" as const,
               actionDate: addDaysIso(now, 0),
-              deletionDate: addDaysIso(now, 30),
-              windowDays: 30,
+              deletionDate: addDaysIso(now, windowDays),
+              windowDays,
               autoBackedUp: true,
             };
           }

@@ -6,7 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useActivityForDb, useDerivizStore } from "../store/useDerivizStore";
 import { ClassificationBadge, AutoBackedUpBadge } from "./Badge";
 import { Toggle } from "./Toggle";
-import { parseDatabaseContext } from "../lib/classify";
+import { backupDeleteWindowDays, supportsBackupAndDelete } from "../lib/classify";
 import type { ActivityEntry } from "../types";
 
 type SlideoutAction =
@@ -59,19 +59,24 @@ function combineLocalDateTimeToIso(dateYmd: string, timeHm: string): string | nu
   return local.toISOString();
 }
 
-function windowDaysForAction(action: SlideoutAction): number {
-  if (action === "backup_delete") return 30;
+function windowDaysForAction(
+  action: SlideoutAction,
+  db: { name: string } | null
+): number {
+  if (action === "backup_delete") {
+    return db ? backupDeleteWindowDays(db.name) : 7;
+  }
   return 5;
 }
 
-function deletionIsoFromActionDate(actionDateIso: string, action: SlideoutAction): string {
+function deletionIsoFromActionDate(
+  actionDateIso: string,
+  action: SlideoutAction,
+  db: { name: string } | null
+): string {
   const d = new Date(actionDateIso);
-  d.setUTCDate(d.getUTCDate() + windowDaysForAction(action));
+  d.setUTCDate(d.getUTCDate() + windowDaysForAction(action, db));
   return d.toISOString();
-}
-
-function isLiveDatabase(db: { name: string; classification: string | null }): boolean {
-  return db.classification === "Live" || parseDatabaseContext(db.name).isLive;
 }
 
 function Field({ label, value }: { label: string; value: string }) {
@@ -191,10 +196,6 @@ export function DBDetailSlideout({
     () => act.filter(isBackupActivityEntry),
     [act]
   );
-  const isLiveDb = useMemo(
-    () => Boolean(db && isLiveDatabase(db)),
-    [db]
-  );
   const { minScheduleIso, maxScheduleIso } = useMemo(() => {
     const now = new Date();
     const min = new Date(now);
@@ -210,7 +211,7 @@ export function DBDetailSlideout({
   /** Store still excluded, user turned draft toggle off — must pick a fresh date before save. */
   const liftingExclusionDraft = excluded && !draftExcluded;
   const [scheduleDateInput, setScheduleDateInput] = useState("");
-  const [triggerMode, setTriggerMode] = useState<TriggerMode>("schedule_now");
+  const [triggerMode, setTriggerMode] = useState<TriggerMode>("trigger_at");
   const [triggerTimeInput, setTriggerTimeInput] = useState(defaultTimeLocal);
   const scheduleIso = useMemo(() => {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(scheduleDateInput)) return null;
@@ -249,7 +250,7 @@ export function DBDetailSlideout({
 
   useEffect(() => {
     excludeDraftPairRef.current = null;
-    setTriggerMode("schedule_now");
+    setTriggerMode("trigger_at");
     setTriggerTimeInput(defaultTimeLocal());
   }, [dbId]);
 
@@ -277,30 +278,33 @@ export function DBDetailSlideout({
           : db?.action === "Backup"
             ? "Backup"
             : "Active";
+    const canBackupDelete = Boolean(db && supportsBackupAndDelete(db));
     if (st === "Pending Deletion") {
       const opts: { value: SlideoutAction; label: string }[] = [
-        { value: "reschedule", label: "Reschedule" },
         { value: "delete", label: "Delete" },
       ];
-      if (db && isLiveDatabase(db)) {
-        opts.unshift({ value: "backup_delete", label: "Backup & Delete" });
+      if (canBackupDelete) {
+        opts.push({ value: "backup_delete", label: "Backup & Delete" });
+      }
+      if (db?.deletionDate) {
+        opts.push({ value: "reschedule", label: "Reschedule" });
       }
       return opts;
     }
     if (st === "Backup & Delete") {
-      if (db && isLiveDatabase(db)) {
-        return [
-          { value: "backup_delete", label: "Backup & Delete" },
-          { value: "delete", label: "Delete" },
-        ];
-      }
-      return [
-        { value: "reschedule", label: "Reschedule" },
+      const opts: { value: SlideoutAction; label: string }[] = [
         { value: "delete", label: "Delete" },
       ];
+      if (canBackupDelete) {
+        opts.push({ value: "backup_delete", label: "Backup & Delete" });
+      }
+      if (db?.deletionDate) {
+        opts.push({ value: "reschedule", label: "Reschedule" });
+      }
+      return opts;
     }
     const opts: { value: SlideoutAction; label: string }[] = [{ value: "delete", label: "Delete" }];
-    if (db && isLiveDatabase(db)) {
+    if (canBackupDelete) {
       opts.push({ value: "backup_delete", label: "Backup & Delete" });
     }
     return opts;
@@ -313,20 +317,13 @@ export function DBDetailSlideout({
       return;
     }
     if (liftingExclusionDraft) {
-      const preferredAction: SlideoutAction =
-        db?.action === "Backup & Delete"
-          ? (isLiveDb ? "backup_delete" : "reschedule")
-          : "delete";
+      const preferredAction: SlideoutAction = "delete";
       const hasPreferred = actionOptions.some((opt) => opt.value === preferredAction);
       setSelectedAction(hasPreferred ? preferredAction : (actionOptions[0]?.value ?? "delete"));
       return;
     }
     const preferredAction: SlideoutAction =
-      draftExcluded && excluded
-        ? "lift_exclusion"
-        : db?.action === "Backup & Delete"
-          ? (isLiveDb ? "backup_delete" : "reschedule")
-          : "delete";
+      draftExcluded && excluded ? "lift_exclusion" : "delete";
     const hasPreferred = actionOptions.some((opt) => opt.value === preferredAction);
     setSelectedAction(hasPreferred ? preferredAction : (actionOptions[0]?.value ?? "delete"));
   }, [
@@ -335,7 +332,6 @@ export function DBDetailSlideout({
     draftExcluded,
     excluded,
     db?.action,
-    isLiveDb,
     actionOptions,
     actionTouched,
   ]);
@@ -344,7 +340,7 @@ export function DBDetailSlideout({
     setDraftExcluded(excluded);
     setActionTouched(false);
     setDateTouched(false);
-    setTriggerMode("schedule_now");
+    setTriggerMode("trigger_at");
     setTriggerTimeInput(defaultTimeLocal());
   }, [excluded, dbId]);
 
@@ -407,7 +403,7 @@ export function DBDetailSlideout({
   } | null {
     if (usesScheduleNow && triggerMode === "schedule_now") {
       const actionDateIso = new Date(Date.now() + SCHEDULE_NOW_DELAY_MS).toISOString();
-      const deletionDateIso = deletionIsoFromActionDate(actionDateIso, action);
+      const deletionDateIso = deletionIsoFromActionDate(actionDateIso, action, db ?? null);
       return { actionDateIso, deletionDateIso };
     }
     if (!scheduleIso || !scheduleDateOk) return null;
@@ -421,7 +417,7 @@ export function DBDetailSlideout({
     }
     const actionDateIso = combineLocalDateTimeToIso(scheduleIso, triggerTimeInput);
     if (!actionDateIso) return null;
-    const deletionDateIso = deletionIsoFromActionDate(actionDateIso, action);
+    const deletionDateIso = deletionIsoFromActionDate(actionDateIso, action, db ?? null);
     return { actionDateIso, deletionDateIso };
   }
 
@@ -758,7 +754,8 @@ export function DBDetailSlideout({
                       {usesDateOnly
                         ? "Choose a deletion date from today through two months ahead."
                         : `Deletion is scheduled ${windowDaysForAction(
-                            selectedAction as SlideoutAction
+                            selectedAction as SlideoutAction,
+                            db
                           )} days after the trigger time.`}
                     </span>
                   </div>

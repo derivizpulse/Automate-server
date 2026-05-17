@@ -23,6 +23,29 @@ export function parseDatabaseContext(name: string): {
   };
 }
 
+/** LIVE, SB, and ITL databases may use the Backup & Delete lifecycle path. */
+export function supportsBackupAndDelete(db: {
+  name: string;
+  environment?: string | null;
+  classification?: string | null;
+  deliverableStatus?: string | null;
+}): boolean {
+  const nameU = db.name.toUpperCase();
+  return (
+    parseDatabaseContext(db.name).isLive ||
+    db.classification === "Live" ||
+    db.deliverableStatus === "LIVE Completed" ||
+    nameU.includes("_SB") ||
+    nameU.includes("_ITL") ||
+    db.environment === "SB" ||
+    db.environment === "ITL"
+  );
+}
+
+export function backupDeleteWindowDays(name: string): number {
+  return parseDatabaseContext(name).isLive ? 30 : 7;
+}
+
 export function classifyDatabaseName(name: string): Classification {
   const parsed = parseDatabaseContext(name);
   if (parsed.isLive) return "Live";

@@ -12,7 +12,7 @@ import {
   type DateRangePreset,
 } from "../components/DateRangeFilter";
 import { useDerivizStore } from "../store/useDerivizStore";
-import { formatShortDate, parseDatabaseContext } from "../lib/classify";
+import { formatShortDate } from "../lib/classify";
 import { cn } from "../lib/cn";
 import {
   activityEntryMatchesTeam,
@@ -117,17 +117,11 @@ function deletionCountdown(
   return { label: `${remaining}d remain`, urgent: false };
 }
 
-function isLiveDatabaseRow(db: DatabaseRow): boolean {
-  return parseDatabaseContext(db.name).isLive || db.deliverableStatus === "LIVE Completed";
-}
-
 /** Effective status label for each row */
 function rowStatus(db: ReturnType<typeof useDerivizStore.getState>["databases"][0], excluded: boolean): string {
   if (excluded) return "Excluded";
   if (db.action === "Delete" || db.action === "Scheduled Delete") return "Pending Deletion";
-  if (db.action === "Backup & Delete") {
-    return isLiveDatabaseRow(db) ? "Backup & Delete" : "Pending Deletion";
-  }
+  if (db.action === "Backup & Delete") return "Backup & Delete";
   if (db.action === "Backup") return "Backup";
   return "Active";
 }
@@ -157,7 +151,7 @@ const STATUS_STYLE: Record<string, { bg: string; color: string; border: string }
 const STATUS_LEGEND = [
   { label: "Active", meaning: "Monitored; no delete flow yet." },
   { label: "Pending Deletion", meaning: "Delete queued — adjust date in the panel and save." },
-  { label: "Backup & Delete", meaning: "LIVE databases only — backup first, then delete on the 30-day schedule." },
+  { label: "Backup & Delete", meaning: "LIVE, SB, or ITL — backup first, then delete (30-day LIVE / 7-day SB·ITL window)." },
   { label: "Excluded", meaning: "Skipped by automation; excluding takes action + triggered date. Turn off to lift." },
   { label: "Deleted", meaning: "Off active list; kept under Deleted for audit." },
 ] as const;
@@ -299,6 +293,8 @@ function rowMatchesDateRange(
   }
   if (db.actionDate) dates.push(isoDateOnly(db.actionDate));
   if (db.deletionDate) dates.push(isoDateOnly(db.deletionDate));
+  // Active / monitored DBs (no lifecycle dates) stay visible on All DB — e.g. after lifting exclusion.
+  if (subTab === "All DB" && dates.length === 0) return true;
   if (dates.length === 0) return false;
   return dates.some((d) => d >= bounds.from && d <= bounds.to);
 }
