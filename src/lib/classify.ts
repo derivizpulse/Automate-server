@@ -46,6 +46,21 @@ export function backupDeleteWindowDays(name: string): number {
   return parseDatabaseContext(name).isLive ? 30 : 7;
 }
 
+export function isLiveDatabase(db: {
+  name: string;
+  environment?: string | null;
+  classification?: string | null;
+  deliverableStatus?: string | null;
+}): boolean {
+  const nameU = db.name.toUpperCase();
+  return (
+    parseDatabaseContext(db.name).isLive ||
+    db.classification === "Live" ||
+    db.deliverableStatus === "LIVE Completed" ||
+    nameU.includes("_LIVE")
+  );
+}
+
 export function isSbOrItlDatabase(db: {
   name: string;
   environment?: string | null;

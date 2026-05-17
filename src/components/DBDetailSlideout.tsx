@@ -8,7 +8,7 @@ import { ClassificationBadge, AutoBackedUpBadge } from "./Badge";
 import { Toggle } from "./Toggle";
 import {
   backupDeleteWindowDays,
-  isSbOrItlDatabase,
+  isLiveDatabase,
   supportsBackupAndDelete,
 } from "../lib/classify";
 import type { ActivityEntry } from "../types";
@@ -116,12 +116,6 @@ const ACTIVITY_CATEGORY_LABEL: Record<NonNullable<ActivityEntry["category"]>, st
   automation: "Automation",
 };
 
-function isBackupActivityEntry(entry: ActivityEntry): boolean {
-  const msg = entry.message.trim();
-  if (msg.includes("\\") && msg.endsWith(".zip")) return true;
-  return /backup/i.test(msg);
-}
-
 function parseActivityMessage(message: string): { title: string; detail?: string } {
   const trimmed = message.trim();
   if (/^\\.+\\.zip$/i.test(trimmed) || (trimmed.includes("\\") && trimmed.endsWith(".zip"))) {
@@ -195,11 +189,7 @@ export function DBDetailSlideout({
         )
     )
   );
-  const act = useActivityForDb(dbId ?? "");
-  const backupActivity = useMemo(
-    () => act.filter(isBackupActivityEntry),
-    [act]
-  );
+  const activityLog = useActivityForDb(dbId ?? "");
   const { minScheduleIso, maxScheduleIso } = useMemo(() => {
     const now = new Date();
     const min = new Date(now);
@@ -283,17 +273,12 @@ export function DBDetailSlideout({
             ? "Backup"
             : "Active";
     const canBackupDelete = Boolean(db && supportsBackupAndDelete(db));
-    const showReschedule =
-      Boolean(db?.deletionDate && db && !isSbOrItlDatabase(db));
     if (st === "Pending Deletion") {
       const opts: { value: SlideoutAction; label: string }[] = [
         { value: "delete", label: "Delete" },
       ];
       if (canBackupDelete) {
         opts.push({ value: "backup_delete", label: "Backup & Delete" });
-      }
-      if (showReschedule) {
-        opts.push({ value: "reschedule", label: "Reschedule" });
       }
       return opts;
     }
@@ -303,9 +288,6 @@ export function DBDetailSlideout({
       ];
       if (canBackupDelete) {
         opts.push({ value: "backup_delete", label: "Backup & Delete" });
-      }
-      if (showReschedule) {
-        opts.push({ value: "reschedule", label: "Reschedule" });
       }
       return opts;
     }
@@ -322,14 +304,18 @@ export function DBDetailSlideout({
       setSelectedAction("");
       return;
     }
+    const defaultQuickAction = (): SlideoutAction => {
+      if (db && isLiveDatabase(db) && supportsBackupAndDelete(db)) return "backup_delete";
+      return "delete";
+    };
     if (liftingExclusionDraft) {
-      const preferredAction: SlideoutAction = "delete";
+      const preferredAction = defaultQuickAction();
       const hasPreferred = actionOptions.some((opt) => opt.value === preferredAction);
       setSelectedAction(hasPreferred ? preferredAction : (actionOptions[0]?.value ?? "delete"));
       return;
     }
     const preferredAction: SlideoutAction =
-      draftExcluded && excluded ? "lift_exclusion" : "delete";
+      draftExcluded && excluded ? "lift_exclusion" : defaultQuickAction();
     const hasPreferred = actionOptions.some((opt) => opt.value === preferredAction);
     setSelectedAction(hasPreferred ? preferredAction : (actionOptions[0]?.value ?? "delete"));
   }, [
@@ -794,19 +780,19 @@ export function DBDetailSlideout({
             ) : null}
           </div>
 
-          {/* Backup log — operational backups only */}
+          {/* Activity log — schedule, exclusion, backup, and manual events */}
           <div className="min-w-0 px-4 py-4">
-            <p className="section-hdr">Backup log</p>
+            <p className="section-hdr">Activity log</p>
             <p className="mb-3 text-[11px] leading-snug text-cf-muted">
-              Backup artifacts and backup jobs for this database only.
+              Schedule changes, exclusions, backups, and other actions for this database.
             </p>
-            {backupActivity.length === 0 ? (
+            {activityLog.length === 0 ? (
               <p className="text-[12px]" style={{ color: "#96A3AF" }}>
-                No backup events for this database yet.
+                No activity for this database yet.
               </p>
             ) : (
               <ul className="space-y-2">
-                {backupActivity.map((a) => (
+                {activityLog.map((a) => (
                   <ActivityLogItem key={a.id} entry={a} />
                 ))}
               </ul>
