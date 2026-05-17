@@ -6,7 +6,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useActivityForDb, useDerivizStore } from "../store/useDerivizStore";
 import { ClassificationBadge, AutoBackedUpBadge } from "./Badge";
 import { Toggle } from "./Toggle";
-import { backupDeleteWindowDays, supportsBackupAndDelete } from "../lib/classify";
+import {
+  backupDeleteWindowDays,
+  isSbOrItlDatabase,
+  supportsBackupAndDelete,
+} from "../lib/classify";
 import type { ActivityEntry } from "../types";
 
 type SlideoutAction =
@@ -279,6 +283,8 @@ export function DBDetailSlideout({
             ? "Backup"
             : "Active";
     const canBackupDelete = Boolean(db && supportsBackupAndDelete(db));
+    const showReschedule =
+      Boolean(db?.deletionDate && db && !isSbOrItlDatabase(db));
     if (st === "Pending Deletion") {
       const opts: { value: SlideoutAction; label: string }[] = [
         { value: "delete", label: "Delete" },
@@ -286,7 +292,7 @@ export function DBDetailSlideout({
       if (canBackupDelete) {
         opts.push({ value: "backup_delete", label: "Backup & Delete" });
       }
-      if (db?.deletionDate) {
+      if (showReschedule) {
         opts.push({ value: "reschedule", label: "Reschedule" });
       }
       return opts;
@@ -298,7 +304,7 @@ export function DBDetailSlideout({
       if (canBackupDelete) {
         opts.push({ value: "backup_delete", label: "Backup & Delete" });
       }
-      if (db?.deletionDate) {
+      if (showReschedule) {
         opts.push({ value: "reschedule", label: "Reschedule" });
       }
       return opts;

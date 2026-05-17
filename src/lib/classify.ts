@@ -46,6 +46,19 @@ export function backupDeleteWindowDays(name: string): number {
   return parseDatabaseContext(name).isLive ? 30 : 7;
 }
 
+export function isSbOrItlDatabase(db: {
+  name: string;
+  environment?: string | null;
+}): boolean {
+  const nameU = db.name.toUpperCase();
+  return (
+    db.environment === "SB" ||
+    db.environment === "ITL" ||
+    nameU.includes("_SB") ||
+    nameU.includes("_ITL")
+  );
+}
+
 export function classifyDatabaseName(name: string): Classification {
   const parsed = parseDatabaseContext(name);
   if (parsed.isLive) return "Live";
