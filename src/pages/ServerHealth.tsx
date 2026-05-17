@@ -19,9 +19,9 @@ const INITIAL_SERVERS: HealthCard[] = [
   { id: "raven-1", name: "Raven", filterServer: "Raven-1", usedPct: 86, totalGb: 420, usedGb: 361, freeGb: 59, lastSync: "Nov 12, 2024 7:35 AM", status: "Warning" },
   { id: "phoenix-1", name: "Phoenix", filterServer: "Raven-2", usedPct: 52, totalGb: 180, usedGb: 94, freeGb: 86, lastSync: "Nov 12, 2024 7:29 AM", status: "Active" },
   { id: "lyra-1", name: "Lyra", filterServer: "Aquila-3", usedPct: 71, totalGb: 290, usedGb: 206, freeGb: 84, lastSync: "Nov 12, 2024 7:22 AM", status: "Active" },
-  { id: "orion-1", name: "Orion", filterServer: "SB-1", usedPct: 81, totalGb: 360, usedGb: 292, freeGb: 68, lastSync: "Nov 12, 2024 7:33 AM", status: "Warning" },
-  { id: "atlas-1", name: "Atlas", filterServer: "ITL-1", usedPct: 59, totalGb: 240, usedGb: 142, freeGb: 98, lastSync: "Nov 12, 2024 7:26 AM", status: "Active" },
-  { id: "nova-1", name: "Nova", filterServer: "SB-2", usedPct: 74, totalGb: 330, usedGb: 244, freeGb: 86, lastSync: "Nov 12, 2024 7:38 AM", status: "Active" },
+  { id: "orion-1", name: "Orion", filterServer: "Orion-1", usedPct: 81, totalGb: 360, usedGb: 292, freeGb: 68, lastSync: "Nov 12, 2024 7:33 AM", status: "Warning" },
+  { id: "atlas-1", name: "Atlas", filterServer: "Atlas-1", usedPct: 59, totalGb: 240, usedGb: 142, freeGb: 98, lastSync: "Nov 12, 2024 7:26 AM", status: "Active" },
+  { id: "nova-1", name: "Nova", filterServer: "Nova-1", usedPct: 74, totalGb: 330, usedGb: 244, freeGb: 86, lastSync: "Nov 12, 2024 7:38 AM", status: "Active" },
 ];
 
 function formatNow() {

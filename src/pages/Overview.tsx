@@ -1,15 +1,23 @@
 // Deriviz — Overview page (CareFlow tokens: cf-* Tailwind + index.css components)
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { DBDetailSlideout } from "../components/DBDetailSlideout";
+import { MetricStatCard, type MetricFocus } from "../components/MetricStatCard";
+import { MultiSelectFilter } from "../components/MultiSelectFilter";
+import {
+  DateRangeFilter,
+  computeDateRangeBounds,
+  formatRangeLabel,
+  type DateRangeBounds,
+  type DateRangePreset,
+} from "../components/DateRangeFilter";
 import { useDerivizStore } from "../store/useDerivizStore";
-import { formatShortDate } from "../lib/classify";
+import { formatShortDate, parseDatabaseContext } from "../lib/classify";
 import { cn } from "../lib/cn";
 import {
   activityEntryMatchesTeam,
   matchesTeamFilter,
   serverGroup,
-  teamFilterLabel,
   type TeamFilter,
 } from "../lib/teams";
 import type { DatabaseRow } from "../types";
@@ -33,6 +41,13 @@ function daysUntil(iso: string | null, todayIso: string): number | null {
 
 function isoDateOnly(value: string): string {
   return new Date(value).toISOString().slice(0, 10);
+}
+
+function isoInDateRange(iso: string | null, bounds: DateRangeBounds | null): boolean {
+  if (!bounds) return Boolean(iso);
+  if (!iso) return false;
+  const d = isoDateOnly(iso);
+  return d >= bounds.from && d <= bounds.to;
 }
 
 /** Reschedule / schedule deletion date pickers: earliest tomorrow, latest today + 2 calendar months. */
@@ -102,27 +117,19 @@ function deletionCountdown(
   return { label: `${remaining}d remain`, urgent: false };
 }
 
-function formatAsOf(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+function isLiveDatabaseRow(db: DatabaseRow): boolean {
+  return parseDatabaseContext(db.name).isLive || db.deliverableStatus === "LIVE Completed";
 }
 
 /** Effective status label for each row */
 function rowStatus(db: ReturnType<typeof useDerivizStore.getState>["databases"][0], excluded: boolean): string {
   if (excluded) return "Excluded";
   if (db.action === "Delete" || db.action === "Scheduled Delete") return "Pending Deletion";
-  if (db.action === "Backup & Delete") return "Backup & Delete";
+  if (db.action === "Backup & Delete") {
+    return isLiveDatabaseRow(db) ? "Backup & Delete" : "Pending Deletion";
+  }
   if (db.action === "Backup") return "Backup";
   return "Active";
-}
-
-function isUnmappedDatabase(db: DatabaseRow): boolean {
-  return !db.accountName || !db.conversionName;
 }
 
 function normalizedDeliverableStatus(db: DatabaseRow): DatabaseRow["deliverableStatus"] {
@@ -131,6 +138,11 @@ function normalizedDeliverableStatus(db: DatabaseRow): DatabaseRow["deliverableS
   const nameU = db.name.toUpperCase();
   if (db.environment === "ITL" || nameU.includes("_ITL")) return "ITL Completed";
   return "SB Completed";
+}
+
+/** Label shown in Deliverable / Conv. Status column */
+function displayDeliverableStatus(db: DatabaseRow): string {
+  return normalizedDeliverableStatus(db) ?? "Active";
 }
 
 const STATUS_STYLE: Record<string, { bg: string; color: string; border: string }> = {
@@ -145,23 +157,23 @@ const STATUS_STYLE: Record<string, { bg: string; color: string; border: string }
 const STATUS_LEGEND = [
   { label: "Active", meaning: "Monitored; no delete flow yet." },
   { label: "Pending Deletion", meaning: "Delete queued — adjust date in the panel and save." },
-  { label: "Backup & Delete", meaning: "Backup first, then delete on schedule." },
+  { label: "Backup & Delete", meaning: "LIVE databases only — backup first, then delete on the 30-day schedule." },
   { label: "Excluded", meaning: "Skipped by automation; excluding takes action + triggered date. Turn off to lift." },
   { label: "Deleted", meaning: "Off active list; kept under Deleted for audit." },
 ] as const;
 
 const DELIVERABLE_LEGEND = [
+  { label: "Active", meaning: "Monitored; conversion milestone not complete yet." },
   { label: "SB Completed", meaning: "SB stage milestone is complete." },
   { label: "ITL Completed", meaning: "ITL stage milestone is complete." },
   { label: "LIVE Completed", meaning: "Trigger 2 LIVE milestone is complete." },
-  { label: "Blank", meaning: "No linked milestone completion yet." },
 ] as const;
 
 const DELIVERABLE_STYLE: Record<string, { bg: string; color: string; border: string }> = {
+  Active: { bg: "#F0FDF4", color: "#1B8A4A", border: "#BBF7D0" },
   "SB Completed": { bg: "#E0F2F5", color: "#007A8F", border: "#A8D8DF" },
   "ITL Completed": { bg: "#F1ECFE", color: "#6C3EB8", border: "#D5C6F7" },
   "LIVE Completed": { bg: "#FFF0E6", color: "#C2560C", border: "#FBCBA9" },
-  "Blank": { bg: "#F7F8FA", color: "#5D6F7E", border: "#C9D1DA" },
 };
 
 /** Table columns that support client-side sort */
@@ -173,7 +185,8 @@ type SortableColumn =
   | "size"
   | "deliverable"
   | "status"
-  | "actionDate";
+  | "actionDate"
+  | "deletionDate";
 
 function sortDatabases(
   rows: DatabaseRow[],
@@ -227,6 +240,15 @@ function sortDatabases(
         else cmp = ad < bd ? -1 : ad > bd ? 1 : 0;
         break;
       }
+      case "deletionDate": {
+        const ad = a.deletionDate;
+        const bd = b.deletionDate;
+        if (ad == null && bd == null) cmp = 0;
+        else if (ad == null) cmp = 1;
+        else if (bd == null) cmp = -1;
+        else cmp = ad < bd ? -1 : ad > bd ? 1 : 0;
+        break;
+      }
       default:
         cmp = 0;
     }
@@ -262,39 +284,54 @@ function orderRowsByPinnedIds(
 // ── sub-tab types ─────────────────────────────────────────────────────────────
 type SubTab = "All DB" | "Deleted" | "Audit Log";
 const SUB_TABS: SubTab[] = ["All DB", "Deleted", "Audit Log"];
-type MetricRange = "7d" | "30d" | "90d";
+
+function rowMatchesDateRange(
+  db: DatabaseRow,
+  bounds: DateRangeBounds | null,
+  subTab: SubTab,
+  deletedAtById: Record<string, string>
+): boolean {
+  if (!bounds) return true;
+  const dates: string[] = [];
+  if (subTab === "Deleted") {
+    const purged = deletedAtById[db.id];
+    if (purged) dates.push(isoDateOnly(purged));
+  }
+  if (db.actionDate) dates.push(isoDateOnly(db.actionDate));
+  if (db.deletionDate) dates.push(isoDateOnly(db.deletionDate));
+  if (dates.length === 0) return false;
+  return dates.some((d) => d >= bounds.from && d <= bounds.to);
+}
+
 type ConfirmOverrideAction = "Delete" | "Backup & Delete";
 
-const RANGE_DAYS: Record<MetricRange, number> = {
-  "7d": 7,
-  "30d": 30,
-  "90d": 90,
+function sumSizeGb(dbs: DatabaseRow[]): number {
+  return dbs.reduce((acc, d) => acc + d.sizeGb, 0);
+}
+
+const STATUS_FILTER_OPTIONS = [
+  "Active",
+  "Pending Deletion",
+  "Backup & Delete",
+  "Excluded",
+] as const;
+
+const METRIC_FOCUS_FILTER: Record<MetricFocus, { subTab: SubTab; statusFilters: string[] }> = {
+  synced: { subTab: "All DB", statusFilters: [] },
+  pending: { subTab: "All DB", statusFilters: ["Pending Deletion"] },
+  backup: { subTab: "All DB", statusFilters: ["Backup & Delete"] },
+  excluded: { subTab: "All DB", statusFilters: ["Excluded"] },
+  recovered: { subTab: "Deleted", statusFilters: [] },
 };
 
-// ── stat card ─────────────────────────────────────────────────────────────────
-function StatCard({ label, value, sub, highlight }: {
-  label: string; value: string | number; sub: string; highlight?: boolean;
-}) {
-  return (
-    <div className="c-card flex min-h-[128px] min-w-[140px] flex-col overflow-hidden p-0">
-      <div className="c-card-header !rounded-none py-2">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-cf-secondary">
-          {label}
-        </span>
-      </div>
-      <div className="flex flex-1 flex-col justify-center gap-1 px-3 py-3">
-        <p
-          className={cn(
-            "text-[22px] font-semibold tabular-nums leading-tight",
-            highlight ? "text-cf-danger" : "text-cf-gs-100"
-          )}
-        >
-          {value}
-        </p>
-        <p className="text-[11px] leading-snug text-cf-muted">{sub}</p>
-      </div>
-    </div>
-  );
+function activeMetricFocus(subTab: SubTab, statusFilters: string[]): MetricFocus | null {
+  if (subTab === "Deleted" && statusFilters.length === 0) return "recovered";
+  if (subTab !== "All DB") return null;
+  if (statusFilters.length === 1 && statusFilters[0] === "Pending Deletion") return "pending";
+  if (statusFilters.length === 1 && statusFilters[0] === "Backup & Delete") return "backup";
+  if (statusFilters.length === 1 && statusFilters[0] === "Excluded") return "excluded";
+  if (statusFilters.length === 0) return "synced";
+  return null;
 }
 
 // ── action button ─────────────────────────────────────────────────────────────
@@ -322,174 +359,6 @@ function ActionBtn({
   );
 }
 
-function SearchableSelect({
-  id,
-  label,
-  value,
-  options,
-  onChange,
-  className,
-}: {
-  id: string;
-  /** Short heading above the field (e.g. "Server") so filters are self-explanatory */
-  label?: string;
-  value: string;
-  options: string[];
-  onChange: (next: string) => void;
-  className?: string;
-}) {
-  const rootRef = useRef<HTMLDivElement | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const [query, setQuery] = useState(value);
-  const [hasTyped, setHasTyped] = useState(false);
-
-  useEffect(() => {
-    setQuery(value);
-    setHasTyped(false);
-  }, [value]);
-
-  useEffect(() => {
-    function handleOutsideClick(event: MouseEvent) {
-      if (!rootRef.current) return;
-      if (rootRef.current.contains(event.target as Node)) return;
-      setIsOpen(false);
-      setQuery(value);
-      setHasTyped(false);
-    }
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [value]);
-
-  const filteredOptions = useMemo(() => {
-    if (!hasTyped) return options;
-    const q = query.trim().toLowerCase();
-    if (!q) return options;
-    return options.filter((opt) => opt.toLowerCase().includes(q));
-  }, [options, query, hasTyped]);
-
-  function commit(next: string) {
-    onChange(next);
-    setQuery(next);
-    setHasTyped(false);
-    setIsOpen(false);
-  }
-
-  function resetToSelected() {
-    setQuery(value);
-    setHasTyped(false);
-    setIsOpen(false);
-  }
-
-  return (
-    <div className={`flex min-w-0 flex-col gap-1 ${className ?? ""}`}>
-      {label && (
-        <label htmlFor={id} className="cf-field-label shrink-0">
-          {label}
-        </label>
-      )}
-      <div ref={rootRef} className="relative w-full min-w-0">
-      <input
-        id={id}
-        className="c-input w-full pr-7"
-        value={query}
-        aria-label={label ? `${label} filter` : id}
-        onFocus={() => {
-          setIsOpen(true);
-          setHasTyped(false);
-        }}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setHasTyped(true);
-          setIsOpen(true);
-        }}
-        onBlur={() => {
-          // Allow option click handlers to run before closing/resetting.
-          window.setTimeout(() => {
-            if (!rootRef.current) return;
-            const active = document.activeElement;
-            if (active && rootRef.current.contains(active)) return;
-            if (options.includes(query)) {
-              commit(query);
-              return;
-            }
-            resetToSelected();
-          }, 0);
-        }}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            resetToSelected();
-            return;
-          }
-          if (e.key === "ArrowDown") {
-            setIsOpen(true);
-            return;
-          }
-          if (e.key === "Enter") {
-            e.preventDefault();
-            if (options.includes(query)) {
-              commit(query);
-              return;
-            }
-            if (filteredOptions.length > 0) {
-              commit(filteredOptions[0]);
-              return;
-            }
-            commit(options[0] ?? "");
-          }
-        }}
-      />
-      <button
-        type="button"
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-cf-secondary transition-colors hover:text-cf-text"
-        aria-label={label ? `Open ${label} options` : `Open ${id}`}
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={() => {
-          if (isOpen) {
-            resetToSelected();
-            return;
-          }
-          setIsOpen(true);
-        }}
-      >
-        {isOpen ? "▲" : "▼"}
-      </button>
-
-      {isOpen && (
-        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[220] overflow-hidden rounded-cf border border-cf-gs-20 bg-white shadow-modal">
-          <div className="max-h-[220px] overflow-auto py-1">
-            {filteredOptions.length > 0 ? (
-              filteredOptions.map((opt) => {
-                const selected = opt === value;
-                return (
-                  <button
-                    key={opt}
-                    type="button"
-                    className={cn(
-                      "flex w-full items-center px-2.5 py-1.5 text-left text-[12px] transition-colors",
-                      selected
-                        ? "bg-cf-primary-light font-medium text-cf-primary"
-                        : "bg-white text-cf-text hover:bg-cf-gs-5"
-                    )}
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => commit(opt)}
-                  >
-                    {opt}
-                  </button>
-                );
-              })
-            ) : (
-              <div className="px-2.5 py-2 text-[11px] text-cf-muted">
-                No records found
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-      </div>
-    </div>
-  );
-}
-
 // ── main page ─────────────────────────────────────────────────────────────────
 export function Overview({
   teamFilter,
@@ -512,11 +381,8 @@ export function Overview({
   const [subTab, setSubTab]         = useState<SubTab>("All DB");
   const [selected, setSelected]     = useState<string | null>(null);
   const [search, setSearch]         = useState("");
-  const [serverFilter, setServerFilter] = useState("All Servers");
-  const [accountFilter, setAccountFilter] = useState("All Accounts");
-  const [conversionFilter, setConversionFilter] = useState("All Conversions");
-  const [classFilter, setClassFilter]   = useState("All classifications");
-  const [statusFilter, setStatusFilter] = useState("All statuses");
+  const [serverFilters, setServerFilters] = useState<string[]>([]);
+  const [statusFilters, setStatusFilters] = useState<string[]>([]);
   const [sortColumn, setSortColumn] = useState<SortableColumn>("actionDate");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [scheduleDbId, setScheduleDbId] = useState<string | null>(null);
@@ -534,7 +400,10 @@ export function Overview({
   } | null>(null);
   const [showLegendInfo, setShowLegendInfo] = useState(false);
   const legendRef = useRef<HTMLDivElement | null>(null);
-  const [metricRange, setMetricRange] = useState<MetricRange>("30d");
+  const tableSectionRef = useRef<HTMLDivElement | null>(null);
+  const [datePreset, setDatePreset] = useState<DateRangePreset>("30d");
+  const [customDateFrom, setCustomDateFrom] = useState("");
+  const [customDateTo, setCustomDateTo] = useState("");
   const [nowIso, setNowIso] = useState<string>(() => new Date().toISOString());
   /** Freeze row order while editing and after Save until sort changes (avoids row “jumping”). */
   const [detailPinOrder, setDetailPinOrder] = useState<string[] | null>(null);
@@ -559,6 +428,25 @@ export function Overview({
   }, [showLegendInfo]);
 
   const todayIso = nowIso.slice(0, 10);
+
+  const dateRangeBounds = useMemo(
+    () => computeDateRangeBounds(datePreset, todayIso, customDateFrom, customDateTo),
+    [datePreset, todayIso, customDateFrom, customDateTo]
+  );
+  const dateRangeLabel = useMemo(() => formatRangeLabel(dateRangeBounds), [dateRangeBounds]);
+  const displayDateFrom =
+    datePreset === "custom" ? customDateFrom : (dateRangeBounds?.from ?? "");
+  const displayDateTo =
+    datePreset === "custom" ? customDateTo : (dateRangeBounds?.to ?? "");
+
+  useEffect(() => {
+    if (datePreset !== "custom") return;
+    if (!customDateFrom && !customDateTo) {
+      setCustomDateFrom(addDaysToIsoDate(todayIso, -30));
+      setCustomDateTo(todayIso);
+    }
+  }, [datePreset, customDateFrom, customDateTo, todayIso]);
+
   const teamScopedDbs = useMemo(
     () => dbs.filter((d) => matchesTeamFilter(d.server, teamFilter)),
     [dbs, teamFilter]
@@ -577,29 +465,13 @@ export function Overview({
     return Array.from(next);
   }, [dbs, deletedIds, excludedIds, todayIso]);
 
-  // unique servers
-  const servers = useMemo(
-    () => ["All Servers", ...Array.from(new Set(teamScopedDbs.map((d) => serverGroup(d.server))))],
+  const serverOptions = useMemo(
+    () =>
+      Array.from(new Set(teamScopedDbs.map((d) => serverGroup(d.server)))).sort((a, b) =>
+        a.localeCompare(b, undefined, { sensitivity: "base" })
+      ),
     [teamScopedDbs]
   );
-  const accounts = useMemo(
-    () => [
-      "All Accounts",
-      ...Array.from(new Set(teamScopedDbs.map((d) => d.accountName).filter((x): x is string => Boolean(x)))),
-    ],
-    [teamScopedDbs]
-  );
-  const conversions = useMemo(() => {
-    const scoped = accountFilter === "All Accounts"
-      ? teamScopedDbs
-      : teamScopedDbs.filter((d) => d.accountName === accountFilter);
-    return [
-      "All Conversions",
-      ...Array.from(new Set(scoped.map((d) => d.conversionName).filter((x): x is string => Boolean(x)))),
-    ];
-  }, [accountFilter, teamScopedDbs]);
-  const classificationOptions = ["All classifications", "Account", "Conversion", "Live", "Unmapped"];
-  const statusOptions = ["All statuses", "Active", "Pending Deletion", "Backup & Delete", "Excluded"];
   const scopedActivityLog = useMemo(
     () => activityLog.filter((entry) => activityEntryMatchesTeam(entry, dbs, teamFilter)),
     [activityLog, dbs, teamFilter]
@@ -614,43 +486,31 @@ export function Overview({
   );
 
   useEffect(() => {
-    if (conversionFilter !== "All Conversions" && !conversions.includes(conversionFilter)) {
-      setConversionFilter("All Conversions");
-    }
-  }, [conversionFilter, conversions]);
-
-  useEffect(() => {
-    if (serverFilter !== "All Servers" && !servers.includes(serverFilter)) {
-      setServerFilter("All Servers");
-    }
-  }, [serverFilter, servers, teamFilter]);
+    setServerFilters((prev) => {
+      const next = prev.filter((s) => serverOptions.includes(s));
+      return next.length === prev.length ? prev : next;
+    });
+  }, [serverOptions, teamFilter]);
 
   useEffect(() => {
     if (!requestedServerFilter) return;
     const groupedServer = serverGroup(requestedServerFilter.server);
-    if (servers.includes(groupedServer)) {
+    if (serverOptions.includes(groupedServer)) {
       setSubTab("All DB");
-      setServerFilter(groupedServer);
-      setAccountFilter("All Accounts");
-      setConversionFilter("All Conversions");
+      setServerFilters([groupedServer]);
       // Cleanup entry-point focus: show only pending deletions and sort by earliest expiry.
-      setStatusFilter("Pending Deletion");
+      setStatusFilters(["Pending Deletion"]);
       setSortColumn("actionDate");
       setSortDir("asc");
     }
     onServerFilterApplied?.();
-  }, [requestedServerFilter, servers, onServerFilterApplied]);
+  }, [requestedServerFilter, serverOptions, onServerFilterApplied]);
 
   // metrics
   const metrics = useMemo(() => {
     const active = teamScopedDbs.filter((d) => !effectiveDeletedIds.includes(d.id));
-    const rangeDays = RANGE_DAYS[metricRange];
-    const rangeStartMs = new Date(nowIso).getTime() - rangeDays * 86_400_000;
-    const inRange = (iso: string | null) => {
-      if (!iso) return false;
-      const t = new Date(iso).getTime();
-      return t >= rangeStartMs;
-    };
+    const overviewActive = active.filter((d) => !excludedIds.includes(d.id));
+    const inRange = (iso: string | null) => isoInDateRange(iso, dateRangeBounds);
 
     const pendingDel = active.filter((d) => rowStatus(d, excludedIds.includes(d.id)) === "Pending Deletion");
     const backupDel = active.filter((d) => rowStatus(d, excludedIds.includes(d.id)) === "Backup & Delete");
@@ -660,27 +520,38 @@ export function Overview({
       const n = daysUntil(d.deletionDate, todayIso);
       return n !== null && n <= 1;
     });
-    const storageRecovered = teamScopedDbs
-      .filter((d) => effectiveDeletedIds.includes(d.id) && inRange(deletedAtById[d.id] ?? nowIso))
-      .reduce((a, b) => a + b.sizeGb, 0);
-    const pendingCreatedInRange = pendingDel.filter((d) => inRange(d.actionDate)).length;
-    const backupCreatedInRange = backupDel.filter((d) => inRange(d.actionDate)).length;
-    const excludedCreatedInRange = excl.filter((d) => inRange(d.actionDate)).length;
+    const deletedInRange = teamScopedDbs.filter(
+      (d) =>
+        effectiveDeletedIds.includes(d.id) &&
+        inRange(deletedAtById[d.id] ?? d.actionDate ?? d.deletionDate)
+    );
+    const pendingCreated = pendingDel.filter((d) => inRange(d.actionDate));
+    const backupCreated = backupDel.filter((d) => inRange(d.actionDate));
+    const excludedCreated = excl.filter((d) => inRange(d.actionDate));
 
     return {
-      totalSynced: active.length,
+      totalSynced: overviewActive.length,
+      totalSyncedGb: sumSizeGb(overviewActive),
+      serverCount: new Set(overviewActive.map((d) => d.server)).size,
       pendingDel: pendingDel.length,
-      pendingCreatedInRange,
+      pendingGb: sumSizeGb(pendingDel),
+      pendingCreatedInRange: pendingCreated.length,
+      pendingCreatedGb: sumSizeGb(pendingCreated),
       expiresToday,
       backupDel: backupDel.length,
-      backupCreatedInRange,
+      backupGb: sumSizeGb(backupDel),
+      backupCreatedInRange: backupCreated.length,
+      backupCreatedGb: sumSizeGb(backupCreated),
       excluded: excl.length,
-      excludedCreatedInRange,
-      storageRecovered: Math.round(storageRecovered),
+      excludedGb: sumSizeGb(excl),
+      excludedCreatedInRange: excludedCreated.length,
+      excludedCreatedGb: sumSizeGb(excludedCreated),
+      storageRecovered: Math.round(sumSizeGb(deletedInRange)),
+      deletedCountInRange: deletedInRange.length,
       expiresIn24h,
-      rangeDays,
+      rangeLabel: dateRangeLabel,
     };
-  }, [teamScopedDbs, excludedIds, effectiveDeletedIds, deletedAtById, metricRange, nowIso, todayIso]);
+  }, [teamScopedDbs, excludedIds, effectiveDeletedIds, deletedAtById, dateRangeBounds, dateRangeLabel, todayIso]);
 
   // filter rows by sub-tab
   const visibleRows = useMemo(() => {
@@ -688,43 +559,47 @@ export function Overview({
     if (subTab === "Deleted")
       rows = teamScopedDbs.filter((d) => effectiveDeletedIds.includes(d.id));
 
-    // search
-    if (search.trim())
-      rows = rows.filter((d) => {
-        const q = search.toLowerCase();
-        return (
-          d.name.toLowerCase().includes(q) ||
-          (d.accountName ?? "").toLowerCase().includes(q) ||
-          (d.conversionName ?? "").toLowerCase().includes(q)
-        );
-      });
-    // server filter
-    if (serverFilter !== "All Servers")
-      rows = rows.filter((d) => serverGroup(d.server) === serverFilter);
-    // account / conversion context filters (parsed from Account_Conversion[_LIVE][_n])
-    if (accountFilter !== "All Accounts")
-      rows = rows.filter((d) => d.accountName === accountFilter);
-    if (conversionFilter !== "All Conversions")
-      rows = rows.filter((d) => d.conversionName === conversionFilter);
-    // classification filter
-    if (classFilter !== "All classifications") {
-      rows = rows.filter((d) => {
-        if (classFilter === "Unmapped") return isUnmappedDatabase(d);
-        return d.classification === classFilter;
-      });
+    // Excluded DBs live in the Excluded bucket — hide from default overview unless that filter is active
+    if (subTab === "All DB") {
+      const showExcluded =
+        statusFilters.length > 0 && statusFilters.includes("Excluded");
+      if (!showExcluded) {
+        rows = rows.filter((d) => !excludedIds.includes(d.id));
+      }
     }
-    // status filter
-    if (statusFilter === "Pending Deletion")
-      rows = rows.filter((d) => rowStatus(d, excludedIds.includes(d.id)) === "Pending Deletion");
-    else if (statusFilter === "Backup & Delete")
-      rows = rows.filter((d) => rowStatus(d, excludedIds.includes(d.id)) === "Backup & Delete");
-    else if (statusFilter === "Excluded")
-      rows = rows.filter((d) => rowStatus(d, excludedIds.includes(d.id)) === "Excluded");
-    else if (statusFilter === "Active")
-      rows = rows.filter((d) => rowStatus(d, excludedIds.includes(d.id)) === "Active");
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      rows = rows.filter((d) =>
+        d.name.toLowerCase().includes(q) ||
+        (d.accountName ?? "").toLowerCase().includes(q) ||
+        (d.conversionName ?? "").toLowerCase().includes(q) ||
+        d.server.toLowerCase().includes(q) ||
+        serverGroup(d.server).toLowerCase().includes(q)
+      );
+    }
+    if (serverFilters.length > 0) {
+      const allowed = new Set(serverFilters);
+      rows = rows.filter((d) => allowed.has(serverGroup(d.server)));
+    }
+    if (statusFilters.length > 0) {
+      const allowed = new Set(statusFilters);
+      rows = rows.filter((d) => allowed.has(rowStatus(d, excludedIds.includes(d.id))));
+    }
+    rows = rows.filter((d) => rowMatchesDateRange(d, dateRangeBounds, subTab, deletedAtById));
 
     return rows;
-  }, [teamScopedDbs, effectiveDeletedIds, excludedIds, subTab, search, serverFilter, accountFilter, conversionFilter, classFilter, statusFilter]);
+  }, [
+    teamScopedDbs,
+    effectiveDeletedIds,
+    excludedIds,
+    subTab,
+    search,
+    serverFilters,
+    statusFilters,
+    dateRangeBounds,
+    deletedAtById,
+  ]);
 
   const sortedRows = useMemo(
     () => sortDatabases(visibleRows, sortColumn, sortDir, excludedIds),
@@ -787,6 +662,19 @@ export function Overview({
       setSortDir("asc");
     }
   }
+
+  const metricFocus = activeMetricFocus(subTab, statusFilters);
+
+  const applyMetricFocus = useCallback((focus: MetricFocus) => {
+    const cfg = METRIC_FOCUS_FILTER[focus];
+    setSubTab(cfg.subTab);
+    setStatusFilters(cfg.statusFilters);
+    setServerFilters([]);
+    setSearch("");
+    window.requestAnimationFrame(() => {
+      tableSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
+  }, []);
 
   const scheduleDb = scheduleDbId ? dbs.find((d) => d.id === scheduleDbId) ?? null : null;
   const { minIso: minScheduleIso, maxIso: maxScheduleIso } = getDeletionScheduleDateBounds();
@@ -878,39 +766,124 @@ export function Overview({
       className={subTab === "Audit Log" ? "space-y-4" : "flex min-h-0 flex-col gap-4"}
       style={subTab !== "Audit Log" ? { height: "calc(100svh - 6.5rem)", minHeight: 360 } : undefined}
     >
-      {/* ── Sub-tabs ─────────────────────────────────────────────────────── */}
-      <div className="shrink-0 flex border-b border-cf-border-soft bg-white">
-        {SUB_TABS.map((t) => {
-          const isActive = subTab === t;
-          const count = t === "Deleted" ? teamDeletedCount : undefined;
-          return (
+      {/* ── Sub-tabs + status legend ───────────────────────────────────────── */}
+      <div className="shrink-0 flex items-stretch justify-between border-b border-cf-border-soft bg-white">
+        <div className="flex min-w-0">
+          {SUB_TABS.map((t) => {
+            const isActive = subTab === t;
+            const count = t === "Deleted" ? teamDeletedCount : undefined;
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setSubTab(t)}
+                className={cn(
+                  "relative flex min-h-[40px] items-center gap-1.5 px-4 py-2.5 text-[12px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cf-primary",
+                  isActive
+                    ? "border-b-2 border-cf-primary text-cf-primary"
+                    : "border-b-2 border-transparent text-cf-secondary hover:text-cf-text"
+                )}
+                style={{ marginBottom: "-1px" }}
+              >
+                {t}
+                {count !== undefined && (
+                  <span
+                    className={cn(
+                      "inline-flex h-[16px] w-[20px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold",
+                      count > 0 ? "bg-cf-surface text-cf-secondary" : "bg-transparent text-cf-gs-20"
+                    )}
+                  >
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {subTab !== "Audit Log" && (
+          <div ref={legendRef} className="relative flex shrink-0 items-center border-l border-cf-border-soft px-2">
             <button
-              key={t}
               type="button"
-              onClick={() => setSubTab(t)}
-              className={cn(
-                "relative flex min-h-[40px] items-center gap-1.5 px-4 py-2.5 text-[12px] font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-cf-primary",
-                isActive
-                  ? "border-b-2 border-cf-primary text-cf-primary"
-                  : "border-b-2 border-transparent text-cf-secondary hover:text-cf-text"
-              )}
-              style={{ marginBottom: "-1px" }}
+              aria-label="Open status legend"
+              aria-expanded={showLegendInfo}
+              className="inline-flex h-[28px] w-[28px] items-center justify-center rounded-full text-cf-primary transition-colors hover:bg-cf-primary-light/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cf-primary focus-visible:ring-offset-1"
+              onClick={() => setShowLegendInfo((v) => !v)}
             >
-              {t}
-              {/* Fixed-width badge slot so count 0 vs 1+ does not shift the tab bar */}
-              {count !== undefined && (
-                <span
-                  className={cn(
-                    "inline-flex h-[16px] w-[20px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold",
-                    count > 0 ? "bg-cf-surface text-cf-secondary" : "bg-transparent text-cf-gs-20"
-                  )}
-                >
-                  {count}
-                </span>
-              )}
+              <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden className="text-cf-primary">
+                <circle cx="7" cy="7" r="6.25" fill="none" stroke="currentColor" strokeWidth="1" />
+                <rect x="6.35" y="5.75" width="1.3" height="4.3" rx="0.65" fill="currentColor" />
+                <circle cx="7" cy="3.85" r="0.85" fill="currentColor" />
+              </svg>
             </button>
-          );
-        })}
+
+            {showLegendInfo && (
+              <div className="c-card absolute right-2 top-[calc(100%+4px)] z-[230] w-[540px] max-w-[calc(100vw-24px)] overflow-hidden shadow-lg">
+                <div className="c-card-header flex items-center justify-between">
+                  <p className="text-[12px] font-medium text-cf-secondary">Status reference</p>
+                  <button
+                    type="button"
+                    className="text-[12px] text-cf-muted transition-colors hover:text-cf-secondary"
+                    onClick={() => setShowLegendInfo(false)}
+                    aria-label="Close status legend"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="grid gap-3 p-3 md:grid-cols-2">
+                  <div>
+                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-cf-muted">
+                      Status
+                    </p>
+                    <ul className="space-y-1.5">
+                      {STATUS_LEGEND.map((item) => {
+                        const s = STATUS_STYLE[item.label] ?? STATUS_STYLE["Active"];
+                        return (
+                          <li
+                            key={item.label}
+                            className="rounded-cf-sm border border-cf-border-soft bg-white px-2 py-1"
+                          >
+                            <div
+                              className="mb-1 inline-flex rounded-[3px] px-1.5 py-0.5 text-[10px] font-medium"
+                              style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
+                            >
+                              {item.label}
+                            </div>
+                            <p className="text-[10px] leading-[15px] text-cf-secondary">{item.meaning}</p>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-cf-muted">
+                      Deliverable / Conv. Status
+                    </p>
+                    <ul className="space-y-1.5">
+                      {DELIVERABLE_LEGEND.map((item) => {
+                        const s = DELIVERABLE_STYLE[item.label] ?? DELIVERABLE_STYLE.Active;
+                        return (
+                          <li
+                            key={item.label}
+                            className="rounded-cf-sm border border-cf-border-soft bg-white px-2 py-1"
+                          >
+                            <div
+                              className="mb-1 inline-flex rounded-[3px] px-1.5 py-0.5 text-[10px] font-medium"
+                              style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
+                            >
+                              {item.label}
+                            </div>
+                            <p className="text-[10px] leading-[15px] text-cf-secondary">{item.meaning}</p>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Alert — show on All DB and Deleted (not Audit Log) so switching those tabs does not jump layout */}
@@ -926,7 +899,7 @@ export function Overview({
           <button
             type="button"
             className="shrink-0 text-[11px] font-semibold text-cf-danger underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-cf-danger focus-visible:ring-offset-1"
-            onClick={() => { setSubTab("All DB"); setStatusFilter("Pending Deletion"); }}
+            onClick={() => applyMetricFocus("pending")}
           >
             Review →
           </button>
@@ -936,137 +909,60 @@ export function Overview({
       {/* ── Stat cards ────────────────────────────────────────────────────── */}
       {subTab !== "Audit Log" && (
         <>
-          <div className="shrink-0 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-[11px] text-cf-secondary">
-              As of <span className="font-medium text-cf-text">{formatAsOf(nowIso)}</span>
-              <span className="text-cf-muted"> · {teamFilterLabel(teamFilter)}</span>
-            </p>
-            <div ref={legendRef} className="relative flex items-center gap-2">
-              <span className="text-[11px] font-medium text-cf-secondary">Range</span>
-              <select
-                className="c-select min-w-[124px]"
-                value={metricRange}
-                onChange={(e) => setMetricRange(e.target.value as MetricRange)}
-              >
-                <option value="7d">Last 7 days</option>
-                <option value="30d">Last 30 days</option>
-                <option value="90d">Last 90 days</option>
-              </select>
-              <button
-                type="button"
-                aria-label="Open status legend"
-                className="inline-flex h-[24px] w-[24px] items-center justify-center rounded-full border border-cf-primary bg-white text-cf-primary transition-colors hover:bg-cf-primary-light/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-cf-primary focus-visible:ring-offset-1"
-                onClick={() => setShowLegendInfo((v) => !v)}
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden className="text-cf-primary">
-                  <circle cx="7" cy="7" r="6.25" fill="none" stroke="currentColor" strokeWidth="1" />
-                  <rect x="6.35" y="5.75" width="1.3" height="4.3" rx="0.65" fill="currentColor" />
-                  <circle cx="7" cy="3.85" r="0.85" fill="currentColor" />
-                </svg>
-              </button>
-
-              {showLegendInfo && (
-                <div
-                  className="c-card absolute right-0 top-[calc(100%+6px)] z-[230] w-[540px] max-w-[calc(100vw-24px)] overflow-hidden"
-                >
-                  <div className="c-card-header flex items-center justify-between">
-                    <p className="text-[12px] font-medium text-cf-secondary">
-                      Status reference
-                    </p>
-                    <button
-                      type="button"
-                      className="text-[12px] text-cf-muted transition-colors hover:text-cf-secondary"
-                      onClick={() => setShowLegendInfo(false)}
-                      aria-label="Close status legend"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  <div className="grid gap-3 p-3 md:grid-cols-2">
-                    <div>
-                      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-cf-muted">
-                        Status
-                      </p>
-                      <ul className="space-y-1.5">
-                        {STATUS_LEGEND.map((item) => {
-                          const s = STATUS_STYLE[item.label] ?? STATUS_STYLE["Active"];
-                          return (
-                            <li
-                              key={item.label}
-                              className="rounded-cf-sm border border-cf-border-soft bg-white px-2 py-1"
-                            >
-                              <div
-                                className="mb-1 inline-flex rounded-[3px] px-1.5 py-0.5 text-[10px] font-medium"
-                                style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
-                              >
-                                {item.label}
-                              </div>
-                              <p className="text-[10px] leading-[15px] text-cf-secondary">
-                                {item.meaning}
-                              </p>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-cf-muted">
-                        Deliverable / Conv. Status
-                      </p>
-                      <ul className="space-y-1.5">
-                        {DELIVERABLE_LEGEND.map((item) => {
-                          const s = DELIVERABLE_STYLE[item.label] ?? DELIVERABLE_STYLE["Blank"];
-                          return (
-                            <li
-                              key={item.label}
-                              className="rounded-cf-sm border border-cf-border-soft bg-white px-2 py-1"
-                            >
-                              <div
-                                className="mb-1 inline-flex rounded-[3px] px-1.5 py-0.5 text-[10px] font-medium"
-                                style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
-                              >
-                                {item.label}
-                              </div>
-                              <p className="text-[10px] leading-[15px] text-cf-secondary">
-                                {item.meaning}
-                              </p>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="shrink-0 grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-5">
-            <StatCard
+          <p className="shrink-0 text-[11px] text-cf-muted">
+            {metrics.rangeLabel} · Click a metric to filter the table
+          </p>
+          <div className="shrink-0 grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-5">
+            <MetricStatCard
+              focus="synced"
               label="Total Synced"
-              value={metrics.totalSynced}
-              sub="Current snapshot across servers"
+              subtitle={`${metrics.serverCount} servers`}
+              count={metrics.totalSynced}
+              storageGb={metrics.totalSyncedGb}
+              selected={metricFocus === "synced"}
+              onSelect={() => applyMetricFocus("synced")}
             />
-            <StatCard
+            <MetricStatCard
+              focus="pending"
               label="Pending Deletion"
-              value={metrics.pendingCreatedInRange}
-              sub={`Current total ${metrics.pendingDel} · ${metrics.expiresToday} expire${metrics.expiresToday === 1 ? "s" : ""} today`}
-              highlight={metrics.expiresToday > 0}
+              subtitle="SB / ITL"
+              count={metrics.pendingDel}
+              storageGb={metrics.pendingGb}
+              footnote={
+                metrics.expiresToday > 0
+                  ? `Expires today: ${metrics.expiresToday}`
+                  : undefined
+              }
+              selected={metricFocus === "pending"}
+              urgent={metrics.expiresToday > 0}
+              onSelect={() => applyMetricFocus("pending")}
             />
-            <StatCard
+            <MetricStatCard
+              focus="backup"
               label="Backup & Delete"
-              value={metrics.backupCreatedInRange}
-              sub={`Current total ${metrics.backupDel}`}
+              subtitle="LIVE · 30d"
+              count={metrics.backupDel}
+              storageGb={metrics.backupGb}
+              selected={metricFocus === "backup"}
+              onSelect={() => applyMetricFocus("backup")}
             />
-            <StatCard
+            <MetricStatCard
+              focus="excluded"
               label="Excluded"
-              value={metrics.excludedCreatedInRange}
-              sub={`Current total ${metrics.excluded}`}
+              subtitle="Automation off"
+              count={metrics.excluded}
+              storageGb={metrics.excludedGb}
+              selected={metricFocus === "excluded"}
+              onSelect={() => applyMetricFocus("excluded")}
             />
-            <StatCard
+            <MetricStatCard
+              focus="recovered"
               label="Storage Recovered"
-              value={`${metrics.storageRecovered} GB`}
-              sub={`Deleted in last ${metrics.rangeDays} days`}
+              subtitle="Purged in range"
+              count={metrics.deletedCountInRange}
+              storageGb={metrics.storageRecovered}
+              selected={metricFocus === "recovered"}
+              onSelect={() => applyMetricFocus("recovered")}
             />
           </div>
         </>
@@ -1145,9 +1041,19 @@ export function Overview({
 
       {/* ── Table (all tabs except Audit Log) — header + filters fixed; only tbody scrolls ─ */}
       {subTab !== "Audit Log" && (
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+        <div ref={tableSectionRef} className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
           {/* Filters row */}
           <div className="shrink-0 flex flex-wrap items-end gap-x-3 gap-y-2">
+            <DateRangeFilter
+              className="min-w-[min(100%,440px)] basis-full lg:basis-auto lg:flex-1"
+              preset={datePreset}
+              onPresetChange={setDatePreset}
+              dateFrom={displayDateFrom}
+              dateTo={displayDateTo}
+              onDateFromChange={setCustomDateFrom}
+              onDateToChange={setCustomDateTo}
+              rangeLabel={dateRangeLabel}
+            />
             <div className="flex min-w-[200px] flex-1 flex-col gap-1">
               <label htmlFor="overview-db-search" className="cf-field-label">
                 Search
@@ -1155,62 +1061,37 @@ export function Overview({
               <input
                 id="overview-db-search"
                 className="c-input w-full"
-                placeholder="DB name, account, conversion…"
+                placeholder="Database, account, conversion, or server…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                aria-label="Search databases"
+                aria-label="Search databases by name, account, conversion, or server"
               />
             </div>
-            <SearchableSelect
+            <MultiSelectFilter
               id="server-filter"
               label="Server"
-              className="min-w-[148px]"
-              value={serverFilter}
-              options={servers}
-              onChange={setServerFilter}
+              className="min-w-[180px]"
+              allLabel="All servers"
+              options={serverOptions}
+              value={serverFilters}
+              onChange={setServerFilters}
             />
-            <SearchableSelect
-              id="account-filter"
-              label="Account"
-              className="min-w-[152px]"
-              value={accountFilter}
-              options={accounts}
-              onChange={setAccountFilter}
-            />
-            <SearchableSelect
-              id="conversion-filter"
-              label="Conversion"
-              className="min-w-[152px]"
-              value={conversionFilter}
-              options={conversions}
-              onChange={setConversionFilter}
-            />
-            <SearchableSelect
-              id="classification-filter"
-              label="Classification"
-              className="min-w-[168px]"
-              value={classFilter}
-              options={classificationOptions}
-              onChange={setClassFilter}
-            />
-            <SearchableSelect
+            <MultiSelectFilter
               id="status-filter"
               label="Status"
-              className="min-w-[168px]"
-              value={statusFilter}
-              options={statusOptions}
-              onChange={setStatusFilter}
+              className="min-w-[200px]"
+              allLabel="All statuses"
+              options={[...STATUS_FILTER_OPTIONS]}
+              value={statusFilters}
+              onChange={setStatusFilters}
             />
           </div>
 
           {/* Table — CareFlow c-card chrome; tbody scrolls */}
           <div className="c-card flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-            <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-b border-cf-border-soft bg-cf-surface px-3 py-2">
+            <div className="flex shrink-0 items-center border-b border-cf-border-soft bg-cf-surface px-3 py-2">
               <span className="text-[11px] font-medium uppercase tracking-wider text-cf-secondary">
                 Databases
-              </span>
-              <span className="text-[11px] tabular-nums text-cf-muted">
-                {visibleRows.length} shown · {dbs.filter((d) => !effectiveDeletedIds.includes(d.id)).length} active total
               </span>
             </div>
             <div className="min-h-0 flex-1 overflow-auto overscroll-y-contain border-t border-cf-border-soft">
@@ -1227,7 +1108,8 @@ export function Overview({
                             { label: "Status", key: "status" as const },
                             { label: "Size", key: "size" as const },
                             { label: "Deliverable / Conv. Status", key: "deliverable" as const },
-                            { label: "Triggered Date", key: "actionDate" as const },
+                            { label: "Triggered", key: "actionDate" as const },
+                            { label: "Deletion", key: "deletionDate" as const },
                             { label: "Actions", key: null as null },
                           ] as const)
                         : ([
@@ -1238,7 +1120,8 @@ export function Overview({
                             { label: "Status", key: "status" as const },
                             { label: "Size", key: "size" as const },
                             { label: "Deliverable / Conv. Status", key: "deliverable" as const },
-                            { label: "Triggered Date", key: "actionDate" as const },
+                            { label: "Triggered", key: "actionDate" as const },
+                            { label: "Deletion", key: "deletionDate" as const },
                           ] as const)
                     ).map(({ label, key: sortKey }) => (
                       <th
@@ -1285,7 +1168,7 @@ export function Overview({
                 <tbody>
                   {visibleRows.length === 0 && (
                     <tr>
-                      <td colSpan={showActionsColumn ? 9 : 8} className="py-14 text-center">
+                      <td colSpan={showActionsColumn ? 10 : 9} className="py-14 text-center">
                         <p className="text-[13px] font-medium text-cf-text">
                           No databases match
                         </p>
@@ -1324,12 +1207,12 @@ export function Overview({
 
                         {/* Account */}
                         <td className="cf-td align-middle text-cf-text">
-                          {status === "Active" ? "—" : (r.accountName ?? "—")}
+                          {r.accountName ?? "—"}
                         </td>
 
                         {/* Conversion */}
                         <td className="cf-td align-middle text-cf-secondary">
-                          {status === "Active" ? "—" : (r.conversionName ?? "—")}
+                          {r.conversionName ?? "—"}
                         </td>
 
                         {/* Server */}
@@ -1373,28 +1256,33 @@ export function Overview({
 
                         {/* Deliverable / Conv. Status */}
                         <td className="cf-td align-middle">
-                          {normalizedDeliverableStatus(r) ? (
-                            (() => {
-                              const deliverable = normalizedDeliverableStatus(r) as keyof typeof DELIVERABLE_STYLE;
-                              const ds = DELIVERABLE_STYLE[deliverable] ?? DELIVERABLE_STYLE.Blank;
-                              return (
-                                <span
-                                  className="inline-flex min-h-[22px] items-center gap-1.5 rounded-[3px] px-2 py-0.5 text-[11px] font-medium"
-                                  style={{ background: ds.bg, color: ds.color, border: `1px solid ${ds.border}` }}
-                                >
-                                  {deliverable}
-                                </span>
-                              );
-                            })()
+                          {(() => {
+                            const deliverable = displayDeliverableStatus(r) as keyof typeof DELIVERABLE_STYLE;
+                            const ds = DELIVERABLE_STYLE[deliverable] ?? DELIVERABLE_STYLE.Active;
+                            return (
+                              <span
+                                className="inline-flex min-h-[22px] items-center gap-1.5 rounded-[3px] px-2 py-0.5 text-[11px] font-medium"
+                                style={{ background: ds.bg, color: ds.color, border: `1px solid ${ds.border}` }}
+                              >
+                                {deliverable}
+                              </span>
+                            );
+                          })()}
+                        </td>
+
+                        {/* Triggered date */}
+                        <td className="cf-td align-middle whitespace-nowrap">
+                          {r.actionDate ? (
+                            <span className="text-cf-secondary">{formatShortDate(r.actionDate)}</span>
                           ) : (
-                            <span className="inline-flex min-h-[22px] items-center" aria-label="No linked deliverable status" />
+                            <span className="text-cf-gs-20">—</span>
                           )}
                         </td>
 
-                        {/* Triggered Date (actionDate) */}
-                        <td className="cf-td align-middle">
-                          {r.actionDate ? (
-                            <span className="text-cf-secondary">{formatShortDate(r.actionDate)}</span>
+                        {/* Deletion date */}
+                        <td className="cf-td align-middle whitespace-nowrap">
+                          {r.deletionDate ? (
+                            <span className="font-medium text-cf-text">{formatShortDate(r.deletionDate)}</span>
                           ) : (
                             <span className="text-cf-gs-20">—</span>
                           )}

@@ -21,6 +21,7 @@ export type DbTrigger = "Trigger 1" | "Trigger 2" | "None";
 
 /** Deliverable / conversion status label shown in the table */
 export type DeliverableStatus =
+  | "Active"
   | "SB Completed"
   | "ITL Completed"
   | "LIVE Completed"

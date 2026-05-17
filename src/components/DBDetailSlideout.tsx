@@ -6,7 +6,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useActivityForDb, useDerivizStore } from "../store/useDerivizStore";
 import { ClassificationBadge, AutoBackedUpBadge } from "./Badge";
 import { Toggle } from "./Toggle";
-import { formatShortDate, parseDatabaseContext } from "../lib/classify";
+import { parseDatabaseContext } from "../lib/classify";
+import type { ActivityEntry } from "../types";
 
 type SlideoutAction =
   | "lift_exclusion"
@@ -16,6 +17,10 @@ type SlideoutAction =
 
 /** Selected action while drafting “exclude” — empty until user picks (required). */
 type ActionChoice = SlideoutAction | "";
+
+type TriggerMode = "schedule_now" | "trigger_at";
+
+const SCHEDULE_NOW_DELAY_MS = 5 * 60 * 1000;
 
 function isoToUsMMDDYYYY(ymd: string): string {
   if (!ymd || !/^\d{4}-\d{2}-\d{2}$/.test(ymd)) return "";
@@ -27,6 +32,42 @@ function formatDbDayUs(iso: string | null): string {
   if (!iso) return "—";
   const ymd = new Date(iso).toISOString().slice(0, 10);
   return isoToUsMMDDYYYY(ymd);
+}
+
+function formatDbDateTimeUs(iso: string | null): string {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+function defaultTimeLocal(): string {
+  const d = new Date();
+  return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+}
+
+function combineLocalDateTimeToIso(dateYmd: string, timeHm: string): string | null {
+  const [y, mo, d] = dateYmd.split("-").map(Number);
+  const [h, mi] = timeHm.split(":").map(Number);
+  if (!y || !mo || !d || Number.isNaN(h) || Number.isNaN(mi)) return null;
+  const local = new Date(y, mo - 1, d, h, mi, 0, 0);
+  if (Number.isNaN(local.getTime())) return null;
+  return local.toISOString();
+}
+
+function windowDaysForAction(action: SlideoutAction): number {
+  if (action === "backup_delete") return 30;
+  return 5;
+}
+
+function deletionIsoFromActionDate(actionDateIso: string, action: SlideoutAction): string {
+  const d = new Date(actionDateIso);
+  d.setUTCDate(d.getUTCDate() + windowDaysForAction(action));
+  return d.toISOString();
 }
 
 function isLiveDatabase(db: { name: string; classification: string | null }): boolean {
@@ -41,6 +82,80 @@ function Field({ label, value }: { label: string; value: string }) {
       </span>
       <span className="text-[12px]" style={{ color: "#354756" }}>{value}</span>
     </div>
+  );
+}
+
+function formatActivityTimestamp(iso: string): { date: string; time: string } {
+  const d = new Date(iso);
+  return {
+    date: d.toLocaleDateString(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }),
+    time: d.toLocaleTimeString(undefined, {
+      hour: "numeric",
+      minute: "2-digit",
+    }),
+  };
+}
+
+const ACTIVITY_CATEGORY_LABEL: Record<NonNullable<ActivityEntry["category"]>, string> = {
+  system: "System",
+  trigger: "Trigger",
+  manual: "Manual",
+  automation: "Automation",
+};
+
+function isBackupActivityEntry(entry: ActivityEntry): boolean {
+  const msg = entry.message.trim();
+  if (msg.includes("\\") && msg.endsWith(".zip")) return true;
+  return /backup/i.test(msg);
+}
+
+function parseActivityMessage(message: string): { title: string; detail?: string } {
+  const trimmed = message.trim();
+  if (/^\\.+\\.zip$/i.test(trimmed) || (trimmed.includes("\\") && trimmed.endsWith(".zip"))) {
+    return { title: "Backup artifact saved", detail: trimmed };
+  }
+  if (/backup/i.test(trimmed)) {
+    return { title: trimmed, detail: undefined };
+  }
+  return { title: trimmed, detail: undefined };
+}
+
+function ActivityLogItem({ entry }: { entry: ActivityEntry }) {
+  const { date, time } = formatActivityTimestamp(entry.at);
+  const { title, detail } = parseActivityMessage(entry.message);
+  const category = entry.category ? ACTIVITY_CATEGORY_LABEL[entry.category] : null;
+
+  return (
+    <li className="min-w-0 rounded-cf border border-cf-border-soft bg-cf-surface px-3 py-2.5">
+      <div className="flex gap-3">
+        <div className="w-[76px] shrink-0">
+          <p className="text-[11px] font-semibold leading-snug text-cf-text">{date}</p>
+          <p className="text-[10px] leading-snug text-cf-muted">{time}</p>
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <p className="text-[12px] font-medium leading-snug text-cf-text">{title}</p>
+            {category && (
+              <span className="c-tag border-cf-border-soft bg-white text-[10px] text-cf-secondary">
+                {category}
+              </span>
+            )}
+          </div>
+          {detail && (
+            <p
+              className="mt-1.5 break-all font-mono text-[11px] leading-relaxed text-cf-secondary"
+              title={detail}
+            >
+              {detail}
+            </p>
+          )}
+        </div>
+      </div>
+    </li>
   );
 }
 
@@ -71,7 +186,11 @@ export function DBDetailSlideout({
         )
     )
   );
-  const act       = useActivityForDb(dbId ?? "");
+  const act = useActivityForDb(dbId ?? "");
+  const backupActivity = useMemo(
+    () => act.filter(isBackupActivityEntry),
+    [act]
+  );
   const isLiveDb = useMemo(
     () => Boolean(db && isLiveDatabase(db)),
     [db]
@@ -91,6 +210,8 @@ export function DBDetailSlideout({
   /** Store still excluded, user turned draft toggle off — must pick a fresh date before save. */
   const liftingExclusionDraft = excluded && !draftExcluded;
   const [scheduleDateInput, setScheduleDateInput] = useState("");
+  const [triggerMode, setTriggerMode] = useState<TriggerMode>("schedule_now");
+  const [triggerTimeInput, setTriggerTimeInput] = useState(defaultTimeLocal);
   const scheduleIso = useMemo(() => {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(scheduleDateInput)) return null;
     return scheduleDateInput;
@@ -128,6 +249,8 @@ export function DBDetailSlideout({
 
   useEffect(() => {
     excludeDraftPairRef.current = null;
+    setTriggerMode("schedule_now");
+    setTriggerTimeInput(defaultTimeLocal());
   }, [dbId]);
 
   useEffect(() => {
@@ -155,10 +278,14 @@ export function DBDetailSlideout({
             ? "Backup"
             : "Active";
     if (st === "Pending Deletion") {
-      return [
+      const opts: { value: SlideoutAction; label: string }[] = [
+        { value: "reschedule", label: "Reschedule" },
         { value: "delete", label: "Delete" },
-        { value: "backup_delete", label: "Backup & Delete" },
       ];
+      if (db && isLiveDatabase(db)) {
+        opts.unshift({ value: "backup_delete", label: "Backup & Delete" });
+      }
+      return opts;
     }
     if (st === "Backup & Delete") {
       if (db && isLiveDatabase(db)) {
@@ -172,10 +299,11 @@ export function DBDetailSlideout({
         { value: "delete", label: "Delete" },
       ];
     }
-    return [
-      { value: "delete", label: "Delete" },
-      { value: "backup_delete", label: "Backup & Delete" },
-    ];
+    const opts: { value: SlideoutAction; label: string }[] = [{ value: "delete", label: "Delete" }];
+    if (db && isLiveDatabase(db)) {
+      opts.push({ value: "backup_delete", label: "Backup & Delete" });
+    }
+    return opts;
   }, [draftExcluded, excluded, db]);
 
   useEffect(() => {
@@ -216,7 +344,14 @@ export function DBDetailSlideout({
     setDraftExcluded(excluded);
     setActionTouched(false);
     setDateTouched(false);
+    setTriggerMode("schedule_now");
+    setTriggerTimeInput(defaultTimeLocal());
   }, [excluded, dbId]);
+
+  const usesScheduleNow =
+    selectedAction === "delete" || selectedAction === "backup_delete";
+  const usesDateOnly =
+    selectedAction === "reschedule" || selectedAction === "lift_exclusion";
 
   useEffect(() => {
     const wasDraftExcluded = prevDraftExcludedRef.current;
@@ -232,8 +367,26 @@ export function DBDetailSlideout({
     !!scheduleIso &&
     scheduleIso >= minScheduleIso &&
     scheduleIso <= maxScheduleIso;
+
+  const scheduleTriggerOk = useMemo(() => {
+    if (usesScheduleNow && triggerMode === "schedule_now") return true;
+    if (!scheduleDateOk) return false;
+    if (usesDateOnly) return true;
+    if (triggerMode !== "trigger_at") return false;
+    const iso = combineLocalDateTimeToIso(scheduleIso!, triggerTimeInput);
+    if (!iso) return false;
+    return new Date(iso).getTime() > Date.now();
+  }, [
+    usesScheduleNow,
+    usesDateOnly,
+    triggerMode,
+    scheduleDateOk,
+    scheduleIso,
+    triggerTimeInput,
+  ]);
   const exclusionChanged = draftExcluded !== excluded;
-  const quickActionsDisabled = readOnly || draftExcluded;
+  const quickActionsDisabled =
+    readOnly || draftExcluded || backupInProgress || showBackupConfirm;
   const exclusionTurnOn = exclusionChanged && applyingNewExclusion;
   const exclusionLiftOff = exclusionChanged && !draftExcluded && excluded;
   const actionChanged = !draftExcluded && (actionTouched || dateTouched);
@@ -241,21 +394,45 @@ export function DBDetailSlideout({
     !readOnly &&
     (exclusionTurnOn ||
       exclusionLiftOff ||
-      (actionChanged && scheduleDateOk && !liftingExclusionDraft));
+      (actionChanged && scheduleTriggerOk && !liftingExclusionDraft));
   const backupButtonDisabled = readOnly || draftExcluded || backupInProgress;
 
   useEffect(() => {
-    if (!liftingExclusionDraft || scheduleDateOk) setLiftSaveWarning(false);
-  }, [liftingExclusionDraft, scheduleDateOk]);
+    if (!liftingExclusionDraft || scheduleTriggerOk) setLiftSaveWarning(false);
+  }, [liftingExclusionDraft, scheduleTriggerOk]);
+
+  function resolveScheduleTimes(action: SlideoutAction): {
+    actionDateIso: string;
+    deletionDateIso: string;
+  } | null {
+    if (usesScheduleNow && triggerMode === "schedule_now") {
+      const actionDateIso = new Date(Date.now() + SCHEDULE_NOW_DELAY_MS).toISOString();
+      const deletionDateIso = deletionIsoFromActionDate(actionDateIso, action);
+      return { actionDateIso, deletionDateIso };
+    }
+    if (!scheduleIso || !scheduleDateOk) return null;
+    if (usesDateOnly) {
+      const deletionDateIso = new Date(`${scheduleIso}T12:00:00.000Z`).toISOString();
+      const actionDateIso =
+        action === "lift_exclusion"
+          ? new Date(Date.now() + SCHEDULE_NOW_DELAY_MS).toISOString()
+          : db?.actionDate ?? new Date().toISOString();
+      return { actionDateIso, deletionDateIso };
+    }
+    const actionDateIso = combineLocalDateTimeToIso(scheduleIso, triggerTimeInput);
+    if (!actionDateIso) return null;
+    const deletionDateIso = deletionIsoFromActionDate(actionDateIso, action);
+    return { actionDateIso, deletionDateIso };
+  }
 
   function applyActionWithDate(action: SlideoutAction) {
     if (!db) return;
-    if (!scheduleIso) return;
-    if (scheduleIso < minScheduleIso || scheduleIso > maxScheduleIso) return;
-    const deletionDateIso = new Date(`${scheduleIso}T00:00:00.000Z`).toISOString();
+    const times = resolveScheduleTimes(action);
+    if (!times) return;
+    const { actionDateIso, deletionDateIso } = times;
     if (action === "lift_exclusion") {
       liftExclusion(db.id);
-      scheduleDeletionByDate(db.id, deletionDateIso);
+      scheduleDeletionByDate(db.id, deletionDateIso, undefined, actionDateIso);
       return;
     }
     if (action === "delete") {
@@ -264,20 +441,20 @@ export function DBDetailSlideout({
       if (!alreadyOnDeleteSchedule) {
         setManual(db.id, "Delete");
       }
-      scheduleDeletionByDate(db.id, deletionDateIso, "Delete");
+      scheduleDeletionByDate(db.id, deletionDateIso, "Delete", actionDateIso);
       return;
     }
     if (action === "backup_delete") {
       setManual(db.id, "Backup & Delete");
-      scheduleDeletionByDate(db.id, deletionDateIso, "Backup & Delete");
+      scheduleDeletionByDate(db.id, deletionDateIso, "Backup & Delete", actionDateIso);
       return;
     }
-    scheduleDeletionByDate(db.id, deletionDateIso);
+    scheduleDeletionByDate(db.id, deletionDateIso, undefined, actionDateIso);
   }
 
   function handleSave() {
     if (!db) return;
-    if (exclusionLiftOff && !scheduleDateOk) {
+    if (exclusionLiftOff && !scheduleTriggerOk) {
       setLiftSaveWarning(true);
       return;
     }
@@ -291,22 +468,23 @@ export function DBDetailSlideout({
         }
         setExcluded(db.id, true);
       } else {
-        const deletionDateIso = new Date(`${scheduleIso}T00:00:00.000Z`).toISOString();
         liftExclusion(db.id);
         const act = selectedAction as SlideoutAction;
+        const times = resolveScheduleTimes(act);
+        if (!times) return;
         if (act === "delete") {
-          scheduleDeletionByDate(db.id, deletionDateIso, "Delete");
+          scheduleDeletionByDate(db.id, times.deletionDateIso, "Delete", times.actionDateIso);
         } else if (act === "backup_delete") {
-          scheduleDeletionByDate(db.id, deletionDateIso, "Backup & Delete");
+          scheduleDeletionByDate(db.id, times.deletionDateIso, "Backup & Delete", times.actionDateIso);
         } else {
-          scheduleDeletionByDate(db.id, deletionDateIso);
+          scheduleDeletionByDate(db.id, times.deletionDateIso, undefined, times.actionDateIso);
         }
       }
     }
 
     if (
       actionChanged &&
-      scheduleDateOk &&
+      scheduleTriggerOk &&
       !draftExcluded &&
       selectedAction !== "" &&
       !exclusionLiftOff
@@ -363,7 +541,7 @@ export function DBDetailSlideout({
         </header>
 
         {/* Body */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto">
           {/* DB identity */}
           <div className="border-b px-4 py-4" style={{ borderColor: "#ECEFF2" }}>
             <div className="flex items-start justify-between gap-3">
@@ -394,7 +572,7 @@ export function DBDetailSlideout({
               <Field label="Account"       value={db.accountName ?? "—"} />
               <Field label="Conversion"    value={db.conversionName ?? "—"} />
               <Field label="Action"        value={db.action} />
-              <Field label="Triggered date" value={formatDbDayUs(db.actionDate)} />
+              <Field label="Triggered" value={formatDbDateTimeUs(db.actionDate)} />
               <Field label="Deletion date" value={formatDbDayUs(db.deletionDate)} />
               <Field label="Size"          value={`${db.sizeGb} GB`} />
             </div>
@@ -452,7 +630,7 @@ export function DBDetailSlideout({
                     Backup in progress
                   </span>
                 ) : (
-                  "Backup"
+                  "Backup now"
                 )}
               </button>
             </div>
@@ -480,27 +658,112 @@ export function DBDetailSlideout({
                   ))}
                 </select>
               </label>
-              <label className="mt-3 flex flex-col gap-1">
-                <span className="text-[11px]" style={{ color: "#5D6F7E" }}>
-                  Triggered date context
-                </span>
-                <input
-                  type="date"
-                  className="c-input w-full tabular-nums"
-                  disabled={quickActionsDisabled}
-                  min={minScheduleIso}
-                  max={maxScheduleIso}
-                  value={scheduleDateInput}
-                  aria-label="Triggered date context"
-                  onChange={(e) => {
-                    setScheduleDateInput(e.target.value);
-                    setDateTouched(true);
-                  }}
-                />
-                <span className="text-[10px]" style={{ color: "#96A3AF" }}>
-                  Choose from today through two months ahead.
-                </span>
-              </label>
+              <fieldset className="mt-3 flex flex-col gap-2 border-0 p-0">
+                <legend className="text-[11px] font-medium" style={{ color: "#5D6F7E" }}>
+                  {usesDateOnly
+                    ? selectedAction === "reschedule"
+                      ? "New deletion date"
+                      : "Triggered date"
+                    : "When to run"}
+                </legend>
+                {usesScheduleNow && (
+                  <div className="flex flex-col gap-2">
+                    <label className="flex cursor-pointer items-start gap-2">
+                      <input
+                        type="radio"
+                        name="trigger-mode"
+                        className="mt-0.5"
+                        checked={triggerMode === "schedule_now"}
+                        disabled={quickActionsDisabled}
+                        onChange={() => {
+                          setTriggerMode("schedule_now");
+                          setDateTouched(true);
+                        }}
+                      />
+                      <span className="flex flex-col gap-0.5">
+                        <span className="text-[12px] font-medium" style={{ color: "#354756" }}>
+                          Schedule now
+                        </span>
+                        <span className="text-[10px]" style={{ color: "#96A3AF" }}>
+                          {selectedAction === "backup_delete"
+                            ? "Backup & delete starts about 5 minutes after you save."
+                            : "Delete starts about 5 minutes after you save."}
+                        </span>
+                      </span>
+                    </label>
+                    <label className="flex cursor-pointer items-start gap-2">
+                      <input
+                        type="radio"
+                        name="trigger-mode"
+                        className="mt-0.5"
+                        checked={triggerMode === "trigger_at"}
+                        disabled={quickActionsDisabled}
+                        onChange={() => {
+                          setTriggerMode("trigger_at");
+                          setDateTouched(true);
+                        }}
+                      />
+                      <span className="text-[12px] font-medium" style={{ color: "#354756" }}>
+                        Trigger at
+                      </span>
+                    </label>
+                  </div>
+                )}
+                {(usesDateOnly || (usesScheduleNow && triggerMode === "trigger_at")) && (
+                  <div className="flex flex-col gap-2">
+                    {usesScheduleNow && triggerMode === "trigger_at" && (
+                      <span className="text-[10px]" style={{ color: "#96A3AF" }}>
+                        Pick when the action should start (must be in the future).
+                      </span>
+                    )}
+                    <div className="grid grid-cols-2 gap-2">
+                      <label className="flex flex-col gap-1">
+                        <span className="text-[10px] uppercase tracking-wider" style={{ color: "#96A3AF" }}>
+                          Date
+                        </span>
+                        <input
+                          type="date"
+                          className="c-input w-full tabular-nums"
+                          disabled={quickActionsDisabled}
+                          min={minScheduleIso}
+                          max={maxScheduleIso}
+                          value={scheduleDateInput}
+                          aria-label="Trigger date"
+                          onChange={(e) => {
+                            setScheduleDateInput(e.target.value);
+                            setDateTouched(true);
+                          }}
+                        />
+                      </label>
+                      {!usesDateOnly && (
+                        <label className="flex flex-col gap-1">
+                          <span className="text-[10px] uppercase tracking-wider" style={{ color: "#96A3AF" }}>
+                            Time
+                          </span>
+                          <input
+                            type="time"
+                            className="c-input w-full tabular-nums"
+                            disabled={quickActionsDisabled}
+                            value={triggerTimeInput}
+                            aria-label="Trigger time"
+                            onChange={(e) => {
+                              setTriggerTimeInput(e.target.value);
+                              setDateTouched(true);
+                            }}
+                          />
+                        </label>
+                      )}
+                    </div>
+                    <span className="text-[10px]" style={{ color: "#96A3AF" }}>
+                      {usesDateOnly
+                        ? "Choose a deletion date from today through two months ahead."
+                        : `Deletion is scheduled ${windowDaysForAction(
+                            selectedAction as SlideoutAction
+                          )} days after the trigger time.`}
+                    </span>
+                  </div>
+                )}
+              </fieldset>
             </div>
             {liftSaveWarning && liftingExclusionDraft ? (
               <p className="text-[11px] font-medium" style={{ color: "#B23838" }} role="alert">
@@ -519,25 +782,29 @@ export function DBDetailSlideout({
               <p className="text-[11px]" style={{ color: "#96A3AF" }}>
                 Enter triggered date (required) to lift exclusion and save your schedule.
               </p>
+            ) : backupInProgress || showBackupConfirm ? (
+              <p className="text-[11px]" style={{ color: "#96A3AF" }}>
+                {showBackupConfirm && !backupInProgress
+                  ? "Confirm backup to continue — action and schedule are locked meanwhile."
+                  : "Backup in progress — action and schedule are locked until complete."}
+              </p>
             ) : null}
           </div>
 
-          {/* Activity log */}
-          <div className="px-4 py-4">
-            <p className="section-hdr">Activity log</p>
-            {act.length === 0 ? (
+          {/* Backup log — operational backups only */}
+          <div className="min-w-0 px-4 py-4">
+            <p className="section-hdr">Backup log</p>
+            <p className="mb-3 text-[11px] leading-snug text-cf-muted">
+              Backup artifacts and backup jobs for this database only.
+            </p>
+            {backupActivity.length === 0 ? (
               <p className="text-[12px]" style={{ color: "#96A3AF" }}>
-                No events for this database yet.
+                No backup events for this database yet.
               </p>
             ) : (
               <ul className="space-y-2">
-                {act.map((a) => (
-                  <li key={a.id} className="text-[12px]" style={{ color: "#354756" }}>
-                    {a.message}
-                    <span className="ml-1 text-[11px]" style={{ color: "#96A3AF" }}>
-                      ({formatShortDate(a.at)})
-                    </span>
-                  </li>
+                {backupActivity.map((a) => (
+                  <ActivityLogItem key={a.id} entry={a} />
                 ))}
               </ul>
             )}

@@ -19,9 +19,10 @@ export function serverGroup(server: string): string {
 
 const GROUP_TEAM: Record<string, TeamId> = {
   Aquila: "US",
-  SB: "US",
+  Orion: "US",
+  Nova: "US",
   Raven: "UK",
-  ITL: "AU",
+  Atlas: "AU",
 };
 
 export function teamForServer(server: string): TeamId {

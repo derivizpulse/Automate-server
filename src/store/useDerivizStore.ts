@@ -64,6 +64,19 @@ const trigger1Filter = (db: DatabaseRow) =>
 
 const csEnvs = new Set<DatabaseRow["environment"]>(["SB", "ITL"]);
 
+/** Backup & Delete is only valid for _LIVE databases; SB/ITL use Scheduled Delete. */
+function normalizeLifecycleAction(db: DatabaseRow): DatabaseRow {
+  const isLive = parseDatabaseContext(db.name).isLive;
+  if (db.action === "Backup & Delete" && !isLive) {
+    return {
+      ...db,
+      action: "Scheduled Delete",
+      windowDays: db.windowDays != null && db.windowDays > 7 ? 7 : db.windowDays,
+    };
+  }
+  return db;
+}
+
 function normalizeLegacyDeliverableStatus(db: DatabaseRow): DatabaseRow {
   const legacy = db.deliverableStatus as string | null;
   if (legacy !== "SB/ITL Completed") return db;
@@ -167,7 +180,8 @@ interface DerivizState {
   scheduleDeletionByDate: (
     id: string,
     deletionDateIso: string,
-    forcedAction?: "Delete" | "Backup & Delete" | "Scheduled Delete"
+    forcedAction?: "Delete" | "Backup & Delete" | "Scheduled Delete",
+    actionDateIso?: string
   ) => void;
   deleteNow: (id: string) => void;
   liftExclusion: (id: string) => void;
@@ -198,13 +212,13 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
   return {
     databases: initialDatabases.map((d) =>
       applyDefaultDeleteForCompletedDeliverable(
-        normalizeLegacyDeliverableStatus({ ...d }),
+        normalizeLegacyDeliverableStatus(normalizeLifecycleAction({ ...d })),
         seedNow
       )
     ),
     blobs: initialBlobs.map((b) => ({ ...b })),
     excludedIds: ["db-7", "db-8", "db-9", "db-19"],
-    deletedIds: ["db-10", "db-14"],
+    deletedIds: ["db-10"],
     deletedAtById: {
       "db-10": addDaysIso(new Date(), -4),
       "db-14": addDaysIso(new Date(), -62),
@@ -387,20 +401,26 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
         };
       }),
 
-    scheduleDeletionByDate: (id, deletionDateIso, forcedAction) => {
+    scheduleDeletionByDate: (id, deletionDateIso, forcedAction, actionDateIso) => {
       const now = new Date();
-      const actionIso = addDaysIso(now, 0);
+      const actionIso = actionDateIso ?? addDaysIso(now, 0);
       set((s) => {
         const before = s.databases.find((d) => d.id === id);
         const databases = s.databases.map((db) => {
           if (db.id !== id) return db;
-          const action = forcedAction
+          let action = forcedAction
             ? forcedAction
             : db.action === "Backup & Delete"
               ? ("Backup & Delete" as const)
               : db.action === "Delete"
                 ? ("Delete" as const)
                 : ("Scheduled Delete" as const);
+          if (
+            action === "Backup & Delete" &&
+            !parseDatabaseContext(db.name).isLive
+          ) {
+            action = "Scheduled Delete";
+          }
           const days =
             Math.max(
               1,
@@ -416,8 +436,15 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
             windowDays: days,
           };
         });
-        const msg = `Scheduled by user for ${new Date(deletionDateIso).toLocaleDateString()}${
-          before && before.deletionDate ? ` (was ${new Date(before.deletionDate).toLocaleDateString()})` : ""
+        const triggerLabel = new Date(actionIso).toLocaleString(undefined, {
+          dateStyle: "medium",
+          timeStyle: "short",
+        });
+        const deletionLabel = new Date(deletionDateIso).toLocaleDateString();
+        const msg = `Scheduled — triggers ${triggerLabel} · deletion ${deletionLabel}${
+          before && before.deletionDate
+            ? ` (was ${new Date(before.deletionDate).toLocaleDateString()})`
+            : ""
         }`;
         return {
           databases,
@@ -669,11 +696,21 @@ export const useDerivizStore = create<DerivizState>()((set, get) => {
             return { ...db, autoBackedUp: true };
           }
           if (action === "Backup & Delete") {
+            if (!parseDatabaseContext(db.name).isLive) {
+              return {
+                ...db,
+                action: "Scheduled Delete" as const,
+                actionDate: addDaysIso(now, 0),
+                deletionDate: addDaysIso(now, 7),
+                windowDays: 7,
+              };
+            }
             return {
               ...db,
               action: "Backup & Delete" as const,
               actionDate: addDaysIso(now, 0),
               deletionDate: addDaysIso(now, 30),
+              windowDays: 30,
               autoBackedUp: true,
             };
           }
