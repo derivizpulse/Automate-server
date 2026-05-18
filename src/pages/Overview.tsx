@@ -918,7 +918,6 @@ export function Overview({
             <MetricStatCard
               focus="synced"
               label="Total Synced"
-              subtitle={`${metrics.serverCount} servers`}
               count={metrics.totalSynced}
               storageGb={metrics.totalSyncedGb}
               selected={metricFocus === "synced"}
@@ -927,7 +926,6 @@ export function Overview({
             <MetricStatCard
               focus="pending"
               label="Pending Deletion"
-              subtitle="SB / ITL"
               count={metrics.pendingDel}
               storageGb={metrics.pendingGb}
               footnote={
@@ -942,7 +940,6 @@ export function Overview({
             <MetricStatCard
               focus="backup"
               label="Backup & Delete"
-              subtitle="LIVE · 30d"
               count={metrics.backupDel}
               storageGb={metrics.backupGb}
               selected={metricFocus === "backup"}
@@ -951,7 +948,6 @@ export function Overview({
             <MetricStatCard
               focus="excluded"
               label="Excluded"
-              subtitle="Automation off"
               count={metrics.excluded}
               storageGb={metrics.excludedGb}
               selected={metricFocus === "excluded"}
@@ -960,7 +956,6 @@ export function Overview({
             <MetricStatCard
               focus="recovered"
               label="Storage Recovered"
-              subtitle="Purged in range"
               count={metrics.deletedCountInRange}
               storageGb={metrics.storageRecovered}
               selected={metricFocus === "recovered"}

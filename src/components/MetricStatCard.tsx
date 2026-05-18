@@ -18,7 +18,6 @@ export const METRIC_ACCENT: Record<MetricFocus, string> = {
 export function MetricStatCard({
   focus,
   label,
-  subtitle,
   count,
   storageGb,
   footnote,
@@ -28,7 +27,6 @@ export function MetricStatCard({
 }: {
   focus: MetricFocus;
   label: string;
-  subtitle?: string;
   count: number;
   storageGb: number;
   /** One optional detail line (e.g. expires today) */
@@ -58,23 +56,13 @@ export function MetricStatCard({
         aria-hidden
       />
 
-      <div className="flex items-center justify-between gap-1.5">
-        <span
-          className="truncate text-[9px] font-semibold uppercase tracking-[0.06em] text-cf-secondary"
-          style={selected ? { color: accent } : undefined}
-          title={label}
-        >
-          {label}
-        </span>
-        {selected ? (
-          <span
-            className="shrink-0 rounded px-1 py-px text-[8px] font-semibold uppercase"
-            style={{ color: accent, background: `${accent}18` }}
-          >
-            On
-          </span>
-        ) : null}
-      </div>
+      <span
+        className="truncate text-[9px] font-semibold uppercase tracking-[0.06em] text-cf-secondary"
+        style={selected ? { color: accent } : undefined}
+        title={label}
+      >
+        {label}
+      </span>
 
       <div className="flex items-baseline gap-1.5 tabular-nums">
         <span
@@ -93,12 +81,6 @@ export function MetricStatCard({
           {formatStorageGb(storageGb)}
         </span>
       </div>
-
-      {subtitle ? (
-        <p className="truncate text-[9px] leading-tight text-cf-muted" title={subtitle}>
-          {subtitle}
-        </p>
-      ) : null}
 
       {footnote ? (
         <p
