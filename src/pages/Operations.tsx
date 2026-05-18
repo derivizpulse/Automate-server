@@ -131,8 +131,6 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
     [jobs, teamFilter]
   );
 
-  const activeNow = useMemo(() => teamJobs.filter(isActiveJob), [teamJobs]);
-
   const filteredJobs = useMemo(() => {
     const statusSet =
       statusFilters.length > 0
@@ -175,23 +173,10 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
         <h1 className="text-[15px] font-semibold" style={{ color: "#1E2228" }}>
           Operations
         </h1>
-        {activeNow.length > 0 && statusView !== "active" && (
-          <p className="mt-1 text-[11px] text-cf-muted">
-            <strong className="text-cf-text">{activeNow.length}</strong> job
-            {activeNow.length === 1 ? "" : "s"} in progress right now (always shown in{" "}
-            <button
-              type="button"
-              className="font-medium text-cf-primary underline-offset-2 hover:underline"
-              onClick={() => setStatusView("active")}
-            >
-              Active
-            </button>
-            )
-          </p>
-        )}
       </div>
 
-      <div className="shrink-0 flex flex-wrap items-end gap-x-3 gap-y-2">
+      <div className="shrink-0 flex w-full flex-wrap items-end gap-x-3 gap-y-2">
+        <div className="flex min-w-0 flex-wrap items-end gap-x-3 gap-y-2">
         <div className="flex min-w-[200px] flex-col gap-1">
           <span className="cf-field-label">Show</span>
           <div className="flex flex-wrap gap-1" role="group" aria-label="Job status view">
@@ -229,6 +214,8 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
             rangeLabel={dateRangeLabel}
           />
         )}
+        </div>
+        <div className="ml-auto flex flex-wrap items-end justify-end gap-x-3 gap-y-2">
         <MultiSelectFilter
           id="ops-status-filter"
           label="Status"
@@ -247,6 +234,7 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
           value={kindFilters}
           onChange={setKindFilters}
         />
+        </div>
       </div>
 
       {statusView === "active" && (

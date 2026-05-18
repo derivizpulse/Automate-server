@@ -69,7 +69,7 @@ export interface ActivityEntry {
   server?: string;
   /** e.g. trigger, delete, override, system */
   category?: "system" | "trigger" | "manual" | "automation";
-  /** Person who performed a manual action (shown in Audit Log Type column). */
+  /** Person who performed a manual action (shown in Audit Log User column). */
   actorName?: string;
 }
 

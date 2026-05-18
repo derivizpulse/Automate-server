@@ -1024,7 +1024,7 @@ export function Overview({
             <table className="w-full min-w-[720px] border-collapse text-left">
               <thead className="sticky top-0 z-10 border-b border-cf-border-soft bg-cf-surface">
                 <tr>
-                  {["Database", "Server", "Time", "Type", "Event"].map((h) => (
+                  {["Database", "Server", "Time", "User", "Event"].map((h) => (
                     <th key={h} className="cf-th whitespace-nowrap">
                       {h}
                     </th>
@@ -1265,12 +1265,20 @@ export function Overview({
 
                         {/* Account */}
                         <td className="cf-td align-middle text-cf-text">
-                          {r.accountName ?? "—"}
+                          {status === "Active" ? (
+                            <span className="text-cf-gs-20">—</span>
+                          ) : (
+                            r.accountName ?? "—"
+                          )}
                         </td>
 
                         {/* Conversion */}
                         <td className="cf-td align-middle text-cf-secondary">
-                          {r.conversionName ?? "—"}
+                          {status === "Active" ? (
+                            <span className="text-cf-gs-20">—</span>
+                          ) : (
+                            r.conversionName ?? "—"
+                          )}
                         </td>
 
                         {/* Conv. status */}
