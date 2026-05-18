@@ -226,10 +226,10 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
           onChange={setStatusFilters}
         />
         <MultiSelectFilter
-          id="ops-kind-filter"
-          label="Kind"
+          id="ops-type-filter"
+          label="Type"
           className="min-w-[180px]"
-          allLabel="All kinds"
+          allLabel="All types"
           options={KIND_FILTER_OPTIONS}
           value={kindFilters}
           onChange={setKindFilters}
@@ -275,7 +275,7 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
             <table className="w-full min-w-[720px] border-collapse text-left">
               <thead className="sticky top-0 z-10" style={{ background: "#F7F8FA", borderBottom: "1px solid #ECEFF2" }}>
                 <tr>
-                  {["Database", "Kind", "Status", "Progress", "Updated", ""].map((h) => (
+                  {["Database", "Type", "Status", "Progress", "Updated", ""].map((h) => (
                     <th key={h} className="cf-th whitespace-nowrap px-3 py-2">
                       {h}
                     </th>

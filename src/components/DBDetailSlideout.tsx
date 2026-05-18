@@ -373,13 +373,16 @@ export function DBDetailSlideout({
     triggerTimeInput,
   ]);
   const exclusionChanged = draftExcluded !== excluded;
+  const backupFlowLocked = backupInProgress || showBackupConfirm;
   const quickActionsDisabled =
-    readOnly || draftExcluded || backupInProgress || showBackupConfirm;
+    readOnly || draftExcluded || backupFlowLocked;
+  const exclusionToggleDisabled = readOnly || backupFlowLocked;
   const exclusionTurnOn = exclusionChanged && applyingNewExclusion;
   const exclusionLiftOff = exclusionChanged && !draftExcluded && excluded;
   const actionChanged = !draftExcluded && (actionTouched || dateTouched);
   const canSave =
     !readOnly &&
+    !backupFlowLocked &&
     (exclusionTurnOn ||
       exclusionLiftOff ||
       (actionChanged && scheduleTriggerOk && !liftingExclusionDraft));
@@ -578,11 +581,14 @@ export function DBDetailSlideout({
                   This database will be skipped in trigger runs.
                 </p>
               </div>
-              <div className={readOnly ? "pointer-events-none opacity-60" : ""} aria-disabled={readOnly}>
+              <div
+                className={exclusionToggleDisabled ? "pointer-events-none opacity-60" : ""}
+                aria-disabled={exclusionToggleDisabled}
+              >
                 <Toggle
                   on={draftExcluded}
                   onChange={(v) => {
-                    if (readOnly) return;
+                    if (exclusionToggleDisabled) return;
                     setDraftExcluded(v);
                     if (v && !excluded) {
                       setScheduleDateInput("");
@@ -742,14 +748,6 @@ export function DBDetailSlideout({
                         </label>
                       )}
                     </div>
-                    <span className="text-[10px]" style={{ color: "#96A3AF" }}>
-                      {usesDateOnly
-                        ? "Choose a deletion date from today through two months ahead."
-                        : `Deletion is scheduled ${windowDaysForAction(
-                            selectedAction as SlideoutAction,
-                            db
-                          )} days after the trigger time.`}
-                    </span>
                   </div>
                 )}
               </fieldset>
