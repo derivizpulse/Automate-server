@@ -7,6 +7,7 @@ import { useDerivizStore } from "../store/useDerivizStore";
 import { ClassificationBadge, AutoBackedUpBadge } from "./Badge";
 import { CCheckbox, Toggle } from "./Toggle";
 import { formatShortDate } from "../lib/classify";
+import { formatStorageGb } from "../lib/formatStorage";
 import { cn } from "../lib/cn";
 import type { SourceEnvironment } from "../types";
 
@@ -199,7 +200,7 @@ export function DBTable({
                     </span>
                   </td>
                   <td className="cf-td" style={{ color: "#5D6F7E" }}>{r.environment}</td>
-                  <td className="cf-td">{r.sizeGb} GB</td>
+                  <td className="cf-td">{formatStorageGb(r.sizeGb)}</td>
                   <td className="cf-td" onClick={(e) => e.stopPropagation()}>
                     <div className="flex flex-wrap items-center gap-1">
                       <ClassificationBadge classification={r.classification} />

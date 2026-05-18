@@ -1,5 +1,6 @@
 import type { BlobRow } from "../types";
 
+/** Mock blobs — sizes span TB (>1000 GB), GB (10–1000), and MB (<10) */
 export const initialBlobs: BlobRow[] = [
   {
     id: "bl-1",
@@ -15,7 +16,7 @@ export const initialBlobs: BlobRow[] = [
     backupFile: "blob://backups/CONV_XYZ_2024_diff.bak",
     linkedDbId: "db-2",
     linkedDbName: "CONV_XYZ_2024",
-    sizeGb: 30,
+    sizeGb: 4.2,
     scheduledDeletion: null,
     status: "Backup",
   },
@@ -24,7 +25,7 @@ export const initialBlobs: BlobRow[] = [
     backupFile: "blob://archive/LEGACY_DUMP_01_full.bak",
     linkedDbId: "db-4",
     linkedDbName: "LEGACY_DUMP_01",
-    sizeGb: 88,
+    sizeGb: 1500,
     scheduledDeletion: "2026-05-01T00:00:00.000Z",
     status: "Scheduled",
   },
@@ -40,10 +41,37 @@ export const initialBlobs: BlobRow[] = [
   {
     id: "bl-5",
     backupFile: "blob://live/PROD_WEST_LIVE_snap.bak",
-    linkedDbId: "db-6",
+    linkedDbId: "db-14",
     linkedDbName: "PROD_WEST_LIVE",
     sizeGb: 115,
     scheduledDeletion: null,
     status: "Live",
+  },
+  {
+    id: "bl-6",
+    backupFile: "blob://archive/WAREHOUSE_FULL.bak",
+    linkedDbId: "db-27",
+    linkedDbName: "ArchiveWarehouse_C1",
+    sizeGb: 1250,
+    scheduledDeletion: null,
+    status: "Active",
+  },
+  {
+    id: "bl-7",
+    backupFile: "blob://backups/StandardClinic_C2_full.bak",
+    linkedDbId: "db-28",
+    linkedDbName: "StandardClinic_C2",
+    sizeGb: 275,
+    scheduledDeletion: null,
+    status: "Backup",
+  },
+  {
+    id: "bl-8",
+    backupFile: "blob://dev/DevScratch_C3_small.bak",
+    linkedDbId: "db-29",
+    linkedDbName: "DevScratch_C3",
+    sizeGb: 1.2,
+    scheduledDeletion: null,
+    status: "Delete",
   },
 ];

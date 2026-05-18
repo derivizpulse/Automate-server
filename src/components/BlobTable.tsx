@@ -1,6 +1,7 @@
 import { useDerivizStore } from "../store/useDerivizStore";
 import { StatusBadge, type StatusBadgeKind } from "./Badge";
 import { formatShortDate } from "../lib/classify";
+import { formatStorageGb } from "../lib/formatStorage";
 
 export function BlobTable() {
   const rows = useDerivizStore((s) => s.blobs);
@@ -35,7 +36,7 @@ export function BlobTable() {
               >
                 <td className="px-3 font-mono text-xs text-cf-text">{b.backupFile}</td>
                 <td className="px-3 text-cf-text">{b.linkedDbName}</td>
-                <td className="px-3 text-cf-text">{b.sizeGb} GB</td>
+                <td className="px-3 text-cf-text">{formatStorageGb(b.sizeGb)}</td>
                 <td className="px-3 text-cf-text">
                   {b.scheduledDeletion
                     ? formatShortDate(b.scheduledDeletion)

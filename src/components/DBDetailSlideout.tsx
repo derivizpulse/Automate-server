@@ -11,6 +11,7 @@ import {
   isLiveDatabase,
   supportsBackupAndDelete,
 } from "../lib/classify";
+import { formatStorageGb } from "../lib/formatStorage";
 import type { ActivityEntry } from "../types";
 
 type SlideoutAction =
@@ -386,7 +387,7 @@ export function DBDetailSlideout({
     (exclusionTurnOn ||
       exclusionLiftOff ||
       (actionChanged && scheduleTriggerOk && !liftingExclusionDraft));
-  const backupButtonDisabled = readOnly || draftExcluded || backupInProgress;
+  const backupButtonDisabled = readOnly || backupInProgress;
 
   useEffect(() => {
     if (!liftingExclusionDraft || scheduleTriggerOk) setLiftSaveWarning(false);
@@ -548,7 +549,7 @@ export function DBDetailSlideout({
               </button>
             </div>
             <p className="text-[12px] mt-0.5" style={{ color: "#5D6F7E" }}>
-              {db.environment} · {db.sizeGb} GB
+              {db.environment} · {formatStorageGb(db.sizeGb)}
             </p>
             <div className="mt-2 flex flex-wrap gap-1">
               <ClassificationBadge classification={db.classification} />
@@ -565,8 +566,47 @@ export function DBDetailSlideout({
               <Field label="Action"        value={db.action} />
               <Field label="Triggered" value={formatDbDateTimeUs(db.actionDate)} />
               <Field label="Deletion date" value={formatDbDayUs(db.deletionDate)} />
-              <Field label="Size"          value={`${db.sizeGb} GB`} />
+              <Field label="Size"          value={formatStorageGb(db.sizeGb)} />
             </div>
+          </div>
+
+          {/* Manual backup — always available (excluded or not) */}
+          <div className="border-b px-4 py-4" style={{ borderColor: "#ECEFF2" }}>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="section-hdr">Backup</p>
+                <p className="text-[11px] mt-0.5" style={{ color: "#96A3AF" }}>
+                  Run a manual backup anytime — works whether this database is excluded or not.
+                </p>
+              </div>
+              <button
+                type="button"
+                className={`h-[28px] shrink-0 px-2.5 text-[11px] ${
+                  backupInProgress ? "c-btn-primary" : "c-btn-outline"
+                } ${backupButtonDisabled ? "opacity-45 cursor-not-allowed" : ""}`}
+                disabled={backupButtonDisabled}
+                onClick={() => setShowBackupConfirm(true)}
+              >
+                {backupInProgress ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <span
+                      className="inline-block h-3 w-3 animate-spin rounded-full border border-white/70 border-t-transparent"
+                      aria-hidden
+                    />
+                    Backup in progress
+                  </span>
+                ) : (
+                  "Backup now"
+                )}
+              </button>
+            </div>
+            {backupInProgress || showBackupConfirm ? (
+              <p className="mt-2 text-[11px]" style={{ color: "#96A3AF" }}>
+                {showBackupConfirm && !backupInProgress
+                  ? "Confirm backup to continue — schedule actions are locked meanwhile."
+                  : "Backup in progress — schedule actions are locked until complete."}
+              </p>
+            ) : null}
           </div>
 
           {/* Exclude toggle */}
@@ -603,31 +643,7 @@ export function DBDetailSlideout({
 
           {/* Quick actions */}
           <div className="border-b px-4 py-4 space-y-3" style={{ borderColor: "#ECEFF2" }}>
-            <div className="flex items-center justify-between">
-              <p className="section-hdr">Quick actions</p>
-              <button
-                type="button"
-                className={`h-[28px] px-2.5 text-[11px] ${
-                  backupInProgress ? "c-btn-primary" : "c-btn-outline"
-                } ${backupButtonDisabled ? "opacity-45 cursor-not-allowed" : ""}`}
-                disabled={backupButtonDisabled}
-                onClick={() => {
-                  setShowBackupConfirm(true);
-                }}
-              >
-                {backupInProgress ? (
-                  <span className="inline-flex items-center gap-1.5">
-                    <span
-                      className="inline-block h-3 w-3 animate-spin rounded-full border border-white/70 border-t-transparent"
-                      aria-hidden
-                    />
-                    Backup in progress
-                  </span>
-                ) : (
-                  "Backup now"
-                )}
-              </button>
-            </div>
+            <p className="section-hdr">Quick actions</p>
             <div
               className={quickActionsDisabled ? "pointer-events-none opacity-60" : ""}
               aria-disabled={quickActionsDisabled}
@@ -763,17 +779,11 @@ export function DBDetailSlideout({
               </p>
             ) : draftExcluded ? (
               <p className="text-[11px]" style={{ color: "#96A3AF" }}>
-                Turn off Exclusion to enable actions.
+                Turn off Exclusion to enable schedule actions below.
               </p>
             ) : liftingExclusionDraft ? (
               <p className="text-[11px]" style={{ color: "#96A3AF" }}>
                 Enter triggered date (required) to lift exclusion and save your schedule.
-              </p>
-            ) : backupInProgress || showBackupConfirm ? (
-              <p className="text-[11px]" style={{ color: "#96A3AF" }}>
-                {showBackupConfirm && !backupInProgress
-                  ? "Confirm backup to continue — action and schedule are locked meanwhile."
-                  : "Backup in progress — action and schedule are locked until complete."}
               </p>
             ) : null}
           </div>

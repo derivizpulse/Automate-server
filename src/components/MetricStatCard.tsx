@@ -1,6 +1,9 @@
 // CareFlow — compact clickable metric tile
 
 import { cn } from "../lib/cn";
+import { formatStorageGb } from "../lib/formatStorage";
+
+export { formatStorageGb } from "../lib/formatStorage";
 
 export type MetricFocus = "synced" | "pending" | "backup" | "excluded" | "recovered";
 
@@ -11,12 +14,6 @@ export const METRIC_ACCENT: Record<MetricFocus, string> = {
   excluded: "#5D6F7E",
   recovered: "#1B8A4A",
 };
-
-export function formatStorageGb(gb: number): string {
-  if (gb >= 100) return `${Math.round(gb)} GB`;
-  const rounded = Math.round(gb * 10) / 10;
-  return `${rounded} GB`;
-}
 
 export function MetricStatCard({
   focus,

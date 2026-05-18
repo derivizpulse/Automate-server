@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { formatStorageGb } from "../lib/formatStorage";
 import { matchesTeamFilter, type TeamFilter } from "../lib/teams";
 
 type HealthCard = {
@@ -13,14 +14,17 @@ type HealthCard = {
   status: "Active" | "Warning";
 };
 
+/** Server cards — total/used/free sizes mix TB (>1000), GB (10–1000), and MB (<10) */
 const INITIAL_SERVERS: HealthCard[] = [
+  { id: "titan-1", name: "Titan", filterServer: "Titan-1", usedPct: 75, totalGb: 2400, usedGb: 1800, freeGb: 600, lastSync: "Nov 12, 2024 7:30 AM", status: "Active" },
   { id: "skylark-1", name: "Skylark", filterServer: "Aquila-1", usedPct: 78, totalGb: 275, usedGb: 214, freeGb: 61, lastSync: "Nov 12, 2024 7:32 AM", status: "Active" },
-  { id: "aquila-1", name: "Aquila", filterServer: "Aquila-2", usedPct: 64, totalGb: 310, usedGb: 198, freeGb: 112, lastSync: "Nov 12, 2024 7:41 AM", status: "Active" },
+  { id: "sandbox-1", name: "Sandbox", filterServer: "Sandbox-1", usedPct: 62, totalGb: 8, usedGb: 5, freeGb: 3, lastSync: "Nov 12, 2024 7:28 AM", status: "Active" },
+  { id: "aquila-1", name: "Aquila", filterServer: "Aquila-2", usedPct: 64, totalGb: 1100, usedGb: 704, freeGb: 396, lastSync: "Nov 12, 2024 7:41 AM", status: "Active" },
   { id: "raven-1", name: "Raven", filterServer: "Raven-1", usedPct: 86, totalGb: 420, usedGb: 361, freeGb: 59, lastSync: "Nov 12, 2024 7:35 AM", status: "Warning" },
-  { id: "phoenix-1", name: "Phoenix", filterServer: "Raven-2", usedPct: 52, totalGb: 180, usedGb: 94, freeGb: 86, lastSync: "Nov 12, 2024 7:29 AM", status: "Active" },
+  { id: "phoenix-1", name: "Phoenix", filterServer: "Raven-2", usedPct: 52, totalGb: 6.5, usedGb: 3.4, freeGb: 3.1, lastSync: "Nov 12, 2024 7:29 AM", status: "Active" },
   { id: "lyra-1", name: "Lyra", filterServer: "Aquila-3", usedPct: 71, totalGb: 290, usedGb: 206, freeGb: 84, lastSync: "Nov 12, 2024 7:22 AM", status: "Active" },
-  { id: "orion-1", name: "Orion", filterServer: "Orion-1", usedPct: 81, totalGb: 360, usedGb: 292, freeGb: 68, lastSync: "Nov 12, 2024 7:33 AM", status: "Warning" },
-  { id: "atlas-1", name: "Atlas", filterServer: "Atlas-1", usedPct: 59, totalGb: 240, usedGb: 142, freeGb: 98, lastSync: "Nov 12, 2024 7:26 AM", status: "Active" },
+  { id: "orion-1", name: "Orion", filterServer: "Orion-1", usedPct: 81, totalGb: 1200, usedGb: 972, freeGb: 228, lastSync: "Nov 12, 2024 7:33 AM", status: "Warning" },
+  { id: "atlas-1", name: "Atlas", filterServer: "Atlas-1", usedPct: 59, totalGb: 7.2, usedGb: 4.2, freeGb: 3, lastSync: "Nov 12, 2024 7:26 AM", status: "Active" },
   { id: "nova-1", name: "Nova", filterServer: "Nova-1", usedPct: 74, totalGb: 330, usedGb: 244, freeGb: 86, lastSync: "Nov 12, 2024 7:38 AM", status: "Active" },
 ];
 
@@ -100,9 +104,9 @@ function ServerCard({ s, onCleanUpServer }: { s: HealthCard; onCleanUpServer: (s
         <Gauge usedPct={s.usedPct} status={s.status} />
         <div className="min-w-[125px] flex-1">
           {[
-            { label: "Total Size", value: `${s.totalGb} GB`, dot: "#E3E6EA" },
-            { label: "Used Space", value: `${s.usedGb} GB`, dot: "#3F73CC" },
-            { label: "Free Space", value: `${s.freeGb} GB`, dot: "#8FB0EA" },
+            { label: "Total Size", value: formatStorageGb(s.totalGb), dot: "#E3E6EA" },
+            { label: "Used Space", value: formatStorageGb(s.usedGb), dot: "#3F73CC" },
+            { label: "Free Space", value: formatStorageGb(s.freeGb), dot: "#8FB0EA" },
           ].map((r) => (
             <div key={r.label} className="mb-1 flex items-center justify-between">
               <span className="flex items-center gap-2 text-[11px]" style={{ color: "#5D6F7E" }}>
@@ -152,13 +156,18 @@ export function ServerHealth({
         const idx = Math.floor(Math.random() * prev.length);
         return prev.map((s, i) => {
           if (i !== idx) return s;
-          const delta = Math.floor(Math.random() * 7) - 3; // -3..+3
-          const nextUsed = Math.min(s.totalGb - 1, Math.max(1, s.usedGb + delta));
-          const nextFree = s.totalGb - nextUsed;
+          const small = s.totalGb < 10;
+          const delta = small
+            ? (Math.floor(Math.random() * 5) - 2) * 0.2
+            : Math.floor(Math.random() * 7) - 3;
+          const minUsed = small ? 0.2 : 1;
+          const maxUsed = s.totalGb - (small ? 0.1 : 1);
+          const nextUsed = Math.min(maxUsed, Math.max(minUsed, s.usedGb + delta));
+          const nextFree = Math.round((s.totalGb - nextUsed) * 10) / 10;
           const nextPct = Math.round((nextUsed / s.totalGb) * 100);
           return {
             ...s,
-            usedGb: nextUsed,
+            usedGb: small ? Math.round(nextUsed * 10) / 10 : nextUsed,
             freeGb: nextFree,
             usedPct: nextPct,
             status: nextPct >= 80 ? "Warning" : "Active",
@@ -172,13 +181,6 @@ export function ServerHealth({
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-end gap-2 text-[11px]">
-        <span className="inline-flex items-center gap-1 rounded-[3px] border px-2 py-0.5" style={{ borderColor: "#A8D8DF", background: "#E8F8FA", color: "#006A80" }}>
-          <span className="inline-block h-2 w-2 animate-pulse rounded-full" style={{ background: "#1E96AB" }} />
-          Live
-        </span>
-      </div>
-
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {visibleServers.length === 0 ? (
           <div

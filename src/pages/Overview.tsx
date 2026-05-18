@@ -18,6 +18,7 @@ import {
 } from "../lib/auditLog";
 import { useDerivizStore } from "../store/useDerivizStore";
 import { formatShortDate } from "../lib/classify";
+import { formatStorageGb } from "../lib/formatStorage";
 import { cn } from "../lib/cn";
 import {
   activityEntryMatchesTeam,
@@ -292,7 +293,6 @@ const SUB_TABS: SubTab[] = ["All DB", "Audit Log"];
 function rowMatchesDateRange(
   db: DatabaseRow,
   bounds: DateRangeBounds | null,
-  deletedAtById: Record<string, string>,
   isDeleted: boolean,
   isExcluded: boolean,
   statusFilters: string[]
@@ -300,17 +300,9 @@ function rowMatchesDateRange(
   if (!bounds) return true;
   // Excluded bucket counts all excluded DBs — don't hide when that filter is active.
   if (isExcluded && statusFilters.includes("Excluded")) return true;
-  const dates: string[] = [];
-  if (isDeleted) {
-    const purged = deletedAtById[db.id];
-    if (purged) dates.push(isoDateOnly(purged));
-  }
-  if (db.actionDate) dates.push(isoDateOnly(db.actionDate));
-  if (db.deletionDate) dates.push(isoDateOnly(db.deletionDate));
-  // Active / monitored DBs (no lifecycle dates) stay visible — e.g. after lifting exclusion.
-  if (!isDeleted && dates.length === 0) return true;
-  if (dates.length === 0) return false;
-  return dates.some((d) => d >= bounds.from && d <= bounds.to);
+  if (!db.actionDate) return !isDeleted;
+  const d = isoDateOnly(db.actionDate);
+  return d >= bounds.from && d <= bounds.to;
 }
 
 type ConfirmOverrideAction = "Delete" | "Backup & Delete";
@@ -401,7 +393,6 @@ export function Overview({
   const dbs         = useDerivizStore((s) => s.databases);
   const excludedIds = useDerivizStore((s) => s.excludedIds);
   const deletedIds  = useDerivizStore((s) => s.deletedIds);
-  const deletedAtById = useDerivizStore((s) => s.deletedAtById);
   const activityLog = useDerivizStore((s) => s.activityLog);
   const scheduleDeletionByDate = useDerivizStore((s) => s.scheduleDeletionByDate);
   const deleteNow   = useDerivizStore((s) => s.deleteNow);
@@ -461,8 +452,8 @@ export function Overview({
   const todayIso = nowIso.slice(0, 10);
 
   useEffect(() => {
-    setRangeFrom((f) => f || shiftIsoDate(todayIso, -30));
-    setRangeTo((t) => t || todayIso);
+    setRangeFrom((f) => f || shiftIsoDate(todayIso, -7));
+    setRangeTo((t) => t || shiftIsoDate(todayIso, 7));
   }, [todayIso]);
 
   const dateRangeBounds = useMemo(
@@ -550,9 +541,7 @@ export function Overview({
       return n !== null && n <= 1;
     });
     const deletedInRange = teamScopedDbs.filter(
-      (d) =>
-        effectiveDeletedIds.includes(d.id) &&
-        inRange(deletedAtById[d.id] ?? d.actionDate ?? d.deletionDate)
+      (d) => effectiveDeletedIds.includes(d.id) && inRange(d.actionDate)
     );
     const pendingCreated = pendingDel.filter((d) => inRange(d.actionDate));
     const backupCreated = backupDel.filter((d) => inRange(d.actionDate));
@@ -580,7 +569,7 @@ export function Overview({
       expiresIn24h,
       rangeLabel: dateRangeLabel,
     };
-  }, [teamScopedDbs, excludedIds, effectiveDeletedIds, deletedAtById, dateRangeBounds, dateRangeLabel, todayIso]);
+  }, [teamScopedDbs, excludedIds, effectiveDeletedIds, dateRangeBounds, dateRangeLabel, todayIso]);
 
   const visibleRows = useMemo(() => {
     const allowedStatuses = new Set(statusFilters);
@@ -609,7 +598,6 @@ export function Overview({
       rowMatchesDateRange(
         d,
         dateRangeBounds,
-        deletedAtById,
         effectiveDeletedIds.includes(d.id),
         excludedIds.includes(d.id),
         statusFilters
@@ -625,7 +613,6 @@ export function Overview({
     serverFilters,
     statusFilters,
     dateRangeBounds,
-    deletedAtById,
   ]);
 
   const sortedRows = useMemo(
@@ -991,6 +978,7 @@ export function Overview({
             <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
               <DateRangePickers
                 className="min-w-[min(100%,440px)] flex-1"
+                label="Action date"
                 dateFrom={rangeFrom}
                 dateTo={rangeTo}
                 onDateFromChange={setRangeFrom}
@@ -1097,6 +1085,7 @@ export function Overview({
           <div className="shrink-0 flex flex-wrap items-end gap-x-3 gap-y-2">
             <DateRangePickers
               className="min-w-[min(100%,440px)] basis-full lg:basis-auto lg:flex-1"
+              label="Action date"
               dateFrom={rangeFrom}
               dateTo={rangeTo}
               onDateFromChange={setRangeFrom}
@@ -1159,8 +1148,7 @@ export function Overview({
                             { label: "Conversion", key: "conversion" as const },
                             { label: "Conv. status", key: "deliverable" as const },
                             { label: "Status", key: "status" as const },
-                            { label: "Triggered", key: "actionDate" as const },
-                            { label: "Deletion", key: "deletionDate" as const },
+                            { label: "Action date", key: "actionDate" as const },
                             { label: "Actions", key: null as null },
                           ] as const)
                         : ([
@@ -1171,8 +1159,7 @@ export function Overview({
                             { label: "Conversion", key: "conversion" as const },
                             { label: "Conv. status", key: "deliverable" as const },
                             { label: "Status", key: "status" as const },
-                            { label: "Triggered", key: "actionDate" as const },
-                            { label: "Deletion", key: "deletionDate" as const },
+                            { label: "Action date", key: "actionDate" as const },
                           ] as const)
                     ).map(({ label, key: sortKey }) => (
                       <th
@@ -1219,7 +1206,7 @@ export function Overview({
                 <tbody>
                   {visibleRows.length === 0 && (
                     <tr>
-                      <td colSpan={showActionsColumn ? 10 : 9} className="py-14 text-center">
+                      <td colSpan={showActionsColumn ? 9 : 8} className="py-14 text-center">
                         <p className="text-[13px] font-medium text-cf-text">
                           No databases match
                         </p>
@@ -1261,7 +1248,7 @@ export function Overview({
                         </td>
 
                         {/* Size */}
-                        <td className="cf-td align-middle text-cf-text">{r.sizeGb} GB</td>
+                        <td className="cf-td align-middle text-cf-text">{formatStorageGb(r.sizeGb)}</td>
 
                         {/* Account */}
                         <td className="cf-td align-middle text-cf-text">
@@ -1330,19 +1317,10 @@ export function Overview({
                           </div>
                         </td>
 
-                        {/* Triggered date */}
+                        {/* Action date */}
                         <td className="cf-td align-middle whitespace-nowrap">
                           {r.actionDate ? (
-                            <span className="text-cf-secondary">{formatShortDate(r.actionDate)}</span>
-                          ) : (
-                            <span className="text-cf-gs-20">—</span>
-                          )}
-                        </td>
-
-                        {/* Deletion date */}
-                        <td className="cf-td align-middle whitespace-nowrap">
-                          {r.deletionDate ? (
-                            <span className="font-medium text-cf-text">{formatShortDate(r.deletionDate)}</span>
+                            <span className="font-medium text-cf-text">{formatShortDate(r.actionDate)}</span>
                           ) : (
                             <span className="text-cf-gs-20">—</span>
                           )}
