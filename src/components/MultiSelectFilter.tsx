@@ -1,8 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "../lib/cn";
 
-function formatSummary(selected: string[], allLabel: string, maxNames = 2): string {
-  if (selected.length === 0) return allLabel;
+function formatSummary(
+  selected: string[],
+  allLabel: string,
+  optionsCount: number,
+  treatEmptyAsAll: boolean,
+  maxNames = 2
+): string {
+  if (treatEmptyAsAll && selected.length === 0) return allLabel;
+  if (!treatEmptyAsAll && selected.length === optionsCount) return allLabel;
   if (selected.length === 1) return selected[0];
   if (selected.length <= maxNames) return selected.join(", ");
   return `${selected.length} selected`;
@@ -15,6 +22,8 @@ export function MultiSelectFilter({
   value,
   onChange,
   allLabel,
+  onShowAll,
+  treatEmptyAsAll = true,
   className,
 }: {
   id: string;
@@ -23,6 +32,10 @@ export function MultiSelectFilter({
   value: string[];
   onChange: (next: string[]) => void;
   allLabel: string;
+  /** When set, "Show all" uses this instead of clearing the selection (for explicit multi-select). */
+  onShowAll?: () => void;
+  /** When false, every option must be explicitly selected; full selection shows `allLabel`. */
+  treatEmptyAsAll?: boolean;
   className?: string;
 }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
@@ -47,8 +60,8 @@ export function MultiSelectFilter({
   }, [options, search]);
 
   const selectedSet = useMemo(() => new Set(value), [value]);
-  const summary = formatSummary(value, allLabel);
-  const showAll = value.length === 0;
+  const summary = formatSummary(value, allLabel, options.length, treatEmptyAsAll);
+  const showAll = treatEmptyAsAll ? value.length === 0 : value.length === options.length;
 
   function toggleOption(opt: string) {
     if (showAll) {
@@ -56,12 +69,14 @@ export function MultiSelectFilter({
       return;
     }
     if (selectedSet.has(opt)) {
-      onChange(value.filter((v) => v !== opt));
+      const next = value.filter((v) => v !== opt);
+      if (!treatEmptyAsAll && next.length === 0) return;
+      onChange(next);
       return;
     }
     const next = [...value, opt];
     if (next.length >= options.length) {
-      onChange([]);
+      onChange(treatEmptyAsAll ? [] : [...options]);
       return;
     }
     onChange(
@@ -70,7 +85,8 @@ export function MultiSelectFilter({
   }
 
   function resetToAll() {
-    onChange([]);
+    if (onShowAll) onShowAll();
+    else onChange(treatEmptyAsAll ? [] : [...options]);
     setSearch("");
   }
 
@@ -87,14 +103,14 @@ export function MultiSelectFilter({
           aria-expanded={isOpen}
           className={cn(
             "c-input flex h-7 w-full items-center justify-between gap-2 pr-7 text-left",
-            value.length > 0 && "border-cf-primary/50 bg-cf-primary-light/20"
+            !showAll && "border-cf-primary/50 bg-cf-primary-light/20"
           )}
           onClick={() => setIsOpen((o) => !o)}
         >
           <span
             className={cn(
               "min-w-0 truncate text-[12px]",
-              value.length === 0 ? "text-cf-text" : "font-medium text-cf-primary"
+              showAll ? "text-cf-text" : "font-medium text-cf-primary"
             )}
           >
             {summary}

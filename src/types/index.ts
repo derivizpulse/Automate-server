@@ -69,6 +69,8 @@ export interface ActivityEntry {
   server?: string;
   /** e.g. trigger, delete, override, system */
   category?: "system" | "trigger" | "manual" | "automation";
+  /** Person who performed a manual action (shown in Audit Log Type column). */
+  actorName?: string;
 }
 
 /** Long-running user-initiated work (backup, delete, etc.) — shown on Operations */

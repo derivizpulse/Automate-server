@@ -1,12 +1,12 @@
-// Deriviz — Operations: long-running backup / delete / schedule jobs with progress
+// Deriviz — Operations: in-progress backup / delete jobs (present) + optional completed history
 
 import { useMemo, useState } from "react";
 import {
-  DateRangeFilter,
-  computeDateRangeBounds,
+  DateRangePickers,
+  boundsFromIsoRange,
   formatRangeLabel,
+  shiftIsoDate,
   type DateRangeBounds,
-  type DateRangePreset,
 } from "../components/DateRangeFilter";
 import { MultiSelectFilter } from "../components/MultiSelectFilter";
 import { isOperationalJob } from "../lib/operations";
@@ -75,27 +75,53 @@ function formatTime(iso: string) {
   }
 }
 
+function jobMatchesOpsFilters(
+  job: OperationJob,
+  statusView: StatusView,
+  statusSet: Set<OperationStatus> | null,
+  kindSet: Set<string> | null,
+  dateRangeBounds: DateRangeBounds | null
+): boolean {
+  if (statusSet && !statusSet.has(job.status)) return false;
+  if (kindSet && !kindSet.has(KIND_LABEL[job.kind])) return false;
+
+  const active = isActiveJob(job);
+  if (statusView === "active" && !active) return false;
+  if (statusView === "completed" && !isCompletedJob(job)) return false;
+
+  // Queued / running always show — live operations, not bounded by history dates.
+  if (active) return true;
+
+  return jobInDateRange(job, dateRangeBounds);
+}
+
+function sortOpsJobs(a: OperationJob, b: OperationJob): number {
+  const aActive = isActiveJob(a);
+  const bActive = isActiveJob(b);
+  if (aActive !== bActive) return aActive ? -1 : 1;
+  if (a.status === "running" && b.status === "queued") return -1;
+  if (a.status === "queued" && b.status === "running") return 1;
+  return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+}
+
 export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
   const jobs = useDerivizStore((s) => s.operationJobs);
   const dismissOperation = useDerivizStore((s) => s.dismissOperation);
   const cancelOrStopOperation = useDerivizStore((s) => s.cancelOrStopOperation);
 
-  const [datePreset, setDatePreset] = useState<DateRangePreset>("7d");
-  const [customDateFrom, setCustomDateFrom] = useState("");
-  const [customDateTo, setCustomDateTo] = useState("");
+  const [historyFrom, setHistoryFrom] = useState(() => shiftIsoDate(TODAY_ISO, -30));
+  const [historyTo, setHistoryTo] = useState(TODAY_ISO);
   const [statusView, setStatusView] = useState<StatusView>("active");
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
   const [kindFilters, setKindFilters] = useState<string[]>([]);
 
+  const showHistoryDateRange = statusView !== "active";
+
   const dateRangeBounds = useMemo(
-    () => computeDateRangeBounds(datePreset, TODAY_ISO, customDateFrom, customDateTo),
-    [datePreset, customDateFrom, customDateTo]
+    () => boundsFromIsoRange(historyFrom, historyTo),
+    [historyFrom, historyTo]
   );
   const dateRangeLabel = useMemo(() => formatRangeLabel(dateRangeBounds), [dateRangeBounds]);
-  const displayDateFrom =
-    datePreset === "custom" ? customDateFrom : (dateRangeBounds?.from ?? "");
-  const displayDateTo =
-    datePreset === "custom" ? customDateTo : (dateRangeBounds?.to ?? "");
 
   const teamJobs = useMemo(
     () =>
@@ -105,6 +131,8 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
     [jobs, teamFilter]
   );
 
+  const activeNow = useMemo(() => teamJobs.filter(isActiveJob), [teamJobs]);
+
   const filteredJobs = useMemo(() => {
     const statusSet =
       statusFilters.length > 0
@@ -112,15 +140,34 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
         : null;
     const kindSet = kindFilters.length > 0 ? new Set(kindFilters) : null;
 
-    return teamJobs.filter((job) => {
-      if (statusView === "active" && !isActiveJob(job)) return false;
-      if (statusView === "completed" && !isCompletedJob(job)) return false;
-      if (statusSet && !statusSet.has(job.status)) return false;
-      if (kindSet && !kindSet.has(KIND_LABEL[job.kind])) return false;
-      if (!jobInDateRange(job, dateRangeBounds)) return false;
-      return true;
-    });
+    return teamJobs
+      .filter((job) =>
+        jobMatchesOpsFilters(job, statusView, statusSet, kindSet, dateRangeBounds)
+      )
+      .sort(sortOpsJobs);
   }, [teamJobs, statusView, statusFilters, kindFilters, dateRangeBounds]);
+
+  const activeInView = useMemo(
+    () => filteredJobs.filter(isActiveJob),
+    [filteredJobs]
+  );
+  const completedInView = useMemo(
+    () => filteredJobs.filter(isCompletedJob),
+    [filteredJobs]
+  );
+
+  const jobsSummary = useMemo(() => {
+    if (statusView === "active") {
+      return `${activeInView.length} in progress now`;
+    }
+    if (statusView === "completed") {
+      return `${completedInView.length} completed in ${dateRangeLabel.toLowerCase()}`;
+    }
+    if (activeInView.length === 0) {
+      return `${completedInView.length} completed in ${dateRangeLabel.toLowerCase()}`;
+    }
+    return `${activeInView.length} in progress · ${completedInView.length} completed in ${dateRangeLabel.toLowerCase()}`;
+  }, [statusView, activeInView.length, completedInView.length, dateRangeLabel]);
 
   return (
     <div className="flex min-h-0 flex-col gap-4" style={{ height: "calc(100svh - 6.5rem)", minHeight: 360 }}>
@@ -128,19 +175,23 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
         <h1 className="text-[15px] font-semibold" style={{ color: "#1E2228" }}>
           Operations
         </h1>
+        {activeNow.length > 0 && statusView !== "active" && (
+          <p className="mt-1 text-[11px] text-cf-muted">
+            <strong className="text-cf-text">{activeNow.length}</strong> job
+            {activeNow.length === 1 ? "" : "s"} in progress right now (always shown in{" "}
+            <button
+              type="button"
+              className="font-medium text-cf-primary underline-offset-2 hover:underline"
+              onClick={() => setStatusView("active")}
+            >
+              Active
+            </button>
+            )
+          </p>
+        )}
       </div>
 
       <div className="shrink-0 flex flex-wrap items-end gap-x-3 gap-y-2">
-        <DateRangeFilter
-          className="min-w-[min(100%,440px)] basis-full lg:basis-auto lg:flex-1"
-          preset={datePreset}
-          onPresetChange={setDatePreset}
-          dateFrom={displayDateFrom}
-          dateTo={displayDateTo}
-          onDateFromChange={setCustomDateFrom}
-          onDateToChange={setCustomDateTo}
-          rangeLabel={dateRangeLabel}
-        />
         <div className="flex min-w-[200px] flex-col gap-1">
           <span className="cf-field-label">Show</span>
           <div className="flex flex-wrap gap-1" role="group" aria-label="Job status view">
@@ -167,6 +218,17 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
             ))}
           </div>
         </div>
+        {showHistoryDateRange && (
+          <DateRangePickers
+            className="min-w-[min(100%,440px)] basis-full lg:basis-auto lg:flex-1"
+            label="Completed between"
+            dateFrom={historyFrom}
+            dateTo={historyTo}
+            onDateFromChange={setHistoryFrom}
+            onDateToChange={setHistoryTo}
+            rangeLabel={dateRangeLabel}
+          />
+        )}
         <MultiSelectFilter
           id="ops-status-filter"
           label="Status"
@@ -187,26 +249,37 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
         />
       </div>
 
+      {statusView === "active" && (
+        <p className="shrink-0 text-[11px] text-cf-muted">
+          Live queue and running backup/delete work — not limited by dates. Switch to{" "}
+          <strong className="font-medium text-cf-secondary">Completed</strong> or{" "}
+          <strong className="font-medium text-cf-secondary">All</strong> and pick a from/to range
+          for finished jobs.
+        </p>
+      )}
+
       <div
         className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[6px] bg-white"
         style={{ border: "1px solid #ECEFF2" }}
       >
         <div className="c-card-header shrink-0 flex items-center justify-between gap-2">
-          <span>Jobs</span>
+          <span>{statusView === "active" ? "In progress" : "Jobs"}</span>
           <span className="text-[11px] font-normal normal-case tracking-normal text-cf-muted">
-            {filteredJobs.length} in {dateRangeLabel.toLowerCase()}
-            {statusView === "active" ? " · active only" : statusView === "completed" ? " · completed only" : ""}
+            {jobsSummary}
           </span>
         </div>
 
         {filteredJobs.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
             <p className="text-[13px] font-medium" style={{ color: "#354756" }}>
-              No jobs match these filters
+              {statusView === "active"
+                ? "Nothing running right now"
+                : "No jobs match these filters"}
             </p>
             <p className="mt-2 max-w-md text-[12px]" style={{ color: "#96A3AF" }}>
-              Try <strong style={{ color: "#5D6F7E" }}>All</strong> or a wider date range, or switch to{" "}
-              <strong style={{ color: "#5D6F7E" }}>Completed</strong> to see finished operations.
+              {statusView === "active"
+                ? "When you start a backup or delete from Overview, it appears here immediately."
+                : "Try a wider completed date range, or switch to Active to see in-progress work."}
             </p>
           </div>
         ) : (

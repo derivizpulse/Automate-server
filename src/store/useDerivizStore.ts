@@ -3,6 +3,7 @@ import { initialDatabases } from "../data/mockDatabases";
 import { initialActivityLog } from "../data/mockActivityLog";
 import { initialOperationJobs } from "../data/mockOperations";
 import { initialBlobs } from "../data/mockBlobs";
+import { CURRENT_AUDIT_ACTOR } from "../lib/auditLog";
 import {
   addDaysIso,
   backupDeleteWindowDays,
@@ -56,11 +57,14 @@ function makeActivityEntry(
     dbName?: string;
     server?: string;
     category?: ActivityEntry["category"];
+    actorName?: string;
   }
 ): ActivityEntry {
-  const { dbId, dbName, server, category } = options ?? {};
+  const { dbId, dbName, server, category, actorName } = options ?? {};
   const db =
     dbId && !dbName ? get().databases.find((d) => d.id === dbId) : undefined;
+  const resolvedCategory =
+    category ?? (dbId || dbName || server ? "manual" : "system");
   return {
     id: newId(),
     at: new Date().toISOString(),
@@ -68,7 +72,10 @@ function makeActivityEntry(
     dbId,
     dbName: dbName ?? db?.name,
     server: server ?? db?.server,
-    category: category ?? (dbId || dbName || server ? "manual" : "system"),
+    category: resolvedCategory,
+    actorName:
+      actorName ??
+      (resolvedCategory === "manual" ? CURRENT_AUDIT_ACTOR : undefined),
   };
 }
 

@@ -1,12 +1,16 @@
 import type { OperationJob } from "../types";
 
-function minutesAgo(m: number): string {
-  const d = new Date();
-  d.setMinutes(d.getMinutes() - m);
+/** Demo “today” — aligned with mockDatabases / Overview date filters. */
+const TODAY = new Date("2026-05-17T14:00:00.000Z");
+
+function atDaysAgo(days: number, hour = 14, minute = 0): string {
+  const d = new Date(TODAY);
+  d.setUTCDate(d.getUTCDate() - days);
+  d.setUTCHours(hour, minute, 0, 0);
   return d.toISOString();
 }
 
-/** Sample jobs for the Operations tab (running, queued, and recent outcomes). */
+/** Sample jobs — active rows use “today”; completed spread for history filters. */
 export const initialOperationJobs: OperationJob[] = [
   {
     id: "op-1",
@@ -17,8 +21,8 @@ export const initialOperationJobs: OperationJob[] = [
     status: "running",
     progress: 72,
     message: "Backing up… 72%",
-    startedAt: minutesAgo(4),
-    updatedAt: minutesAgo(0),
+    startedAt: atDaysAgo(0, 10, 4),
+    updatedAt: atDaysAgo(0, 14, 0),
   },
   {
     id: "op-2",
@@ -29,8 +33,8 @@ export const initialOperationJobs: OperationJob[] = [
     status: "queued",
     progress: 0,
     message: "Queued…",
-    startedAt: minutesAgo(1),
-    updatedAt: minutesAgo(1),
+    startedAt: atDaysAgo(0, 13, 55),
+    updatedAt: atDaysAgo(0, 13, 55),
     batchId: "batch-live-0422",
   },
   {
@@ -42,8 +46,8 @@ export const initialOperationJobs: OperationJob[] = [
     status: "running",
     progress: 41,
     message: "Deleting database… 41%",
-    startedAt: minutesAgo(6),
-    updatedAt: minutesAgo(0),
+    startedAt: atDaysAgo(0, 8, 10),
+    updatedAt: atDaysAgo(0, 14, 2),
   },
   {
     id: "op-4",
@@ -54,8 +58,8 @@ export const initialOperationJobs: OperationJob[] = [
     status: "succeeded",
     progress: 100,
     message: "Completed",
-    startedAt: minutesAgo(28),
-    updatedAt: minutesAgo(22),
+    startedAt: atDaysAgo(0, 11, 0),
+    updatedAt: atDaysAgo(0, 11, 28),
   },
   {
     id: "op-6",
@@ -66,8 +70,8 @@ export const initialOperationJobs: OperationJob[] = [
     status: "failed",
     progress: 58,
     message: "Backup failed — blob write timeout",
-    startedAt: minutesAgo(18),
-    updatedAt: minutesAgo(17),
+    startedAt: atDaysAgo(1, 16, 0),
+    updatedAt: atDaysAgo(1, 16, 18),
     error: "Azure blob upload timed out after 120s",
   },
   {
@@ -79,7 +83,31 @@ export const initialOperationJobs: OperationJob[] = [
     status: "succeeded",
     progress: 100,
     message: "Completed",
-    startedAt: minutesAgo(90),
-    updatedAt: minutesAgo(85),
+    startedAt: atDaysAgo(3, 9, 0),
+    updatedAt: atDaysAgo(3, 9, 45),
+  },
+  {
+    id: "op-9",
+    dbId: "db-16",
+    dbName: "WholeDentalWellness_C1_SB",
+    server: "Orion-1",
+    kind: "delete",
+    status: "succeeded",
+    progress: 100,
+    message: "Completed",
+    startedAt: atDaysAgo(12, 10, 0),
+    updatedAt: atDaysAgo(12, 10, 22),
+  },
+  {
+    id: "op-10",
+    dbId: "db-1",
+    dbName: "WholeDentalWellness_C1",
+    server: "Aquila-1",
+    kind: "delete",
+    status: "cancelled",
+    progress: 12,
+    message: "Stopped by user",
+    startedAt: atDaysAgo(20, 14, 0),
+    updatedAt: atDaysAgo(20, 14, 8),
   },
 ];

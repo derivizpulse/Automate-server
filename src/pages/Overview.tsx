@@ -5,12 +5,17 @@ import { DBDetailSlideout } from "../components/DBDetailSlideout";
 import { MetricStatCard, type MetricFocus } from "../components/MetricStatCard";
 import { MultiSelectFilter } from "../components/MultiSelectFilter";
 import {
-  DateRangeFilter,
-  computeDateRangeBounds,
+  DateRangePickers,
+  boundsFromIsoRange,
   formatRangeLabel,
+  shiftIsoDate,
   type DateRangeBounds,
-  type DateRangePreset,
 } from "../components/DateRangeFilter";
+import {
+  auditEntryMatchesSearch,
+  auditTypeLabel,
+  isAuditLogVisible,
+} from "../lib/auditLog";
 import { useDerivizStore } from "../store/useDerivizStore";
 import { formatShortDate } from "../lib/classify";
 import { cn } from "../lib/cn";
@@ -126,6 +131,11 @@ function rowStatus(db: ReturnType<typeof useDerivizStore.getState>["databases"][
   return "Active";
 }
 
+function displayRowStatus(db: DatabaseRow, excluded: boolean, isDeleted: boolean): string {
+  if (isDeleted) return "Deleted";
+  return rowStatus(db, excluded);
+}
+
 function normalizedDeliverableStatus(db: DatabaseRow): DatabaseRow["deliverableStatus"] {
   const raw = db.deliverableStatus as string | null;
   if (raw !== "SB/ITL Completed") return db.deliverableStatus;
@@ -153,7 +163,7 @@ const STATUS_LEGEND = [
   { label: "Pending Deletion", meaning: "Delete queued — adjust date in the panel and save." },
   { label: "Backup & Delete", meaning: "LIVE, SB, or ITL — backup first, then delete (30-day LIVE / 7-day SB·ITL window)." },
   { label: "Excluded", meaning: "Skipped by automation; excluding takes action + triggered date. Turn off to lift." },
-  { label: "Deleted", meaning: "Off active list; kept under Deleted for audit." },
+  { label: "Deleted", meaning: "Purged from active inventory; filter by Deleted status to review." },
 ] as const;
 
 const DELIVERABLE_LEGEND = [
@@ -276,25 +286,29 @@ function orderRowsByPinnedIds(
 }
 
 // ── sub-tab types ─────────────────────────────────────────────────────────────
-type SubTab = "All DB" | "Deleted" | "Audit Log";
-const SUB_TABS: SubTab[] = ["All DB", "Deleted", "Audit Log"];
+type SubTab = "All DB" | "Audit Log";
+const SUB_TABS: SubTab[] = ["All DB", "Audit Log"];
 
 function rowMatchesDateRange(
   db: DatabaseRow,
   bounds: DateRangeBounds | null,
-  subTab: SubTab,
-  deletedAtById: Record<string, string>
+  deletedAtById: Record<string, string>,
+  isDeleted: boolean,
+  isExcluded: boolean,
+  statusFilters: string[]
 ): boolean {
   if (!bounds) return true;
+  // Excluded bucket counts all excluded DBs — don't hide when that filter is active.
+  if (isExcluded && statusFilters.includes("Excluded")) return true;
   const dates: string[] = [];
-  if (subTab === "Deleted") {
+  if (isDeleted) {
     const purged = deletedAtById[db.id];
     if (purged) dates.push(isoDateOnly(purged));
   }
   if (db.actionDate) dates.push(isoDateOnly(db.actionDate));
   if (db.deletionDate) dates.push(isoDateOnly(db.deletionDate));
-  // Active / monitored DBs (no lifecycle dates) stay visible on All DB — e.g. after lifting exclusion.
-  if (subTab === "All DB" && dates.length === 0) return true;
+  // Active / monitored DBs (no lifecycle dates) stay visible — e.g. after lifting exclusion.
+  if (!isDeleted && dates.length === 0) return true;
   if (dates.length === 0) return false;
   return dates.some((d) => d >= bounds.from && d <= bounds.to);
 }
@@ -310,23 +324,42 @@ const STATUS_FILTER_OPTIONS = [
   "Pending Deletion",
   "Backup & Delete",
   "Excluded",
+  "Deleted",
 ] as const;
 
-const METRIC_FOCUS_FILTER: Record<MetricFocus, { subTab: SubTab; statusFilters: string[] }> = {
-  synced: { subTab: "All DB", statusFilters: [] },
-  pending: { subTab: "All DB", statusFilters: ["Pending Deletion"] },
-  backup: { subTab: "All DB", statusFilters: ["Backup & Delete"] },
-  excluded: { subTab: "All DB", statusFilters: ["Excluded"] },
-  recovered: { subTab: "Deleted", statusFilters: [] },
+/** Default All DB view — monitored lifecycle states (excludes Excluded / Deleted). */
+const DEFAULT_OVERVIEW_STATUS_FILTERS: string[] = [
+  "Active",
+  "Pending Deletion",
+  "Backup & Delete",
+];
+
+function sameStatusSelection(a: string[], b: readonly string[]): boolean {
+  if (a.length !== b.length) return false;
+  const set = new Set(a);
+  return b.every((s) => set.has(s));
+}
+
+function isAllStatusFilters(filters: string[]): boolean {
+  return filters.length === STATUS_FILTER_OPTIONS.length;
+}
+
+const METRIC_FOCUS_FILTER: Record<MetricFocus, string[]> = {
+  synced: [...DEFAULT_OVERVIEW_STATUS_FILTERS],
+  pending: ["Pending Deletion"],
+  backup: ["Backup & Delete"],
+  excluded: ["Excluded"],
+  recovered: ["Deleted"],
 };
 
 function activeMetricFocus(subTab: SubTab, statusFilters: string[]): MetricFocus | null {
-  if (subTab === "Deleted" && statusFilters.length === 0) return "recovered";
   if (subTab !== "All DB") return null;
   if (statusFilters.length === 1 && statusFilters[0] === "Pending Deletion") return "pending";
   if (statusFilters.length === 1 && statusFilters[0] === "Backup & Delete") return "backup";
   if (statusFilters.length === 1 && statusFilters[0] === "Excluded") return "excluded";
-  if (statusFilters.length === 0) return "synced";
+  if (statusFilters.length === 1 && statusFilters[0] === "Deleted") return "recovered";
+  if (sameStatusSelection(statusFilters, DEFAULT_OVERVIEW_STATUS_FILTERS)) return "synced";
+  if (isAllStatusFilters(statusFilters)) return null;
   return null;
 }
 
@@ -377,8 +410,13 @@ export function Overview({
   const [subTab, setSubTab]         = useState<SubTab>("All DB");
   const [selected, setSelected]     = useState<string | null>(null);
   const [search, setSearch]         = useState("");
+  const [auditSearch, setAuditSearch] = useState("");
+  const [rangeFrom, setRangeFrom] = useState("");
+  const [rangeTo, setRangeTo] = useState("");
   const [serverFilters, setServerFilters] = useState<string[]>([]);
-  const [statusFilters, setStatusFilters] = useState<string[]>([]);
+  const [statusFilters, setStatusFilters] = useState<string[]>(() => [
+    ...DEFAULT_OVERVIEW_STATUS_FILTERS,
+  ]);
   const [sortColumn, setSortColumn] = useState<SortableColumn>("actionDate");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
   const [scheduleDbId, setScheduleDbId] = useState<string | null>(null);
@@ -397,9 +435,6 @@ export function Overview({
   const [showLegendInfo, setShowLegendInfo] = useState(false);
   const legendRef = useRef<HTMLDivElement | null>(null);
   const tableSectionRef = useRef<HTMLDivElement | null>(null);
-  const [datePreset, setDatePreset] = useState<DateRangePreset>("30d");
-  const [customDateFrom, setCustomDateFrom] = useState("");
-  const [customDateTo, setCustomDateTo] = useState("");
   const [nowIso, setNowIso] = useState<string>(() => new Date().toISOString());
   /** Freeze row order while editing and after Save until sort changes (avoids row “jumping”). */
   const [detailPinOrder, setDetailPinOrder] = useState<string[] | null>(null);
@@ -425,23 +460,16 @@ export function Overview({
 
   const todayIso = nowIso.slice(0, 10);
 
+  useEffect(() => {
+    setRangeFrom((f) => f || shiftIsoDate(todayIso, -30));
+    setRangeTo((t) => t || todayIso);
+  }, [todayIso]);
+
   const dateRangeBounds = useMemo(
-    () => computeDateRangeBounds(datePreset, todayIso, customDateFrom, customDateTo),
-    [datePreset, todayIso, customDateFrom, customDateTo]
+    () => (rangeFrom && rangeTo ? boundsFromIsoRange(rangeFrom, rangeTo) : null),
+    [rangeFrom, rangeTo]
   );
   const dateRangeLabel = useMemo(() => formatRangeLabel(dateRangeBounds), [dateRangeBounds]);
-  const displayDateFrom =
-    datePreset === "custom" ? customDateFrom : (dateRangeBounds?.from ?? "");
-  const displayDateTo =
-    datePreset === "custom" ? customDateTo : (dateRangeBounds?.to ?? "");
-
-  useEffect(() => {
-    if (datePreset !== "custom") return;
-    if (!customDateFrom && !customDateTo) {
-      setCustomDateFrom(addDaysToIsoDate(todayIso, -30));
-      setCustomDateTo(todayIso);
-    }
-  }, [datePreset, customDateFrom, customDateTo, todayIso]);
 
   const teamScopedDbs = useMemo(
     () => dbs.filter((d) => matchesTeamFilter(d.server, teamFilter)),
@@ -469,18 +497,23 @@ export function Overview({
     [teamScopedDbs]
   );
   const scopedActivityLog = useMemo(
-    () => activityLog.filter((entry) => activityEntryMatchesTeam(entry, dbs, teamFilter)),
+    () =>
+      activityLog.filter(
+        (entry) =>
+          isAuditLogVisible(entry) && activityEntryMatchesTeam(entry, dbs, teamFilter)
+      ),
     [activityLog, dbs, teamFilter]
   );
-  const teamDeletedCount = useMemo(
+  const auditLogInRange = useMemo(
     () =>
-      effectiveDeletedIds.filter((id) => {
-        const db = dbs.find((d) => d.id === id);
-        return db ? matchesTeamFilter(db.server, teamFilter) : false;
-      }).length,
-    [dbs, effectiveDeletedIds, teamFilter]
+      scopedActivityLog.filter((entry) => isoInDateRange(entry.at, dateRangeBounds)),
+    [scopedActivityLog, dateRangeBounds]
   );
-
+  const filteredAuditLog = useMemo(
+    () =>
+      auditLogInRange.filter((entry) => auditEntryMatchesSearch(entry, auditSearch)),
+    [auditLogInRange, auditSearch]
+  );
   useEffect(() => {
     setServerFilters((prev) => {
       const next = prev.filter((s) => serverOptions.includes(s));
@@ -549,20 +582,14 @@ export function Overview({
     };
   }, [teamScopedDbs, excludedIds, effectiveDeletedIds, deletedAtById, dateRangeBounds, dateRangeLabel, todayIso]);
 
-  // filter rows by sub-tab
   const visibleRows = useMemo(() => {
-    let rows = teamScopedDbs.filter((d) => !effectiveDeletedIds.includes(d.id));
-    if (subTab === "Deleted")
-      rows = teamScopedDbs.filter((d) => effectiveDeletedIds.includes(d.id));
+    const allowedStatuses = new Set(statusFilters);
 
-    // Excluded DBs live in the Excluded bucket — hide from default overview unless that filter is active
-    if (subTab === "All DB") {
-      const showExcluded =
-        statusFilters.length > 0 && statusFilters.includes("Excluded");
-      if (!showExcluded) {
-        rows = rows.filter((d) => !excludedIds.includes(d.id));
-      }
-    }
+    let rows = teamScopedDbs.filter((d) => {
+      const isDeleted = effectiveDeletedIds.includes(d.id);
+      const isExcluded = excludedIds.includes(d.id);
+      return allowedStatuses.has(displayRowStatus(d, isExcluded, isDeleted));
+    });
 
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -578,18 +605,22 @@ export function Overview({
       const allowed = new Set(serverFilters);
       rows = rows.filter((d) => allowed.has(serverGroup(d.server)));
     }
-    if (statusFilters.length > 0) {
-      const allowed = new Set(statusFilters);
-      rows = rows.filter((d) => allowed.has(rowStatus(d, excludedIds.includes(d.id))));
-    }
-    rows = rows.filter((d) => rowMatchesDateRange(d, dateRangeBounds, subTab, deletedAtById));
+    rows = rows.filter((d) =>
+      rowMatchesDateRange(
+        d,
+        dateRangeBounds,
+        deletedAtById,
+        effectiveDeletedIds.includes(d.id),
+        excludedIds.includes(d.id),
+        statusFilters
+      )
+    );
 
     return rows;
   }, [
     teamScopedDbs,
     effectiveDeletedIds,
     excludedIds,
-    subTab,
     search,
     serverFilters,
     statusFilters,
@@ -641,7 +672,7 @@ export function Overview({
   useEffect(() => {
     setDetailPinOrder(null);
     lastClosedDetailIdRef.current = null;
-  }, [subTab]);
+  }, [subTab, statusFilters]);
 
   const tableRows = useMemo(() => {
     if (!detailPinOrder?.length) return sortedRows;
@@ -662,9 +693,8 @@ export function Overview({
   const metricFocus = activeMetricFocus(subTab, statusFilters);
 
   const applyMetricFocus = useCallback((focus: MetricFocus) => {
-    const cfg = METRIC_FOCUS_FILTER[focus];
-    setSubTab(cfg.subTab);
-    setStatusFilters(cfg.statusFilters);
+    setSubTab("All DB");
+    setStatusFilters([...METRIC_FOCUS_FILTER[focus]]);
     setServerFilters([]);
     setSearch("");
     window.requestAnimationFrame(() => {
@@ -767,7 +797,6 @@ export function Overview({
         <div className="flex min-w-0">
           {SUB_TABS.map((t) => {
             const isActive = subTab === t;
-            const count = t === "Deleted" ? teamDeletedCount : undefined;
             return (
               <button
                 key={t}
@@ -782,16 +811,6 @@ export function Overview({
                 style={{ marginBottom: "-1px" }}
               >
                 {t}
-                {count !== undefined && (
-                  <span
-                    className={cn(
-                      "inline-flex h-[16px] w-[20px] shrink-0 items-center justify-center rounded-full text-[10px] font-semibold",
-                      count > 0 ? "bg-cf-surface text-cf-secondary" : "bg-transparent text-cf-gs-20"
-                    )}
-                  >
-                    {count}
-                  </span>
-                )}
               </button>
             );
           })}
@@ -882,7 +901,7 @@ export function Overview({
         )}
       </div>
 
-      {/* Alert — show on All DB and Deleted (not Audit Log) so switching those tabs does not jump layout */}
+      {/* Alert — show on All DB (not Audit Log) so switching tabs does not jump layout */}
       {subTab !== "Audit Log" && metrics.expiresIn24h.length > 0 && (
         <div className="shrink-0 flex min-h-[44px] items-center gap-3 rounded-cf border border-cf-danger-border bg-cf-danger-bg px-3 py-2.5 shadow-card">
           <span className="text-[14px]" aria-hidden>
@@ -968,14 +987,44 @@ export function Overview({
       {subTab === "Audit Log" && (
         <div className="c-card overflow-hidden">
           <div className="c-card-header">Audit Log</div>
-          <p className="border-b border-cf-border-soft bg-cf-surface px-4 py-2 text-[11px] text-cf-muted">
-            Every event records the database and server when applicable. System-wide events show “All”.
-          </p>
+          <div className="border-b border-cf-border-soft bg-cf-surface px-4 py-3">
+            <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+              <DateRangePickers
+                className="min-w-[min(100%,440px)] flex-1"
+                dateFrom={rangeFrom}
+                dateTo={rangeTo}
+                onDateFromChange={setRangeFrom}
+                onDateToChange={setRangeTo}
+                rangeLabel={dateRangeLabel}
+              />
+              <div className="flex min-w-[200px] flex-1 flex-col gap-1">
+                <label htmlFor="audit-log-search" className="cf-field-label">
+                  Search
+                </label>
+                <input
+                  id="audit-log-search"
+                  className="c-input w-full"
+                  placeholder="Database, server, user name, or event text…"
+                  value={auditSearch}
+                  onChange={(e) => setAuditSearch(e.target.value)}
+                  aria-label="Search audit log by database, user, or event"
+                />
+              </div>
+            </div>
+            <p className="mt-2 text-[11px] text-cf-muted">
+              {filteredAuditLog.length} of {auditLogInRange.length} events in{" "}
+              {dateRangeLabel.toLowerCase()}
+              {auditSearch.trim() ? ` · matching “${auditSearch.trim()}”` : ""}
+              {scopedActivityLog.length > auditLogInRange.length
+                ? ` (${scopedActivityLog.length - auditLogInRange.length} older events hidden)`
+                : ""}
+            </p>
+          </div>
           <div className="max-h-[min(70vh,600px)] overflow-auto">
             <table className="w-full min-w-[720px] border-collapse text-left">
               <thead className="sticky top-0 z-10 border-b border-cf-border-soft bg-cf-surface">
                 <tr>
-                  {["Time", "Server", "Database", "Type", "Event"].map((h) => (
+                  {["Database", "Server", "Time", "Type", "Event"].map((h) => (
                     <th key={h} className="cf-th whitespace-nowrap">
                       {h}
                     </th>
@@ -983,22 +1032,27 @@ export function Overview({
                 </tr>
               </thead>
               <tbody>
-                {scopedActivityLog.length === 0 && (
+                {filteredAuditLog.length === 0 && (
                   <tr>
                     <td colSpan={5} className="px-4 py-10 text-center text-[12px] text-cf-muted">
-                      No activity yet.
+                      {scopedActivityLog.length === 0
+                        ? "No activity yet."
+                        : auditLogInRange.length === 0
+                          ? "No events in this date range."
+                          : "No events match your search."}
                     </td>
                   </tr>
                 )}
-                {scopedActivityLog.map((a) => {
-                  const typeLabel =
-                    a.category === "trigger" ? "Trigger"
-                    : a.category === "system" ? "System"
-                    : "User";
+                {filteredAuditLog.map((a) => {
+                  const typeLabel = auditTypeLabel(a);
+                  const isCategoryType =
+                    a.category === "trigger" ||
+                    a.category === "system" ||
+                    a.category === "automation";
                   return (
                     <tr key={a.id} className="border-b border-cf-border-soft">
-                      <td className="cf-td align-top tabular-nums text-cf-secondary">
-                        {new Date(a.at).toLocaleString()}
+                      <td className="cf-td align-top font-medium text-cf-text">
+                        {a.dbName ?? (a.dbId ? a.dbId.slice(0, 8) + "…" : "—")}
                       </td>
                       <td
                         className={cn(
@@ -1008,16 +1062,17 @@ export function Overview({
                       >
                         {a.server ?? (a.dbId ? "—" : "All")}
                       </td>
-                      <td className="cf-td align-top font-medium text-cf-text">
-                        {a.dbName ?? (a.dbId ? a.dbId.slice(0, 8) + "…" : "—")}
+                      <td className="cf-td align-top tabular-nums text-cf-secondary">
+                        {new Date(a.at).toLocaleString()}
                       </td>
                       <td className="cf-td align-top">
                         <span
                           className={cn(
-                            "text-[10px] font-medium uppercase tracking-wide",
+                            "text-[11px] font-medium",
+                            isCategoryType && "text-[10px] uppercase tracking-wide",
                             typeLabel === "Trigger" && "text-cf-warning",
                             typeLabel === "System" && "text-cf-muted",
-                            typeLabel === "User" && "text-cf-primary"
+                            !isCategoryType && "text-cf-primary"
                           )}
                         >
                           {typeLabel}
@@ -1040,14 +1095,12 @@ export function Overview({
         <div ref={tableSectionRef} className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
           {/* Filters row */}
           <div className="shrink-0 flex flex-wrap items-end gap-x-3 gap-y-2">
-            <DateRangeFilter
+            <DateRangePickers
               className="min-w-[min(100%,440px)] basis-full lg:basis-auto lg:flex-1"
-              preset={datePreset}
-              onPresetChange={setDatePreset}
-              dateFrom={displayDateFrom}
-              dateTo={displayDateTo}
-              onDateFromChange={setCustomDateFrom}
-              onDateToChange={setCustomDateTo}
+              dateFrom={rangeFrom}
+              dateTo={rangeTo}
+              onDateFromChange={setRangeFrom}
+              onDateToChange={setRangeTo}
               rangeLabel={dateRangeLabel}
             />
             <div className="flex min-w-[200px] flex-1 flex-col gap-1">
@@ -1080,6 +1133,8 @@ export function Overview({
               options={[...STATUS_FILTER_OPTIONS]}
               value={statusFilters}
               onChange={setStatusFilters}
+              treatEmptyAsAll={false}
+              onShowAll={() => setStatusFilters([...STATUS_FILTER_OPTIONS])}
             />
           </div>
 
@@ -1097,25 +1152,25 @@ export function Overview({
                     {(
                       showActionsColumn
                         ? ([
+                            { label: "Server", key: "server" as const },
                             { label: "DB Name", key: "name" as const },
+                            { label: "Size", key: "size" as const },
                             { label: "Account", key: "account" as const },
                             { label: "Conversion", key: "conversion" as const },
-                            { label: "Server", key: "server" as const },
+                            { label: "Conv. status", key: "deliverable" as const },
                             { label: "Status", key: "status" as const },
-                            { label: "Size", key: "size" as const },
-                            { label: "Deliverable / Conv. Status", key: "deliverable" as const },
                             { label: "Triggered", key: "actionDate" as const },
                             { label: "Deletion", key: "deletionDate" as const },
                             { label: "Actions", key: null as null },
                           ] as const)
                         : ([
+                            { label: "Server", key: "server" as const },
                             { label: "DB Name", key: "name" as const },
+                            { label: "Size", key: "size" as const },
                             { label: "Account", key: "account" as const },
                             { label: "Conversion", key: "conversion" as const },
-                            { label: "Server", key: "server" as const },
+                            { label: "Conv. status", key: "deliverable" as const },
                             { label: "Status", key: "status" as const },
-                            { label: "Size", key: "size" as const },
-                            { label: "Deliverable / Conv. Status", key: "deliverable" as const },
                             { label: "Triggered", key: "actionDate" as const },
                             { label: "Deletion", key: "deletionDate" as const },
                           ] as const)
@@ -1177,7 +1232,8 @@ export function Overview({
 
                   {tableRows.map((r, i) => {
                     const isExcluded   = excludedIds.includes(r.id);
-                    const status       = subTab === "Deleted" ? "Deleted" : rowStatus(r, isExcluded);
+                    const isDeleted    = effectiveDeletedIds.includes(r.id);
+                    const status       = displayRowStatus(r, isExcluded, isDeleted);
                     const statusStyle  = STATUS_STYLE[status] ?? STATUS_STYLE["Active"];
                     const countdown =
                       status === "Excluded" || status === "Deleted"
@@ -1194,12 +1250,18 @@ export function Overview({
                           "hover:bg-cf-primary-light/45"
                         )}
                       >
+                        {/* Server */}
+                        <td className="cf-td align-middle text-cf-secondary">{serverGroup(r.server)}</td>
+
                         {/* DB Name */}
                         <td className="cf-td align-middle">
                           <span className="font-medium text-cf-primary hover:underline">
                             {r.name}
                           </span>
                         </td>
+
+                        {/* Size */}
+                        <td className="cf-td align-middle text-cf-text">{r.sizeGb} GB</td>
 
                         {/* Account */}
                         <td className="cf-td align-middle text-cf-text">
@@ -1211,8 +1273,21 @@ export function Overview({
                           {r.conversionName ?? "—"}
                         </td>
 
-                        {/* Server */}
-                        <td className="cf-td align-middle text-cf-secondary">{serverGroup(r.server)}</td>
+                        {/* Conv. status */}
+                        <td className="cf-td align-middle">
+                          {(() => {
+                            const deliverable = displayDeliverableStatus(r) as keyof typeof DELIVERABLE_STYLE;
+                            const ds = DELIVERABLE_STYLE[deliverable] ?? DELIVERABLE_STYLE.Active;
+                            return (
+                              <span
+                                className="inline-flex min-h-[22px] items-center gap-1.5 rounded-[3px] px-2 py-0.5 text-[11px] font-medium"
+                                style={{ background: ds.bg, color: ds.color, border: `1px solid ${ds.border}` }}
+                              >
+                                {deliverable}
+                              </span>
+                            );
+                          })()}
+                        </td>
 
                         {/* Status + countdown — reserved 2-line block so all rows same height */}
                         <td className="cf-td align-middle">
@@ -1245,25 +1320,6 @@ export function Overview({
                               )}
                             </div>
                           </div>
-                        </td>
-
-                        {/* Size */}
-                        <td className="cf-td align-middle text-cf-text">{r.sizeGb} GB</td>
-
-                        {/* Deliverable / Conv. Status */}
-                        <td className="cf-td align-middle">
-                          {(() => {
-                            const deliverable = displayDeliverableStatus(r) as keyof typeof DELIVERABLE_STYLE;
-                            const ds = DELIVERABLE_STYLE[deliverable] ?? DELIVERABLE_STYLE.Active;
-                            return (
-                              <span
-                                className="inline-flex min-h-[22px] items-center gap-1.5 rounded-[3px] px-2 py-0.5 text-[11px] font-medium"
-                                style={{ background: ds.bg, color: ds.color, border: `1px solid ${ds.border}` }}
-                              >
-                                {deliverable}
-                              </span>
-                            );
-                          })()}
                         </td>
 
                         {/* Triggered date */}
@@ -1338,7 +1394,7 @@ export function Overview({
         <DBDetailSlideout
           dbId={selected}
           onClose={() => setSelected(null)}
-          readOnly={subTab === "Deleted"}
+          readOnly={selected ? effectiveDeletedIds.includes(selected) : false}
         />
       )}
 

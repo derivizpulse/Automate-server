@@ -26,6 +26,17 @@ function addDaysIso(isoDate: string, days: number): string {
   return d.toISOString().slice(0, 10);
 }
 
+export function shiftIsoDate(isoDate: string, days: number): string {
+  return addDaysIso(isoDate, days);
+}
+
+export function boundsFromIsoRange(from: string, to: string): DateRangeBounds {
+  if (!from || !to) {
+    return { from: from || to, to: to || from };
+  }
+  return from <= to ? { from, to } : { from: to, to: from };
+}
+
 export function formatRangeLabel(bounds: DateRangeBounds | null): string {
   if (!bounds) return "All time";
   const fmt = (iso: string) =>
@@ -35,6 +46,51 @@ export function formatRangeLabel(bounds: DateRangeBounds | null): string {
       year: "numeric",
     });
   return `${fmt(bounds.from)} – ${fmt(bounds.to)}`;
+}
+
+/** From / to date inputs only — for Operations completed history (no preset dropdown). */
+export function DateRangePickers({
+  dateFrom,
+  dateTo,
+  onDateFromChange,
+  onDateToChange,
+  rangeLabel,
+  label = "Date range",
+  className,
+}: {
+  dateFrom: string;
+  dateTo: string;
+  onDateFromChange: (value: string) => void;
+  onDateToChange: (value: string) => void;
+  rangeLabel: string;
+  label?: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn("flex min-w-0 flex-col gap-1", className)}>
+      <span className="cf-field-label">{label}</span>
+      <div className="flex flex-wrap items-center gap-2">
+        <input
+          type="date"
+          className="c-input w-[132px]"
+          value={dateFrom}
+          max={dateTo || undefined}
+          onChange={(e) => onDateFromChange(e.target.value)}
+          aria-label="Date range from"
+        />
+        <span className="text-[11px] text-cf-muted">to</span>
+        <input
+          type="date"
+          className="c-input w-[132px]"
+          value={dateTo}
+          min={dateFrom || undefined}
+          onChange={(e) => onDateToChange(e.target.value)}
+          aria-label="Date range to"
+        />
+        <span className="text-[11px] tabular-nums text-cf-secondary">{rangeLabel}</span>
+      </div>
+    </div>
+  );
 }
 
 export function DateRangeFilter({
