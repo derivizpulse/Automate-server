@@ -446,6 +446,7 @@ export function DBDetailSlideout({
 
   function handleSave() {
     if (!db) return;
+    if (backupInProgress || showBackupConfirm) return;
     if (exclusionLiftOff && !scheduleTriggerOk) {
       setLiftSaveWarning(true);
       return;
@@ -564,7 +565,7 @@ export function DBDetailSlideout({
               <Field label="Account"       value={db.accountName ?? "—"} />
               <Field label="Conversion"    value={db.conversionName ?? "—"} />
               <Field label="Action"        value={db.action} />
-              <Field label="Triggered" value={formatDbDateTimeUs(db.actionDate)} />
+              <Field label="Action date"   value={formatDbDateTimeUs(db.actionDate)} />
               <Field label="Deletion date" value={formatDbDayUs(db.deletionDate)} />
               <Field label="Size"          value={formatStorageGb(db.sizeGb)} />
             </div>
@@ -673,7 +674,7 @@ export function DBDetailSlideout({
                   {usesDateOnly
                     ? selectedAction === "reschedule"
                       ? "New deletion date"
-                      : "Triggered date"
+                      : "Action date"
                     : "When to run"}
                 </legend>
                 {usesScheduleNow && (
@@ -770,7 +771,7 @@ export function DBDetailSlideout({
             </div>
             {liftSaveWarning && liftingExclusionDraft ? (
               <p className="text-[11px] font-medium" style={{ color: "#B23838" }} role="alert">
-                Enter a valid triggered date before lifting exclusion.
+                Enter a valid action date before lifting exclusion.
               </p>
             ) : null}
             {readOnly ? (
@@ -783,7 +784,7 @@ export function DBDetailSlideout({
               </p>
             ) : liftingExclusionDraft ? (
               <p className="text-[11px]" style={{ color: "#96A3AF" }}>
-                Enter triggered date (required) to lift exclusion and save your schedule.
+                Enter action date (required) to lift exclusion and save your schedule.
               </p>
             ) : null}
           </div>
@@ -816,7 +817,7 @@ export function DBDetailSlideout({
           <button type="button" className="c-btn-ghost" onClick={onClose}>
             Cancel
           </button>
-          {!readOnly && (
+          {!readOnly && !backupInProgress && !showBackupConfirm && (
             <button type="button" className="c-btn-primary" disabled={!canSave} onClick={handleSave}>
               Save
             </button>

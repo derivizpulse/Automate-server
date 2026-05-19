@@ -81,7 +81,11 @@
     color: var(--on-primary);
     border: 1px solid var(--border-alpha);
   }
-  .c-btn-primary:hover { background: var(--primary-hover); }
+  .c-btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+  .c-btn-primary:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
   .c-btn-outline {
     @apply c-btn;
     background: var(--surface-primary);
