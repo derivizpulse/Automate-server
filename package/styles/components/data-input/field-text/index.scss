@@ -1,0 +1,47 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/fieldText' as lightFieldText;
+@use '../../../settings/themes/dark/fieldText' as darkFieldText;
+@use '../../../settings/themes/test/fieldText' as testFieldText;
+@use 'textfieldMixin' as textfieldMixin;
+
+$text-field: component.$text-field;
+
+@mixin fieldText($theme) {
+  @if $theme == theme.$theme-light {
+    @include fieldTextStyles(lightFieldText.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include fieldTextStyles(darkFieldText.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include fieldTextStyles(testFieldText.$map, $theme);
+  }
+}
+
+@mixin fieldTextStyles($map, $theme) {
+  @include textfieldMixin.textfieldMixin(
+    $theme,
+    map.get($map, 'textfieldOutlineWidth'),
+    map.get($map, 'textfieldHeight'),
+    map.get($map, 'textfieldBackgroundColor'),
+    map.get($map, 'textfieldBorder'),
+    map.get($map, 'textfieldBorderRadius'),
+    map.get($map, 'textfieldPadding'),
+    map.get($map, 'textfieldColor'),
+    map.get($map, 'textfieldPlaceholderColor'),
+    map.get($map, 'textfieldHoverBorder'),
+    map.get($map, 'textfieldHoverBackgroundColor'),
+    map.get($map, 'textfieldFocusBorder'),
+    map.get($map, 'textfieldFocusOutline'),
+    map.get($map, 'textfieldDisabledBorder'),
+    map.get($map, 'textfieldDisabledBackgroundColor'),
+    map.get($map, 'textfieldDisabledColor'),
+    map.get($map, 'textfieldHaserrorBorderColor'),
+    map.get($map, 'textfieldHaserrorHoverBorderColor'),
+    map.get($map, 'textfieldHaserrorHoverOutlineColor'),
+  );
+}

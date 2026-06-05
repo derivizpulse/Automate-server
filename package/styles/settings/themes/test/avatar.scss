@@ -1,0 +1,26 @@
+@use 'sass:map';
+@use 'maps/corner' as cornerMap;
+@use 'maps/color' as colorMap;
+@use '../../spacing' as spacingMap;
+
+$map: (
+  'avatarBorderRadius': map.get(cornerMap.$corner, 'default'),
+  'avatarBackgroundColor': map.get(colorMap.$color, 'grayscale', 10),
+  'avatarColor': map.get(colorMap.$color, 'grayscale', 40),
+  'avatarAfterBorderRadius':map.get(cornerMap.$corner, 'default'),
+  'avatarAfterBorder':0.1rem solid rgb(255 255 255 / 56%),
+  'avatarEditHoverBackgroundColor':  rgba(13, 22, 29, 20%),
+  'avatarLargeWidth': 4.8rem,
+  'avatarLargeHeight': 4.8rem,
+  'avatarLargeFontSize': 2.7rem,
+  'avatarEditLargeFontSize': 2rem,
+  'avatarMediumWidth': 3.2rem,
+  'avatarMediumHeight': 3.2rem,
+  'avatarMediumFontSize': 1.8rem,
+  'avatarSmallWidth': 2.4rem,
+  'avatarSmallHeight': 2.4rem,
+  'avatarSmallFontSize': 1.4rem,
+  'avatarXSmallWidth': 1.6rem,
+  'avatarXSmallHeight': 1.6rem,
+  'avatarXSmallFontSize': 0.9rem
+);

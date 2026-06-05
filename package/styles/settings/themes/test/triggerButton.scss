@@ -1,0 +1,28 @@
+@use 'sass:map';
+@use 'maps/typography' as typographyMap;
+@use 'maps/color' as colorMap;
+@use 'maps/corner' as cornerMap;
+@use '../../spacing' as spacing;
+
+$map: (
+  'triggerButtonMinWidth': 2.4rem,
+  'triggerButtonHeight': 2.4rem,
+  'triggerButtonBorderRadius': map.get(cornerMap.$corner, 'default'),
+  'triggerButtonColumnGap': map.get(spacing.$spacing, 8),
+  'triggerButtonIconFontSize': 1.2rem,
+  'triggerButtonIconColor': map.get(colorMap.$color, 'grayscale', 60),
+  'triggerButtonTextColor': map.get(colorMap.$color, 'grayscale', 100),
+  'triggerButtonTextFontSize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'triggerButtonTextLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'triggerButtonTextFontWeight': map.get(typographyMap.$typography, 'weight', 'regular'),
+  'triggerButtonHoverBackgroundColor': rgba(map.get(colorMap.$color, 'grayscale', 100), 0.08),
+  'triggerButtonFocusVisibleOutline': 0.2rem solid map.get(colorMap.$color, 'accent', 'blue', 80),
+  'triggerButtonFocusVisibleOutlineOffset': 0.1rem,
+  'triggerButtonIsDisabledIconColor': map.get(colorMap.$color, 'grayscale', 40),
+  'triggerButtonIsDisabledTextColor': map.get(colorMap.$color, 'grayscale', 40),
+  'triggerButtonBlackIconColor': map.get(colorMap.$color, 'white'),
+  'triggerButtonBlackTextColor': map.get(colorMap.$color, 'white'),
+  'triggerButtonBlackHoverBackgroundColor': rgba(map.get(colorMap.$color, 'grayscale', 100), 0.24),
+  'triggerButtonBlackIsDisabledIconColor':  map.get(colorMap.$color, 'grayscale', 40),
+  'triggerButtonBlackIsDisabledTextColor':  map.get(colorMap.$color, 'grayscale', 40),
+);

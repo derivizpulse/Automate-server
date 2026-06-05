@@ -1,0 +1,5 @@
+@use 'page' as page;
+
+@mixin template($theme) {
+  @include page.page($theme);
+}

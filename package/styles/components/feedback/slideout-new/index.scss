@@ -1,0 +1,39 @@
+@use 'sass:map';
+@use 'slideoutMixin' as slideoutMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/slideout-new' as lightSlideout;
+@use '../../../settings/themes/dark/slideout-new' as darkSlideout;
+@use '../../../settings/themes/test/slideout-new' as testSlideout;
+
+@mixin slideout($theme) {
+  @if $theme == theme.$theme-light {
+    @include slideoutStyles(lightSlideout.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include slideoutStyles(darkSlideout.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include slideoutStyles(testSlideout.$map, $theme);
+  }
+}
+
+@mixin slideoutStyles($map, $theme) {
+  @include slideoutMixin.slideoutMixin(
+    $theme,
+    map.get($map, 'slideoutBackgroundColor'),
+    map.get($map, 'slideoutBoxShadow'),
+    map.get($map, 'slideoutHeaderBackground'),
+    map.get($map, 'slideoutHeaderPadding'),
+    map.get($map, 'slideoutHeaderBorderBottom'),
+    map.get($map, 'slideoutFooterPadding'),
+    map.get($map, 'slideoutFooterBorderTop'),
+    map.get($map, 'slideoutWidthXsmall'),
+    map.get($map, 'slideoutWidthSmall'),
+    map.get($map, 'slideoutWidthMedium'),
+    map.get($map, 'slideoutWidthLarge'),
+    map.get($map, 'slideoutWidthXlarge'),
+    map.get($map, 'slideoutWidthXxlarge'),
+  );
+}

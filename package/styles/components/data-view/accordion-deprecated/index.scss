@@ -1,0 +1,66 @@
+@use 'sass:map';
+@use '../../../settings/color' as colors;
+@use '../../../settings/typography' as typography;
+@use '../../../settings/corner' as corner;
+@use '../../../settings/spacing' as spacing;
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+// to be deleted ///////////////////////////////////////////////
+
+@layer careflow.components {
+  .cfs-#{theme.$theme-light} {
+    $accordion: component.$accordion;
+
+    .#{$accordion}-group {
+      display: flex;
+      flex-direction: column;
+      border: 1px solid map.get(colors.$color, 'grayscale', 20);
+      border-radius: map.get(corner.$corner, 'default');
+      overflow: hidden;
+    }
+
+    .#{$accordion} {
+      display: block;
+      border-bottom: 1px solid map.get(colors.$color, 'grayscale', 20);
+
+      &:last-child {
+        border-bottom-width: 0;
+      }
+
+      .#{$accordion}__header {
+        height: 4rem;
+        padding: 0 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        column-gap: 1.2rem;
+
+        .#{$accordion}__header-content {
+          flex: 1;
+          min-width: 0;
+          display: flex;
+          column-gap: 0.8rem;
+        }
+      }
+
+      .#{$accordion}__body {
+        padding: 0.8rem;
+        background-color: map.get(colors.$color, 'white');
+        border-top: 1px solid map.get(colors.$color, 'grayscale', 20);
+      }
+
+      &.#{$accordion}--primary {
+        .#{$accordion}__header {
+          background-color: map.get(colors.$color, 'grayscale', 5);
+        }
+      }
+
+      &.#{$accordion}--secondary {
+        .#{$accordion}__header {
+          flex-direction: row-reverse;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,204 @@
+///
+/// Field - Dropdown Styles
+///
+
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/corner' as corner;
+@use '../../../settings/color' as color;
+@use '../../../settings/elevation' as elevation;
+
+@mixin fieldDropdownMixin(
+  $theme,
+  $fieldDropdownWidth,
+  $fieldDropdownBackgroundColor,
+  $fieldDropdownBorder,
+  $fieldDropdownBoxShadow,
+  $fieldDropdownBorderRadius,
+  $fieldDropdownHeaderPadding,
+  $fieldDropdownHeaderBorderBottom,
+  $fieldDropdownHeaderFocusOutline,
+  $fieldDropdownContentMaxHeight,
+  $fieldDropdownFooterPadding,
+  $fieldDropdownFooterBorderTop,
+  $fieldDropdownFooterLeftFontWeight,
+  $fieldDropdownFooterLeftFontSize,
+  $fieldDropdownFooterLeftLineHeight,
+  $fieldDropdownFooterLeftColor,
+  $fieldDropdownFooterMoreTextFontWeight,
+  $fieldDropdownFooterMoreTextFontSize,
+  $fieldDropdownFooterMoreTextLineHeight,
+  $fieldDropdownFooterMoreTextPadding,
+  $fieldDropdownFooterMoreTextColor,
+  $fieldDropdownListGroupHeadColumnGap,
+  $fieldDropdownListGroupHeadMarginBottom,
+  $fieldDropdownListGroupHeadFieldCheckTextFontSize,
+  $fieldDropdownListGroupHeadFieldCheckTextFontWeight,
+  $fieldDropdownListGroupHeadFieldCheckTextColor,
+  $fieldDropdownListGroupTitleFontSize,
+  $fieldDropdownListGroupTitleFontWeight,
+  $fieldDropdownListGroupTitleColor,
+  $fieldDropdownListGroupItemWrapperPadding,
+  $fieldDropdownListGroupItemWrapperMargin,
+  $fieldDropdownListGroupItemWrapperBorderBottom,
+  $fieldDropdownListGroupItemWrapperFieldDropdownMenuItemPaddingLeft,
+  $fieldDropdownFilterGap,
+  $fieldDropdownFilterFontSize,
+  $fieldDropdownFilterFontWeight,
+  $fieldDropdownFilterLineHeight,
+  $fieldDropdownFilterTextColor,
+  $fieldDropdownFilterHeadGap,
+  $fieldDropdownFilterHeadColor,
+  $fieldDropdownFilterHeadFocusOutline,
+  $fieldDropdownFilterMenuBorderRadius,
+  $fieldDropdownFilterMenuBorder,
+  $fieldDropdownFilterMenuFilter,
+  $fieldDropdownFilterMenuBackgroundColor,
+  $fieldDropdownFilterMenuItemPadding,
+  $fieldDropdownFilterMenuItemMargin,
+  $fieldDropdownFilterMenuItemHoverBackgroundColor,
+  $fieldDropdownFilterMenuItemFocusOutline
+) {
+  .cfc-field-dropdown {
+    width: $fieldDropdownWidth;
+    display: flex;
+    flex-direction: column;
+    background-color: $fieldDropdownBackgroundColor;
+    border: $fieldDropdownBorder;
+    box-shadow: $fieldDropdownBoxShadow;
+    border-radius: $fieldDropdownBorderRadius;
+
+    &__header {
+      padding: $fieldDropdownHeaderPadding;
+      border-bottom: $fieldDropdownHeaderBorderBottom;
+
+      &:focus-visible {
+        outline: $fieldDropdownHeaderFocusOutline;
+      }
+    }
+
+    &__content {
+      max-height: $fieldDropdownContentMaxHeight;
+      z-index: 10;
+    }
+
+    &__footer {
+      padding: $fieldDropdownFooterPadding;
+      border-top: $fieldDropdownFooterBorderTop;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      &-left {
+        display: block;
+        font-weight: $fieldDropdownFooterLeftFontWeight;
+        font-size: $fieldDropdownFooterLeftFontSize;
+        line-height: $fieldDropdownFooterLeftLineHeight;
+        color: $fieldDropdownFooterLeftColor;
+      }
+
+      &-right {
+        display: block;
+      }
+
+      &--more-text {
+        font-weight: $fieldDropdownFooterMoreTextFontWeight;
+        font-size: $fieldDropdownFooterMoreTextFontSize;
+        line-height: $fieldDropdownFooterMoreTextLineHeight;
+        padding: $fieldDropdownFooterMoreTextPadding;
+        align-items: center;
+        justify-content: center;
+        color: $fieldDropdownFooterMoreTextColor;
+      }
+    }
+
+    &__list-group {
+      &-head {
+        display: flex;
+        align-items: center;
+        column-gap: $fieldDropdownListGroupHeadColumnGap;
+        margin-bottom: $fieldDropdownListGroupHeadMarginBottom;
+
+        .cfc-field-check__text {
+          font-size: $fieldDropdownListGroupHeadFieldCheckTextFontSize;
+          font-weight: $fieldDropdownListGroupHeadFieldCheckTextFontWeight;
+          color: $fieldDropdownListGroupHeadFieldCheckTextColor;
+        }
+      }
+
+      &-title {
+        font-size: $fieldDropdownListGroupTitleFontSize;
+        font-weight: $fieldDropdownListGroupTitleFontWeight;
+        color: $fieldDropdownListGroupTitleColor;
+      }
+
+      &-item-wrapper {
+        padding: $fieldDropdownListGroupItemWrapperPadding;
+        margin: $fieldDropdownListGroupItemWrapperMargin;
+        border-bottom: $fieldDropdownListGroupItemWrapperBorderBottom;
+
+        // Remove it later
+        display: block;
+
+        .cfc-field-dropdown-menu__item {
+          padding-left: $fieldDropdownListGroupItemWrapperFieldDropdownMenuItemPaddingLeft;
+        }
+      }
+    }
+  }
+
+  .cfc-dropdown-filter {
+    display: flex;
+    align-items: center;
+    gap: $fieldDropdownFilterGap;
+    font-size: $fieldDropdownFilterFontSize;
+    font-weight: $fieldDropdownFilterFontWeight;
+    line-height: $fieldDropdownFilterLineHeight;
+
+    &__text {
+      color: $fieldDropdownFilterTextColor;
+    }
+
+    &__item {
+      position: relative;
+      cursor: pointer;
+    }
+
+    &__head {
+      display: flex;
+      align-items: center;
+      gap: $fieldDropdownFilterHeadColor;
+      color: $fieldDropdownFilterHeadColor;
+
+      &:focus-visible {
+        outline: $fieldDropdownFilterHeadFocusOutline;
+      }
+    }
+
+    &__menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      border-radius: $fieldDropdownFilterMenuBorderRadius;
+      border: $fieldDropdownFilterMenuBorder;
+      filter: $fieldDropdownFilterMenuFilter;
+      background-color: $fieldDropdownFilterMenuBackgroundColor;
+      width: max-content;
+      z-index: 11;
+
+      &-item {
+        padding: $fieldDropdownFilterMenuItemPadding;
+        cursor: pointer;
+        margin: $fieldDropdownFilterMenuItemMargin;
+
+        &:hover {
+          background-color: $fieldDropdownFilterMenuItemHoverBackgroundColor;
+        }
+
+        &:focus-visible {
+          outline: $fieldDropdownFilterMenuItemFocusOutline;
+        }
+      }
+    }
+  }
+}

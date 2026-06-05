@@ -1,0 +1,31 @@
+@use '../../settings/spacing' as spacing;
+
+@mixin gap($theme) {
+  @include gapStyles(spacing.$spacing);
+}
+
+@mixin gapStyles($spacing) {
+  .cfu-gap {
+    @each $label, $value in $spacing {
+      &-#{$label} {
+        gap: $value;
+      }
+    }
+  }
+
+  .cfu-row-gap {
+    @each $label, $value in $spacing {
+      &-#{$label} {
+        row-gap: $value;
+      }
+    }
+  }
+
+  .cfu-column-gap {
+    @each $label, $value in $spacing {
+      &-#{$label} {
+        column-gap: $value;
+      }
+    }
+  }
+}

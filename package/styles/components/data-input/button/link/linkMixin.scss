@@ -1,0 +1,76 @@
+@use '../../../../settings/components' as component;
+@use '../../../../settings/theme' as theme;
+
+@mixin linkMixin(
+  $theme,
+  $linkBorderRadius,
+  $linkOutlineOffset,
+  $linkDefaultColor,
+  $linkDefaultHoverColor,
+  $linkDefaultActiveColor,
+  $linkDefaultFocusOutline,
+  $linkDefaultDisabledColor,
+  $linkDangerColor,
+  $linkDangerHoverColor,
+  $linkDangerActiveColor,
+  $linkDangerFocusOutline,
+  $linkDangerDisabledColor
+) {
+  $link: component.$link;
+
+  .#{$link} {
+    cursor: pointer;
+    text-decoration-line: underline;
+    border-radius: $linkBorderRadius;
+    outline-offset: $linkOutlineOffset;
+
+    &.#{$link}--default {
+      color: $linkDefaultColor;
+
+      // TODO: disabled attribute is not supported with anchor element, please remove
+      &:not([disabled], .is-disabled):hover {
+        color: $linkDefaultHoverColor;
+      }
+
+      &:not([disabled], .is-disabled):active {
+        color: $linkDefaultActiveColor;
+      }
+
+      &:not([disabled], .is-disabled):focus-visible {
+        outline: $linkDefaultFocusOutline;
+      }
+
+      &:disabled, // Disabled attribute: delete it later
+      &.is-disabled {
+        // color: $linkDefaultDisabledColor;
+        opacity: 0.4;
+        cursor: default;
+        pointer-events: none;
+      }
+    }
+
+    &.#{$link}--danger {
+      color: $linkDangerColor;
+
+      &:not([disabled], .is-disabled):hover {
+        color: $linkDangerHoverColor;
+      }
+
+      &:not([disabled], .is-disabled):active {
+        color: $linkDangerActiveColor;
+      }
+
+      &:not([disabled], .is-disabled):focus-visible {
+        outline: $linkDangerFocusOutline;
+      }
+
+      &:disabled, // Disabled attribute: delete it later
+      &.is-disabled {
+        // color: $linkDangerDisabledColor;
+        opacity: 0.4;
+        cursor: default;
+        pointer-events: none;
+      }
+    }
+  }
+}

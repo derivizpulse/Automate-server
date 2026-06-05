@@ -1,0 +1,185 @@
+@use 'sass:map';
+@use '../../../../settings/components' as component;
+@use '../../../../settings/theme' as theme;
+@use '../../../../settings/themes/light/button' as lightButton;
+@use '../../../../settings/themes/dark/button' as darkButton;
+@use '../../../../settings/themes/test/button' as testButton;
+@use 'buttonMixin' as buttonMixin;
+
+@mixin button($theme) {
+  @if $theme == theme.$theme-light {
+    @include buttonStyles(lightButton.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include buttonStyles(darkButton.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include buttonStyles(testButton.$map, $theme);
+  }
+}
+
+@mixin buttonStyles($map, $theme) {
+  @include buttonMixin.buttonBaseMixin(
+    $theme,
+    map.get($map, 'buttonMinWidth'),
+    map.get($map, 'buttonHeight'),
+    map.get($map, 'buttonPadding'),
+    map.get($map, 'buttonColumnGap'),
+    map.get($map, 'buttonFontSize'),
+    map.get($map, 'buttonLineHeight'),
+    map.get($map, 'buttonFontWeight'),
+    map.get($map, 'buttonBorderRadius')
+  ) {
+    $button: component.$button;
+
+    @include buttonMixin.buttonMixin(
+      transparent,
+      transparent,
+      map.get($map, 'buttonGhostColor'),
+      map.get($map, 'buttonGhostBoxShadow'),
+      map.get($map, 'buttonGhostHoverBorderColor'),
+      map.get($map, 'buttonGhostHoverBackgroundColor'),
+      map.get($map, 'buttonGhostHoverColor'),
+      map.get($map, 'buttonGhostHoverBoxShadow'),
+      map.get($map, 'buttonGhostActiveBorderColor'),
+      map.get($map, 'buttonGhostActiveBackgroundColor'),
+      map.get($map, 'buttonGhostActiveColor'),
+      map.get($map, 'buttonGhostActiveBoxShadow'),
+      map.get($map, 'buttonGhostFocusBorderColor'),
+      map.get($map, 'buttonGhostFocusBackgroundColor'),
+      map.get($map, 'buttonGhostFocusColor'),
+      map.get($map, 'buttonGhostFocusOutline'),
+      map.get($map, 'buttonGhostFocusOutlineOffset'),
+      transparent,
+      transparent,
+      map.get($map, 'buttonGhostDisabledColor')
+    );
+
+    &.#{$button}--danger {
+      @include buttonMixin.buttonMixin(
+        transparent,
+        transparent,
+        map.get($map, 'buttonGhostDangerColor'),
+        map.get($map, 'buttonGhostDangerBoxShadow'),
+        map.get($map, 'buttonGhostDangerHoverBorderColor'),
+        map.get($map, 'buttonGhostDangerHoverBackgroundColor'),
+        map.get($map, 'buttonGhostDangerHoverColor'),
+        map.get($map, 'buttonGhostDangerHoverBoxShadow'),
+        map.get($map, 'buttonGhostDangerActiveBorderColor'),
+        map.get($map, 'buttonGhostDangerActiveBackgroundColor'),
+        map.get($map, 'buttonGhostDangerActiveColor'),
+        map.get($map, 'buttonGhostDangerActiveBoxShadow'),
+        map.get($map, 'buttonGhostDangerFocusBorderColor'),
+        map.get($map, 'buttonGhostDangerFocusBackgroundColor'),
+        map.get($map, 'buttonGhostDangerFocusColor'),
+        map.get($map, 'buttonGhostDangerFocusOutline'),
+        map.get($map, 'buttonGhostDangerFocusOutlineOffset'),
+        transparent,
+        transparent,
+        map.get($map, 'buttonGhostDangerDisabledColor')
+      );
+    }
+
+    &.#{$button}--primary {
+      @include buttonMixin.buttonMixin(
+        map.get($map, 'buttonPrimaryBorderColor'),
+        map.get($map, 'buttonPrimaryBackgroundColor'),
+        map.get($map, 'buttonPrimaryColor'),
+        map.get($map, 'buttonPrimaryBoxShadow'),
+        map.get($map, 'buttonPrimaryHoverBorderColor'),
+        map.get($map, 'buttonPrimaryHoverBackgroundColor'),
+        map.get($map, 'buttonPrimaryHoverColor'),
+        map.get($map, 'buttonPrimaryHoverBoxShadow'),
+        map.get($map, 'buttonPrimaryActiveBorderColor'),
+        map.get($map, 'buttonPrimaryActiveBackgroundColor'),
+        map.get($map, 'buttonPrimaryActiveColor'),
+        map.get($map, 'buttonPrimaryActiveBoxShadow'),
+        map.get($map, 'buttonPrimaryFocusBorderColor'),
+        map.get($map, 'buttonPrimaryFocusBackgroundColor'),
+        map.get($map, 'buttonPrimaryFocusColor'),
+        map.get($map, 'buttonPrimaryFocusOutline'),
+        map.get($map, 'buttonPrimaryFocusOutlineOffset'),
+        map.get($map, 'buttonPrimaryDisabledBorderColor'),
+        map.get($map, 'buttonPrimaryDisabledBackgroundColor'),
+        map.get($map, 'buttonPrimaryDisabledColor')
+      );
+
+      &.#{$button}--danger {
+        @include buttonMixin.buttonMixin(
+          map.get($map, 'buttonPrimaryDangerBorderColor'),
+          map.get($map, 'buttonPrimaryDangerBackgroundColor'),
+          map.get($map, 'buttonPrimaryDangerColor'),
+          map.get($map, 'buttonPrimaryDangerBoxShadow'),
+          map.get($map, 'buttonPrimaryDangerHoverBorderColor'),
+          map.get($map, 'buttonPrimaryDangerHoverBackgroundColor'),
+          map.get($map, 'buttonPrimaryDangerHoverColor'),
+          map.get($map, 'buttonPrimaryDangerHoverBoxShadow'),
+          map.get($map, 'buttonPrimaryDangerActiveBorderColor'),
+          map.get($map, 'buttonPrimaryDangerActiveBackgroundColor'),
+          map.get($map, 'buttonPrimaryDangerActiveColor'),
+          map.get($map, 'buttonPrimaryDangerActiveBoxShadow'),
+          map.get($map, 'buttonPrimaryDangerFocusBorderColor'),
+          map.get($map, 'buttonPrimaryDangerFocusBackgroundColor'),
+          map.get($map, 'buttonPrimaryDangerFocusColor'),
+          map.get($map, 'buttonPrimaryDangerFocusOutline'),
+          map.get($map, 'buttonPrimaryDangerFocusOutlineOffset'),
+          map.get($map, 'buttonPrimaryDangerDisabledBorderColor'),
+          map.get($map, 'buttonPrimaryDangerDisabledBackgroundColor'),
+          map.get($map, 'buttonPrimaryDangerDisabledColor')
+        );
+      }
+    }
+
+    &.#{$button}--secondary {
+      @include buttonMixin.buttonMixin(
+        map.get($map, 'buttonSecondaryBorderColor'),
+        map.get($map, 'buttonSecondaryBackgroundColor'),
+        map.get($map, 'buttonSecondaryColor'),
+        map.get($map, 'buttonSecondaryBoxShadow'),
+        map.get($map, 'buttonSecondaryHoverBorderColor'),
+        map.get($map, 'buttonSecondaryHoverBackgroundColor'),
+        map.get($map, 'buttonSecondaryHoverColor'),
+        map.get($map, 'buttonSecondaryHoverBoxShadow'),
+        map.get($map, 'buttonSecondaryActiveBorderColor'),
+        map.get($map, 'buttonSecondaryActiveBackgroundColor'),
+        map.get($map, 'buttonSecondaryActiveColor'),
+        map.get($map, 'buttonSecondaryActiveBoxShadow'),
+        map.get($map, 'buttonSecondaryFocusBorderColor'),
+        map.get($map, 'buttonSecondaryFocusBackgroundColor'),
+        map.get($map, 'buttonSecondaryFocusColor'),
+        map.get($map, 'buttonSecondaryFocusOutline'),
+        map.get($map, 'buttonSecondaryFocusOutlineOffset'),
+        map.get($map, 'buttonSecondaryDisabledBorderColor'),
+        map.get($map, 'buttonSecondaryDisabledBackgroundColor'),
+        map.get($map, 'buttonSecondaryDisabledColor')
+      );
+
+      &.#{$button}--danger {
+        @include buttonMixin.buttonMixin(
+          map.get($map, 'buttonSecondaryDangerBorderColor'),
+          map.get($map, 'buttonSecondaryDangerBackgroundColor'),
+          map.get($map, 'buttonSecondaryDangerColor'),
+          map.get($map, 'buttonSecondaryDangerBoxShadow'),
+          map.get($map, 'buttonSecondaryDangerHoverBorderColor'),
+          map.get($map, 'buttonSecondaryDangerHoverBackgroundColor'),
+          map.get($map, 'buttonSecondaryDangerHoverColor'),
+          map.get($map, 'buttonSecondaryDangerHoverBoxShadow'),
+          map.get($map, 'buttonSecondaryDangerActiveBorderColor'),
+          map.get($map, 'buttonSecondaryDangerActiveBackgroundColor'),
+          map.get($map, 'buttonSecondaryDangerActiveColor'),
+          map.get($map, 'buttonSecondaryDangerActiveBoxShadow'),
+          map.get($map, 'buttonSecondaryDangerFocusBorderColor'),
+          map.get($map, 'buttonSecondaryDangerFocusBackgroundColor'),
+          map.get($map, 'buttonSecondaryDangerFocusColor'),
+          map.get($map, 'buttonSecondaryDangerFocusOutline'),
+          map.get($map, 'buttonSecondaryDangerFocusOutlineOffset'),
+          map.get($map, 'buttonSecondaryDangerDisabledBorderColor'),
+          map.get($map, 'buttonSecondaryDangerDisabledBackgroundColor'),
+          map.get($map, 'buttonSecondaryDangerDisabledColor')
+        );
+      }
+    }
+  }
+}

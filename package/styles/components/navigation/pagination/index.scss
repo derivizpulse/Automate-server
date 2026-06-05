@@ -1,0 +1,23 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/pagination' as lightPagination;
+@use '../../../settings/themes/test/pagination' as testPagination;
+@use 'paginationMixin' as paginationMixin;
+
+@mixin pagination($theme) {
+  @if $theme == theme.$theme-light {
+    @include paginationStyles(lightPagination.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include paginationStyles(testPagination.$map, $theme);
+  }
+}
+
+@mixin paginationStyles($map, $theme) {
+  @include paginationMixin.paginationMixin(
+    $theme,
+    map.get($map, 'paginationColumnGap'),
+    map.get($map, 'paginationActionColumnGap')
+  );
+}

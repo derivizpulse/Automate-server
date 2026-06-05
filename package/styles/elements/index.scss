@@ -1,0 +1,17 @@
+@use 'html' as html;
+@use 'body' as body;
+@use 'headings' as headings;
+@use 'anchor' as anchor;
+@use 'list' as list;
+@use 'table' as table;
+@use 'input' as input;
+
+@mixin elements($theme) {
+  @include html.html;
+  @include body.body($theme);
+  @include headings.headings($theme);
+  @include anchor.anchor;
+  @include list.list;
+  @include table.table;
+  @include input.input($theme);
+}

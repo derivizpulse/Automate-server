@@ -1,0 +1,42 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin dividerMixin(
+  $theme,
+  $dividerHeight,
+  $dividerPrimaryBackgroundColor,
+  $dividerSecondaryBackgroundColor,
+  $dividerDarkPrimaryBackgroundColor,
+  $dividerDarkSecondaryBackgroundColor,
+  $dividerVerticalWidth,
+) {
+  $divider: component.$divider;
+  .#{$divider} {
+    display: block;
+    width: 100%;
+    height: $dividerHeight;
+
+    &.#{$divider}--primary {
+      background-color: $dividerPrimaryBackgroundColor;
+    }
+    &.#{$divider}--secondary {
+      background-color: $dividerSecondaryBackgroundColor;
+    }
+
+    &.#{$divider}--dark {
+      &.#{$divider}--primary {
+        background-color: $dividerDarkPrimaryBackgroundColor;
+      }
+
+      &.#{$divider}--secondary {
+        background-color: $dividerDarkSecondaryBackgroundColor;
+      }
+    }
+
+    &.#{$divider}--vertical {
+      width: $dividerVerticalWidth;
+      height: 100%;
+    }
+  }
+}

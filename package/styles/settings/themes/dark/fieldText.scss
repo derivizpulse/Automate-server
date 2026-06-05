@@ -1,0 +1,23 @@
+@use 'sass:map';
+@use 'maps/color' as colorMap;
+
+$map: (
+  'textfieldOutlineWidth': 0,
+  'textfieldHeight': 3.8rem,
+  'textfieldBackgroundColor': transparent,
+  'textfieldBorder': 0.1rem solid map.get(colorMap.$color, 'background', 20),
+  'textfieldBorderRadius': 0.6rem,
+  'textfieldPadding': 0 0.8rem,
+  'textfieldColor': map.get(colorMap.$color, 'font', 20),
+  'textfieldPlaceholderColor': map.get(colorMap.$color, 'font', 80),
+  'textfieldHoverBorder': 0.1rem solid map.get(colorMap.$color, 'background', 20),
+  'textfieldHoverBackgroundColor': rgba(255, 255, 255, 8%),
+  'textfieldFocusBorder': 0.1rem solid map.get(colorMap.$color, 'primary', 80),
+  'textfieldFocusOutline': 0.2rem solid #003940,
+  'textfieldDisabledBorder': 0.1rem solid map.get(colorMap.$color, 'background', 20),
+  'textfieldDisabledBackgroundColor': map.get(colorMap.$color, 'background', 60),
+  'textfieldDisabledColor': map.get(colorMap.$color, 'background', 10),
+  'textfieldHaserrorBorderColor': map.get(colorMap.$color, 'accent', 'red', 20),
+  'textfieldHaserrorHoverBorderColor': map.get(colorMap.$color, 'accent', 'red', 20),
+  'textfieldHaserrorHoverOutlineColor':rgba(233, 128, 128, 32%)
+);

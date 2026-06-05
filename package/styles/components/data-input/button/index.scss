@@ -1,0 +1,9 @@
+@use 'button' as button;
+@use 'button-group' as buttonGroup;
+@use 'link' as link;
+
+@mixin button($theme) {
+  @include button.button($theme);
+  @include buttonGroup.buttonGroup($theme);
+  @include link.link($theme);
+}

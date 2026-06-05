@@ -1,0 +1,43 @@
+@use 'sass:map';
+@use 'maps/color' as colors;
+@use 'maps/corner' as corner;
+@use 'maps/typography' as typography;
+@use '../../spacing' as spacing;
+
+$map: (
+  'emptyStatePadding': map.get(spacing.$spacing, 12) 10%,
+  'emptyStateRowGap': map.get(spacing.$spacing, 12),
+  'emptyStateImageWidth': 7.2rem,
+  'emptyStateImageHeight': 7.2rem,
+  'emptyStateContentRowGap': map.get(spacing.$spacing, 8),
+  'emptyStateContentTitleColor': map.get(colors.$color, 'font', 20),
+  'emptyStateContentTitleFontSize': map.get(typography.$typography, 'scale', 'base', 'size'),
+  'emptyStateContentTitleFontWeight': map.get(typography.$typography, 'weight', 'medium'),
+  'emptyStateContentTitleLineHeight': map.get(typography.$typography, 'scale', 'base', 'height'),
+  'emptyStateContentTextColor':  map.get(colors.$color, 'font', 60),
+  'emptyStateContentTextFontSize':map.get(typography.$typography, 'scale', 'sm', 'size'),
+  'emptyStateContentTextFontWeight':map.get(typography.$typography, 'weight', 'regular'),
+  'emptyStateContentTextLineHeight': map.get(typography.$typography, 'scale', 'sm', 'height'),
+  'emptyStateActionColor': map.get(colors.$color, 'font', 60),
+  'emptyStateActionColumnGap':  map.get(spacing.$spacing, 8),
+  'emptyStateActionFontSize':map.get(typography.$typography, 'scale', 'sm', 'size'),
+  'emptyStateActionFontWeight':map.get(typography.$typography, 'weight', 'regular'),
+  'emptyStateActionLineHeight': map.get(typography.$typography, 'scale', 'sm', 'height'),
+  'emptyStateNoDataBackgroundImage': url('/assets/careflow/images/empty-state/dark-theme/nodata-image.svg'),
+  'emptyStateInformationBackgroundImage': url('/assets/careflow/images/empty-state/light/drag-drop.svg'),
+  'emptyStateUserActionBackgroundImage': url('/assets/careflow/images/empty-state/light/connection-error.svg'),
+  'emptyStateErrorBackgroundImage': url('/assets/careflow/images/empty-state/light/session-expired.svg'),
+  'emptyStateNoOperatoryBackgroundImage': url('/assets/careflow/images/empty-state/light/empty-calendar.svg'),
+  'emptyStateUploadBackgroundImage': url('/assets/careflow/images/empty-state/light/upload-file.svg'),
+  'emptyStateClickActionBackgroundImage': url('/assets/careflow/images/empty-state/dark-theme/click-action.svg'),
+  'emptyStateErrorLoadingBackgroundImage': url('/assets/careflow/images/empty-state/light/error-loading.svg'),
+  'emptyStateDarkBackgroundColor': map.get(colors.$color, 'grayscale', 10),
+  'emptyStateDarkNoDataBackgroundImage': url('/assets/careflow/images/empty-state/dark/no-data.svg'),
+  'emptyStateDarkInformationBackgroundImage': url('/assets/careflow/images/empty-state/dark/drag-drop.svg'),
+  'emptyStateDarkUserActionBackgroundImage': url('/assets/careflow/images/empty-state/dark/connection-error.svg'),
+  'emptyStateDarkErrorBackgroundImage': url('/assets/careflow/images/empty-state/dark/session-expired.svg'),
+  'emptyStateDarkNoOperatoryBackgroundImage': url('/assets/careflow/images/empty-state/dark/empty-calendar.svg'),
+  'emptyStateDarkUploadBackgroundImage': url('/assets/careflow/images/empty-state/dark/upload-file.svg'),
+  'emptyStateDarkClickActionBackgroundImage': url('/assets/careflow/images/empty-state/dark/click-action.svg'),
+  'emptyStateDarkErrorLoadingBackgroundImage': url('/assets/careflow/images/empty-state/dark/error-loading.svg'),
+);

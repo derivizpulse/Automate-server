@@ -1,0 +1,18 @@
+@use 'sass:map';
+@use 'maps/color' as color;
+
+$map: (
+  'slideoutBackgroundColor': map.get(color.$color, 'background', 80),
+  'slideoutBoxShadow': 0 0.4rem 1.2rem rgba(13, 22, 29, 24%),
+  'slideoutHeaderBackground': map.get(color.$color, 'background', 60),
+  'slideoutHeaderPadding': 0.4rem 0.8rem 0.4rem 1.6rem,
+  'slideoutHeaderBorderBottom': none,
+  'slideoutFooterPadding': 0 0.8rem 1.6rem 0.8rem,
+  'slideoutFooterBorderTop': none,
+  'slideoutWidthXsmall': calc(100vw / 12 * 4),
+  'slideoutWidthSmall': calc(100vw / 12 * 5),
+  'slideoutWidthMedium': calc(100vw / 12 * 7),
+  'slideoutWidthLarge': calc(100vw / 12 * 9),
+  'slideoutWidthXlarge': calc(100vw / 12 * 11),
+  'slideoutWidthXxlarge': calc(100vw - 1.2rem),
+);

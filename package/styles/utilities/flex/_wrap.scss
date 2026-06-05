@@ -1,0 +1,19 @@
+@mixin wrap($theme) {
+  @include wrapStyles;
+}
+
+@mixin wrapStyles {
+  .cfu-flex {
+    &-nowrap {
+      flex-wrap: nowrap;
+    }
+
+    &-wrap {
+      flex-wrap: wrap;
+
+      &-reverse {
+        flex-wrap: wrap-reverse;
+      }
+    }
+  }
+}

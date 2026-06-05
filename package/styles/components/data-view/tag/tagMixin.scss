@@ -1,0 +1,707 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/color' as colors;
+@use '../../../settings/typography' as typography;
+@use '../../../settings/themes/light/tag' as lightTag;
+@use 'tag.map' as tagMap;
+
+@mixin tagMixin(
+  $theme,
+  $tagGroupColumnGap,
+  $tagPadding,
+  $tagBorderRadius,
+  $tagBorder,
+  $tagFontSize,
+  $tagFontWeight,
+  $tagLineHeight,
+  $tagMaxWidth,
+  $tagFillColor,
+  $tagFillGreenBackgroundColor,
+  $tagFillGreenBorderColor,
+  $tagFillRedBackgroundColor,
+  $tagFillRedBorderColor,
+  $tagFillOrangeBackgroundColor,
+  $tagFillOrangeBorderColor,
+  $tagFillBrownBackgroundColor,
+  $tagFillBrownBorderColor,
+  $tagFillGoldBackgroundColor,
+  $tagFillGoldBorderColor,
+  $tagFillOliveBackgroundColor,
+  $tagFillOliveBorderColor,
+  $tagFillTurquoiseBackgroundColor,
+  $tagFillTurquoiseBorderColor,
+  $tagFillBlueBackgroundColor,
+  $tagFillBlueBorderColor,
+  $tagFillPurpleBackgroundColor,
+  $tagFillPurpleBorderColor,
+  $tagFillPinkBackgroundColor,
+  $tagFillPinkBorderColor,
+  $tagFillGrayBackgroundColor,
+  $tagFillGrayBorderColor,
+  $tagOutlineBackgroundColor,
+  $tagOutlineGreenBorderColor,
+  $tagOutlineGreenColor,
+  $tagOutlineRedBorderColor,
+  $tagOutlineRedColor,
+  $tagOutlineOrangeBorderColor,
+  $tagOutlineOrangeColor,
+  $tagOutlineBrownBorderColor,
+  $tagOutlineBrownColor,
+  $tagOutlineGoldBorderColor,
+  $tagOutlineGoldColor,
+  $tagOutlineOliveBorderColor,
+  $tagOutlineOliveColor,
+  $tagOutlineTurquoiseBorderColor,
+  $tagOutlineTurquoiseColor,
+  $tagOutlineBlueBorderColor,
+  $tagOutlineBlueColor,
+  $tagOutlinePurpleBorderColor,
+  $tagOutlinePurpleColor,
+  $tagOutlinePinkBorderColor,
+  $tagOutlinePinkColor,
+  $tagOutlineGrayBorderColor,
+  $tagOutlineGrayColor,
+  $tagSemifillGreenBackgroundColor,
+  $tagSemifillGreenColor,
+  $tagSemifillGreenBorderColor,
+  $tagSemifillRedBackgroundColor,
+  $tagSemifillRedColor,
+  $tagSemifillRedBorderColor,
+  $tagSemifillOrangeBackgroundColor,
+  $tagSemifillOrangeColor,
+  $tagSemifillOrangeBorderColor,
+  $tagSemifillBrownBackgroundColor,
+  $tagSemifillBrownColor,
+  $tagSemifillBrownBorderColor,
+  $tagSemifillGoldBackgroundColor,
+  $tagSemifillGoldColor,
+  $tagSemifillGoldBorderColor,
+  $tagSemifillOliveBackgroundColor,
+  $tagSemifillOliveColor,
+  $tagSemifillOliveBorderColor,
+  $tagSemifillTurquoiseBackgroundColor,
+  $tagSemifillTurquoiseColor,
+  $tagSemifillTurquoiseBorderColor,
+  $tagSemifillBlueBackgroundColor,
+  $tagSemifillBlueColor,
+  $tagSemifillBlueBorderColor,
+  $tagSemifillPurpleBackgroundColor,
+  $tagSemifillPurpleColor,
+  $tagSemifillPurpleBorderColor,
+  $tagSemifillPinkBackgroundColor,
+  $tagSemifillPinkColor,
+  $tagSemifillPinkBorderColor,
+  $tagSemifillGrayBackgroundColor,
+  $tagSemifillGrayColor,
+  $tagSemifillGrayBorderColor,
+  $tagDotColumnGap,
+  $tagDotPadding,
+  $tagDotBorder,
+  $tagDotColor,
+  $tagDotBeforeWidth,
+  $tagDotBeforeHeight,
+  $tagDotBeforeBorder,
+  $tagDotGreenBackgroundColor,
+  $tagDotRedBackgroundColor,
+  $tagDotOrangeBackgroundColor,
+  $tagDotBrownBackgroundColor,
+  $tagDotGoldBackgroundColor,
+  $tagDotOliveBackgroundColor,
+  $tagDotTurquuoiseBackgroundColor,
+  $tagDotBlueBackgroundColor,
+  $tagDotPurpleBackgroundColor,
+  $tagDotPinkBackgroundColor,
+  $tagDotGrayBackgroundColor,
+  $tagStatusPadding,
+  $tagStatusBackgroundColor,
+  $tagStatusFontSize,
+  $tagStatusLineHeight,
+  $tagStatusInActiveBorder,
+  $tagStatusInActiveColor,
+  $tagStatusActiveBorder,
+  $tagStatusActiveColor,
+  $tagStatusCompletedBorder,
+  $tagStatusCompletedBackgroundColor,
+  $tagStatusCompletedColor,
+  $tagStatusYetToStartBorder,
+  $tagStatusYetToStartColor,
+  $tagStatusPausedBorder,
+  $tagStatusPausedColor,
+  $tagStatusTerminatedBorder,
+  $tagStatusTerminatedBackgroundColor,
+  $tagStatusTerminatedColor,
+  $tagStatusDraftBorder,
+  $tagStatusDraftColor,
+  $tagStatusInProgressBorder,
+  $tagStatusInProgressColor,
+  $tagStatusArchivedBackgroundColor,
+  $tagStatusArchivedColor,
+  $tagBgDarkFillBackgroundColor,
+  $tagBgDarkFillBorderColor,
+  $tagBgDarkGreenFillColor,
+  $tagBgDarkRedFillColor,
+  $tagBgDarkOrangeFillColor,
+  $tagBgDarkBrownFillColor,
+  $tagBgDarkGoldFillColor,
+  $tagBgDarkOliveFillColor,
+  $tagBgDarkTurquoiseFillColor,
+  $tagBgDarkBlueFillColor,
+  $tagBgDarkPurpleFillColor,
+  $tagBgDarkPinkFillColor,
+  $tagBgDarkGrayFillColor,
+  $tagBgDarkOutlineBackground,
+  $tagBgDarkGreenOutlineColor,
+  $tagBgDarkGreenOutlineBorderColor,
+  $tagBgDarkRedOutlineColor,
+  $tagBgDarkRedOutlineBorderColor,
+  $tagBgDarkOrangeOutlineColor,
+  $tagBgDarkOrangeOutlineBorderColor,
+  $tagBgDarkBrownOutlineColor,
+  $tagBgDarkBrownOutlineBorderColor,
+  $tagBgDarkGoldOutlineColor,
+  $tagBgDarkGoldOutlineBorderColor,
+  $tagBgDarkOliveOutlineColor,
+  $tagBgDarkOliveOutlineBorderColor,
+  $tagBgDarkTurquoiseOutlineColor,
+  $tagBgDarkTurquoiseOutlineBorderColor,
+  $tagBgDarkBlueOutlineColor,
+  $tagBgDarkBlueOutlineBorderColor,
+  $tagBgDarkPurpleOutlineColor,
+  $tagBgDarkPurpleOutlineBorderColor,
+  $tagBgDarkPinkOutlineColor,
+  $tagBgDarkPinkOutlineBorderColor,
+  $tagBgDarkGrayOutlineColor,
+  $tagBgDarkGrayOutlineBorderColor,
+  $tagBgDarkSemifillGreenBackgroundColor,
+  $tagBgDarkSemifillGreenColor,
+  $tagBgDarkSemifillGreenBorderColor,
+  $tagBgDarkSemifillRedBackgroundColor,
+  $tagBgDarkSemifillRedColor,
+  $tagBgDarkSemifillRedBorderColor,
+  $tagBgDarkSemifillOrangeBackgroundColor,
+  $tagBgDarkSemifillOrangeColor,
+  $tagBgDarkSemifillOrangeBorderColor,
+  $tagBgDarkSemifillBrownBackgroundColor,
+  $tagBgDarkSemifillBrownColor,
+  $tagBgDarkSemifillBrownBorderColor,
+  $tagBgDarkSemifillGoldBackgroundColor,
+  $tagBgDarkSemifillGoldColor,
+  $tagBgDarkSemifillGoldBorderColor,
+  $tagBgDarkSemifillOliveBackgroundColor,
+  $tagBgDarkSemifillOliveColor,
+  $tagBgDarkSemifillOliveBorderColor,
+  $tagBgDarkSemifillTurquoiseBackgroundColor,
+  $tagBgDarkSemifillTurquoiseColor,
+  $tagBgDarkSemifillTurquoiseBorderColor,
+  $tagBgDarkSemifillBlueBackgroundColor,
+  $tagBgDarkSemifillBlueColor,
+  $tagBgDarkSemifillBlueBorderColor,
+  $tagBgDarkSemifillPurpleBackgroundColor,
+  $tagBgDarkSemifillPurpleColor,
+  $tagBgDarkSemifillPurpleBorderColor,
+  $tagBgDarkSemifillPinkBackgroundColor,
+  $tagBgDarkSemifillPinkColor,
+  $tagBgDarkSemifillPinkBorderColor,
+  $tagBgDarkSemifillGrayBackgroundColor,
+  $tagBgDarkSemifillGrayColor,
+  $tagBgDarkSemifillGrayBorderColor,
+  $tagBgDarkDotColor,
+  $tagBgDarkDotBeforeBorder
+) {
+  $tag: component.$tag;
+  $tag-group: component.$tag-group;
+
+  .#{$tag-group} {
+    display: flex;
+    align-items: center;
+    column-gap: $tagGroupColumnGap;
+  }
+
+  .#{$tag} {
+    display: inline-block;
+    padding: $tagPadding;
+    border-radius: $tagBorderRadius;
+    text-align: center;
+    border: $tagBorder;
+    font-size: $tagFontSize;
+    font-weight: $tagFontWeight;
+    line-height: $tagLineHeight;
+    max-width: $tagMaxWidth;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.#{$tag}--fill {
+
+      &.#{$tag}--green {
+        color: $tagFillColor;
+        background-color: $tagFillGreenBackgroundColor;
+        border-color: $tagFillGreenBorderColor;
+      }
+      &.#{$tag}--red {
+        color: $tagFillColor;
+        background-color: $tagFillRedBackgroundColor;
+        border-color: $tagFillRedBorderColor;
+      }
+      &.#{$tag}--orange {
+        color: $tagFillColor;
+        background-color: $tagFillOrangeBackgroundColor;
+        border-color: $tagFillOrangeBorderColor;
+      }
+      &.#{$tag}--brown {
+        color: $tagFillColor;
+        background-color: $tagFillBrownBackgroundColor;
+        border-color: $tagFillBrownBorderColor;
+      }
+      &.#{$tag}--gold {
+        color: $tagFillColor;
+        background-color: $tagFillGoldBackgroundColor;
+        border-color: $tagFillGoldBorderColor;
+      }
+      &.#{$tag}--olive {
+        color: $tagFillColor;
+        background-color: $tagFillOliveBackgroundColor;
+        border-color: $tagFillOliveBorderColor;
+      }
+      &.#{$tag}--turquoise {
+        color: $tagFillColor;
+        background-color: $tagFillTurquoiseBackgroundColor;
+        border-color: $tagFillTurquoiseBorderColor;
+      }
+      &.#{$tag}--blue {
+        color: $tagFillColor;
+        background-color: $tagFillBlueBackgroundColor;
+        border-color: $tagFillBlueBorderColor;
+      }
+      &.#{$tag}--purple {
+        color: $tagFillColor;
+        background-color: $tagFillPurpleBackgroundColor;
+        border-color: $tagFillPurpleBorderColor;
+      }
+      &.#{$tag}--pink {
+        color: $tagFillColor;
+        background-color: $tagFillPinkBackgroundColor;
+        border-color: $tagFillPinkBorderColor;
+      }
+      &.#{$tag}--gray {
+        color: $tagFillColor;
+        background-color: $tagFillGrayBackgroundColor;
+        border-color: $tagFillGrayBorderColor;
+      }
+    }
+
+    &.#{$tag}--outline {
+      background-color: $tagOutlineBackgroundColor;
+
+      &.#{$tag}--green {
+        color: $tagOutlineGreenColor;
+        border-color: $tagOutlineGreenBorderColor;
+      }
+      &.#{$tag}--red {
+        color: $tagOutlineRedColor;
+        border-color: $tagOutlineRedBorderColor;
+      }
+      &.#{$tag}--orange {
+        color: $tagOutlineOrangeColor;
+        border-color: $tagOutlineOrangeBorderColor;
+      }
+      &.#{$tag}--brown {
+        color: $tagOutlineBrownColor;
+        border-color: $tagOutlineBrownBorderColor;
+      }
+      &.#{$tag}--gold {
+        color: $tagOutlineGoldColor;
+        border-color: $tagOutlineGoldBorderColor;
+      }
+      &.#{$tag}--olive {
+        color: $tagOutlineOliveColor;
+        border-color: $tagOutlineOliveBorderColor;
+      }
+      &.#{$tag}--turquoise {
+        color: $tagOutlineTurquoiseColor;
+        border-color: $tagOutlineTurquoiseBorderColor;
+      }
+      &.#{$tag}--blue {
+        color: $tagOutlineBlueColor;
+        border-color: $tagOutlineBlueBorderColor;
+      }
+      &.#{$tag}--purple {
+        color: $tagOutlinePurpleColor;
+        border-color: $tagOutlinePurpleBorderColor;
+      }
+      &.#{$tag}--pink {
+        color: $tagOutlinePinkBorderColor;
+        border-color: $tagOutlinePinkColor;
+      }
+      &.#{$tag}--gray {
+        color: $tagOutlineGrayBorderColor;
+        border-color: $tagOutlineGrayColor;
+      }
+    }
+
+    &.#{$tag}--semiFill {
+
+      &.#{$tag}--green {
+        background-color: $tagSemifillGreenBackgroundColor;
+        color: $tagSemifillGreenColor;
+        border-color: $tagSemifillGreenBorderColor;
+      }
+      &.#{$tag}--red {
+        background-color: $tagSemifillRedBackgroundColor;
+        color: $tagSemifillRedColor;
+        border-color: $tagSemifillRedBorderColor;
+      }
+      &.#{$tag}--orange {
+        background-color: $tagSemifillOrangeBackgroundColor;
+        color: $tagSemifillOrangeColor;
+        border-color: $tagSemifillOrangeBorderColor;
+      }
+      &.#{$tag}--brown {
+        background-color: $tagSemifillBrownBackgroundColor;
+        color: $tagSemifillBrownColor;
+        border-color: $tagSemifillBrownBorderColor;
+      }
+      &.#{$tag}--gold {
+        background-color: $tagSemifillGoldBackgroundColor;
+        color: $tagSemifillGoldColor;
+        border-color: $tagSemifillGoldBorderColor;
+      }
+      &.#{$tag}--olive {
+        background-color: $tagSemifillOliveBackgroundColor;
+        color: $tagSemifillOliveColor;
+        border-color: $tagSemifillOliveBorderColor;
+      }
+      &.#{$tag}--turquoise {
+        background-color: $tagSemifillTurquoiseBackgroundColor;
+        color: $tagSemifillTurquoiseColor;
+        border-color: $tagSemifillTurquoiseBorderColor;
+      }
+      &.#{$tag}--blue {
+        background-color: $tagSemifillBlueBackgroundColor;
+        color: $tagSemifillBlueColor;
+        border-color: $tagSemifillBlueBorderColor;
+      }
+      &.#{$tag}--purple {
+        background-color: $tagSemifillPurpleBackgroundColor;
+        color: $tagSemifillPurpleColor;
+        border-color: $tagSemifillPurpleBorderColor;
+      }
+      &.#{$tag}--pink {
+        background-color: $tagSemifillPinkBackgroundColor;
+        color: $tagSemifillPinkColor;
+        border-color: $tagSemifillPinkBorderColor;
+      }
+      &.#{$tag}--gray {
+        background-color: $tagSemifillGrayBackgroundColor;
+        color: $tagSemifillGrayColor;
+        border-color: $tagSemifillGrayBorderColor;
+      }
+    }
+
+    &.#{$tag}--dot {
+      &.#{$tag} {
+        display: inline-flex;
+        align-items: center;
+        column-gap: $tagDotColumnGap;
+        padding: $tagDotPadding;
+        border: $tagDotBorder;
+        color: $tagDotColor;
+
+        &::before {
+          content: '';
+          display: block;
+          width: $tagDotBeforeWidth;
+          height: $tagDotBeforeHeight;
+          border-radius: 50%;
+          border: $tagDotBeforeBorder;
+        }
+
+        &.#{$tag}--green {
+          &.#{$tag}::before {
+            background-color: $tagDotGreenBackgroundColor;
+          }
+        }
+        &.#{$tag}--red {
+          &.#{$tag}::before {
+            background-color: $tagDotRedBackgroundColor;
+          }
+        }
+        &.#{$tag}--orange {
+          &.#{$tag}::before {
+            background-color: $tagDotOrangeBackgroundColor;
+          }
+        }
+        &.#{$tag}--brown {
+          &.#{$tag}::before {
+            background-color: $tagDotBrownBackgroundColor;
+          }
+        }
+        &.#{$tag}--gold {
+          &.#{$tag}::before {
+            background-color: $tagDotGoldBackgroundColor;
+          }
+        }
+        &.#{$tag}--olive {
+          &.#{$tag}::before {
+            background-color: $tagDotOliveBackgroundColor;
+          }
+        }
+        &.#{$tag}--turquoise {
+          &.#{$tag}::before {
+            background-color: $tagDotTurquuoiseBackgroundColor;
+          }
+        }
+        &.#{$tag}--blue {
+          &.#{$tag}::before {
+            background-color: $tagDotBlueBackgroundColor;
+          }
+        }
+        &.#{$tag}--purple {
+          &.#{$tag}::before {
+            background-color: $tagDotPurpleBackgroundColor;
+          }
+        }
+        &.#{$tag}--pink {
+          &.#{$tag}::before {
+            background-color: $tagDotPinkBackgroundColor;
+          }
+        }
+        &.#{$tag}--gray {
+          &.#{$tag}::before {
+            background-color: $tagDotGrayBackgroundColor;
+          }
+        }
+      }
+    }
+
+    &.#{$tag}--status {
+      padding: $tagStatusPadding;
+      text-transform: uppercase;
+      background-color: $tagStatusBackgroundColor;
+      font-size: $tagStatusFontSize;
+      line-height: $tagStatusLineHeight;
+
+      &.inactive {
+        border: $tagStatusInActiveBorder;
+        color: $tagStatusInActiveColor;
+      }
+
+      &.active {
+        border: $tagStatusActiveBorder;
+        color: $tagStatusActiveColor;
+      }
+
+      &.completed {
+        border: $tagStatusCompletedBorder;
+        background-color: $tagStatusCompletedBackgroundColor;
+        color: $tagStatusCompletedColor;
+      }
+
+      &.yet-to-start {
+        border: $tagStatusYetToStartBorder;
+        color: $tagStatusYetToStartColor;
+      }
+
+      &.paused {
+        border: $tagStatusPausedBorder;
+        color: $tagStatusPausedColor;
+      }
+
+      &.terminated {
+        border: $tagStatusTerminatedBorder;
+        background-color: $tagStatusTerminatedBackgroundColor;
+        color: $tagStatusTerminatedColor;
+      }
+
+      &.draft {
+        border: $tagStatusDraftBorder;
+        color: $tagStatusDraftColor;
+      }
+
+      &.in-progress {
+        border: $tagStatusInProgressBorder;
+        color: $tagStatusInProgressColor;
+      }
+
+      &.archived {
+        background-color: $tagStatusArchivedBackgroundColor;
+        color: $tagStatusArchivedColor;
+      }
+    }
+
+    &.#{$tag}--bg-dark {
+
+      &.#{$tag}--fill {
+        &.#{$tag}--green {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkGreenFillColor;
+        }
+        &.#{$tag}--red {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkRedFillColor;
+        }
+        &.#{$tag}--orange {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkOrangeFillColor;
+        }
+        &.#{$tag}--brown {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkBrownFillColor;
+        }
+        &.#{$tag}--gold {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkGoldFillColor;
+        }
+        &.#{$tag}--olive {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkOliveFillColor;
+        }
+        &.#{$tag}--turquoise {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkTurquoiseFillColor;
+        }
+        &.#{$tag}--blue {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkBlueFillColor;
+        }
+        &.#{$tag}--purple {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkPurpleFillColor;
+        }
+        &.#{$tag}--pink {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkPinkFillColor;
+        }
+        &.#{$tag}--gray {
+          background-color: map.get(colors.$color, 'white');
+          border-color: map.get(colors.$color, 'white');
+          color: $tagBgDarkGrayFillColor;
+        }
+      }
+      &.#{$tag}--outline {
+        background: $tagBgDarkOutlineBackground;
+
+        &.#{$tag}--green {
+          color: $tagBgDarkGreenOutlineColor;
+          border-color: $tagBgDarkGreenOutlineBorderColor;
+        }
+        &.#{$tag}--red {
+          color: $tagBgDarkRedOutlineColor;
+          border-color: $tagBgDarkRedOutlineBorderColor;
+        }
+        &.#{$tag}--orange {
+          color: $tagBgDarkOrangeOutlineColor;
+          border-color: $tagBgDarkOrangeOutlineBorderColor;
+        }
+        &.#{$tag}--brown {
+          color: $tagBgDarkBrownOutlineColor;
+          border-color: $tagBgDarkBrownOutlineBorderColor;
+        }
+        &.#{$tag}--gold {
+          color: $tagBgDarkGoldOutlineColor;
+          border-color: $tagBgDarkGoldOutlineBorderColor;
+        }
+        &.#{$tag}--olive {
+          color: $tagBgDarkOliveOutlineColor;
+          border-color: $tagBgDarkOliveOutlineBorderColor;
+        }
+        &.#{$tag}--turquoise {
+          color: $tagBgDarkTurquoiseOutlineColor;
+          border-color: $tagBgDarkTurquoiseOutlineBorderColor;
+        }
+        &.#{$tag}--blue {
+          color: $tagBgDarkBlueOutlineColor;
+          border-color: $tagBgDarkBlueOutlineBorderColor;
+        }
+        &.#{$tag}--purple {
+          color: $tagBgDarkPurpleOutlineColor;
+          border-color: $tagBgDarkPurpleOutlineBorderColor;
+        }
+        &.#{$tag}--pink {
+          color: $tagBgDarkPinkOutlineColor;
+          border-color: $tagBgDarkPinkOutlineBorderColor;
+        }
+        &.#{$tag}--gray {
+          color: $tagBgDarkGrayOutlineColor;
+          border-color: $tagBgDarkGrayOutlineBorderColor;
+        }
+      }
+      &.#{$tag}--semiFill {
+
+        &.#{$tag}--green {
+          border-color: $tagBgDarkSemifillGreenBorderColor;
+          color: $tagBgDarkSemifillGreenColor;
+          background: $tagBgDarkSemifillGreenBackgroundColor;
+        }
+        &.#{$tag}--red {
+          border-color: $tagBgDarkSemifillRedBorderColor;
+          color: $tagBgDarkSemifillRedColor;
+          background: $tagBgDarkSemifillRedBackgroundColor;
+        }
+        &.#{$tag}--orange {
+          border-color: $tagBgDarkSemifillOrangeBorderColor;
+          color: $tagBgDarkSemifillOrangeColor;
+          background: $tagBgDarkSemifillOrangeBackgroundColor;
+        }
+        &.#{$tag}--brown {
+          border-color: $tagBgDarkSemifillBrownBorderColor;
+          color: $tagBgDarkSemifillBrownColor;
+          background: $tagBgDarkSemifillBrownBackgroundColor;
+        }
+        &.#{$tag}--gold {
+          border-color: $tagBgDarkSemifillGoldBorderColor;
+          color: $tagBgDarkSemifillGoldColor;
+          background: $tagBgDarkSemifillGoldBackgroundColor;
+        }
+        &.#{$tag}--olive {
+          border-color: $tagBgDarkSemifillOliveBorderColor;
+          color: $tagBgDarkSemifillOliveColor;
+          background: $tagBgDarkSemifillOliveBackgroundColor;
+        }
+        &.#{$tag}--turquoise {
+          border-color: $tagBgDarkSemifillTurquoiseBorderColor;
+          color: $tagBgDarkSemifillTurquoiseColor;
+          background: $tagBgDarkSemifillTurquoiseBackgroundColor;
+        }
+        &.#{$tag}--blue {
+          border-color: $tagBgDarkSemifillBlueBorderColor;
+          color: $tagBgDarkSemifillBlueColor;
+          background: $tagBgDarkSemifillBlueBackgroundColor;
+        }
+        &.#{$tag}--purple {
+          border-color: $tagBgDarkSemifillPurpleBorderColor;
+          color: $tagBgDarkSemifillPurpleColor;
+          background: $tagBgDarkSemifillPurpleBackgroundColor;
+        }
+        &.#{$tag}--pink {
+          border-color: $tagBgDarkSemifillPinkBorderColor;
+          color: $tagBgDarkSemifillPinkColor;
+          background: $tagBgDarkSemifillPinkBackgroundColor;
+        }
+        &.#{$tag}--gray {
+          border-color: $tagBgDarkSemifillGrayBorderColor;
+          color: $tagBgDarkSemifillGrayColor;
+          background: $tagBgDarkSemifillGrayBackgroundColor;
+        }
+      }
+      &.#{$tag}--dot {
+        color: $tagBgDarkDotColor;
+
+        &::before {
+          border: $tagBgDarkDotBeforeBorder;
+        }
+      }
+    }
+  }
+}

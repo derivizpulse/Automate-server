@@ -1,0 +1,25 @@
+@use 'sass:math';
+
+@mixin width($theme) {
+  @include widthStyles;
+}
+
+@mixin widthStyles {
+  .cfu-width {
+    &-percentage {
+      @for $i from 1 through 10 {
+        &-#{$i}0 {
+          width: $i * 10%;
+        }
+      }
+    }
+
+    &-column {
+      @for $i from 1 through 12 {
+        &-#{$i} {
+          width: math.div(100%, 12) * $i;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+@use 'sass:map';
+@use 'maps/typography' as typography;
+@use 'maps/color' as color;
+
+$map: (
+  'trendColumnGap': 0.2rem,
+  'trendBeforeBorderLeftWidth': 0.4rem,
+  'trendBeforeBorderRightWidth': 0.4rem,
+  'trendIsPositiveColor': map.get(color.$color, 'indicator', 'green', 80),
+  'trendIsPositiveBeforeTransform': translateY(-0.2em),
+  'trendIsPositiveBeforeBorderBottomWidth': 0.4rem,
+  'trendIsNegativeColor':  map.get(color.$color, 'indicator', 'red', 80),
+  'trendIsNegativeBeforeTransform': translateY(0.1em),
+  'trendIsNegativeBeforeBorderTopWidth': 0.4rem,
+);

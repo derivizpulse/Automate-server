@@ -1,0 +1,13 @@
+@mixin flex($theme) {
+  @include flexStyles;
+}
+
+@mixin flexStyles {
+  .cfu-flex {
+    display: flex;
+
+    &-inline {
+      display: inline-flex;
+    }
+  }
+}

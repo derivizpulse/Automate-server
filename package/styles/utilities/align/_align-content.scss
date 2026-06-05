@@ -1,0 +1,51 @@
+@mixin alignContent($theme) {
+  @include alignContentStyles;
+}
+
+@mixin alignContentStyles {
+  .cfu-align-content {
+    &-normal {
+      align-content: normal;
+    }
+
+    &-center {
+      align-content: center;
+    }
+
+    &-start {
+      align-content: start;
+    }
+
+    &-end {
+      align-content: end;
+    }
+
+    &-flex {
+      &-start {
+        align-content: flex-start;
+      }
+
+      &-end {
+        align-content: flex-end;
+      }
+    }
+
+    &-baseline {
+      align-content: baseline;
+    }
+
+    &-space {
+      &-between {
+        align-content: space-between;
+      }
+
+      &-around {
+        align-content: space-around;
+      }
+
+      &-evenly {
+        align-content: space-evenly;
+      }
+    }
+  }
+}

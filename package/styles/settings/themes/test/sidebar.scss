@@ -1,0 +1,27 @@
+@use 'sass:map';
+@use './maps/typography.scss' as typography;
+@use './maps/corner' as corner;
+@use './maps/color' as colors;
+@use '../../spacing' as spacing;
+@use '../../elevation' as elevation;
+
+$map: (
+  'sidebarWidth': 6.4rem,
+  'sidebarBackgroundColor': map.get(colors.$color, 'white'),
+  'sidebarBorderRight': 0.1rem  solid map.get(colors.$color, 'grayscale', 20),
+  'sidebarIconMarginBottom': 0.4rem,
+  'sidebarIconSpanFontSize': 2rem,
+  'sidebarIconSpanColor': map.get(colors.$color, 'grayscale', 80),
+  'sidebarTextFontSize': map.get(typography.$typography, 'scale', 'sm', 'size'),
+  'sidebarTextLineHeight': map.get(typography.$typography, 'scale', 'sm', 'height'),
+  'sidebarTextFontWeight':  map.get(typography.$typography, 'weight', 'medium'),
+  'sidebarTextColor': map.get(colors.$color, 'grayscale', 60),
+  'sidebarItemPadding':  0.8rem 0.4rem,
+  'sidebarItemHoverBackground': map.get(colors.$color, 'interactive', 10),
+  'sidebarItemFocusVisibleOutline': 0.2rem solid map.get(colors.$color, 'accent', 'blue', 80),
+  'sidebarItemFocusVisibleOutlineOffset': -0.2rem,
+  'sidebarItemSelectedBorderLeft': 2px solid map.get(colors.$color, 'interactive', 100),
+  'sidebarItemSelectedBackgroundColor': map.get(colors.$color, 'interactive', 20),
+  'sidebarItemSelectedIconColor': map.get(colors.$color, 'interactive', 100),
+  'sidebarItemSelectedTextColor': map.get(colors.$color, 'interactive', 100),
+);

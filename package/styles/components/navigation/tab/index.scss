@@ -1,0 +1,72 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/tab' as lightTab;
+@use '../../../settings/themes/test/tab' as testTab;
+@use 'tabMixin' as tabMixin;
+
+@mixin tab($theme) {
+  @if $theme == theme.$theme-light {
+    @include tabStyles(lightTab.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include tabStyles(testTab.$map, $theme);
+  }
+}
+
+@mixin tabStyles($map, $theme) {
+  @include tabMixin.tabMixin(
+    $theme,
+    map.get($map, 'tabWrapperBorderBottom'),
+    map.get($map, 'tabWrapperPadding'),
+    map.get($map, 'tabHeight'),
+    map.get($map, 'tabColumnGap'),
+    map.get($map, 'tabItemFontSize'),
+    map.get($map, 'tabItemFontWeight'),
+    map.get($map, 'tabItemLineHeight'),
+    map.get($map, 'tabItemColor'),
+    map.get($map, 'tabItemColumnGap'),
+
+    // Primary
+    map.get($map, 'tabPrimaryItemBorderRadius'),
+    map.get($map, 'tabPrimaryItemPadding'),
+    map.get($map, 'tabPrimaryItemMargin'),
+    map.get($map, 'tabPrimaryItemHoverBackground'),
+    map.get($map, 'tabPrimaryItemFocusVisibleOutline'),
+    map.get($map, 'tabPrimaryItemIsActiveBackground'),
+    map.get($map, 'tabPrimaryItemIsActiveColor'),
+
+    // Secondary
+    map.get($map, 'tabSecondaryItemPadding'),
+    map.get($map, 'tabSecondaryItemMargin'),
+    map.get($map, 'tabSecondaryItemBeforeHeight'),
+    map.get($map, 'tabSecondaryItemHoverBackground'),
+    map.get($map, 'tabSecondaryItemFocusVisibleOutline'),
+    map.get($map, 'tabSecondaryItemFocusVisibleOutlineOffset'),
+    map.get($map, 'tabSecondaryItemIsActiveColor'),
+    map.get($map, 'tabSecondaryItemIsActiveBeforeBackground'),
+
+    // Slideout
+    map.get($map, 'tabSlideoutItemPadding'),
+    map.get($map, 'tabSlideoutItemMargin'),
+    map.get($map, 'tabSlideoutItemColor'),
+    map.get($map, 'tabSlideoutItemBeforeHeight'),
+    map.get($map, 'tabSlideoutItemHoverBackground'),
+    map.get($map, 'tabSlideoutItemFocusVisibleOutline'),
+    map.get($map, 'tabSlideoutItemFocusVisibleOutlineOffset'),
+    map.get($map, 'tabSlideoutItemIsActiveColor'),
+    map.get($map, 'tabSlideoutItemIsActiveBackground'),
+
+    // Tertiary
+    map.get($map, 'tabTertiaryItemBorderRadius'),
+    map.get($map, 'tabTertiaryItemPadding'),
+    map.get($map, 'tabTertiaryItemMargin'),
+    map.get($map, 'tabTertiaryItemBeforeHeight'),
+    map.get($map, 'tabTertiaryItemHoverBackground'),
+    map.get($map, 'tabTertiaryItemFocusVisibleOutline'),
+    map.get($map, 'tabTertiaryItemFocusVisibleOutlineOffset'),
+    map.get($map, 'tabTertiaryItemIsActiveColor'),
+    map.get($map, 'tabTertiaryItemIsActiveBeforeBackground'),
+    map.get($map, 'tabTertiaryItemIsActiveBackground'),
+  );
+}

@@ -1,0 +1,201 @@
+///
+/// Careflow Action Menu Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin actionMenuMixin(
+  $theme,
+  $actionMenuBlackItemColor,
+  $actionMenuBlackItemHoverBackgroundImage,
+  $actionMenuBlackItemActiveBackgroundColor,
+  $actionMenuBlackItemActiveColor,
+  $actionMenuBlackBorderItemBorder,
+  $actionMenuBlackBorderItemActiveColor,
+  $actionMenuBlackBorderItemActiveBorderColor,
+  $actionMenuItemPadding,
+  $actionMenuItemColumnGap,
+  $actionMenuItemColor,
+  $actionMenuItemHoverBackground,
+  $actionMenuItemfocusOutline,
+  $actionMenuItemActiveBackgroundColor,
+  $actionMenuItemLeftColumnGap,
+  $actionMenuItemRightColumnGap,
+  $actionMenuBorderItemBorderColor,
+  $actionMenuBorderItemfocusVisibleBorder,
+  $actionMenuBorderItemfocusVisibleOutline,
+  $actionMenuBorderItemActiveBorderColor,
+  $actionMenuCornerItemBorderRadius,
+  $actionMenuGap2RowGap,
+  $actionMenuGap4RowGap,
+  $actionMenuGap8RowGap,
+  $actionMenuAccordionBorderRadius,
+  $actionMenuAccordionFocus,
+  $actionMenuActiveBorderColor,
+  $actionMenuActiveHeaderBackgroundColor,
+  $actionMenuAccordionContentInnerPadding,
+
+) {
+  $action-menu: component.$action-menu;
+  $action-menu-accordion: component.$action-menu-accordion;
+
+  .#{$action-menu} {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+
+    &.#{$action-menu}--black {
+
+      .#{$action-menu}__item {
+        color: $actionMenuBlackItemColor;
+
+        &:hover:not(.is-disabled,.is-active,.cfc-action-menu-accordion__header) {
+          background-image: $actionMenuBlackItemHoverBackgroundImage;
+        }
+
+        &.is-active:not(.is-disabled) {
+          background-color: $actionMenuBlackItemActiveBackgroundColor;
+          color: $actionMenuBlackItemActiveColor;
+        }
+      }
+
+      &.#{$action-menu}--border {
+        .#{$action-menu}__item {
+          border: $actionMenuBlackBorderItemBorder;
+
+          &.is-active:not(.is-disabled) {
+            color: $actionMenuBlackBorderItemActiveColor;
+            border-color: $actionMenuBlackBorderItemActiveBorderColor;
+          }
+        }
+      }
+    }
+
+    .#{$action-menu}__item {
+      padding: $actionMenuItemPadding;
+      display: flex;
+      align-items: center;
+      column-gap: $actionMenuItemColumnGap;
+      cursor: pointer;
+      color: $actionMenuItemColor;
+
+      &:hover:not(.is-disabled,.is-active,.cfc-action-menu-accordion__header) {
+        background: $actionMenuItemHoverBackground;
+      }
+
+      &:focus-visible:not(.is-disabled) {
+        outline: 0.2rem solid $actionMenuItemfocusOutline;
+      }
+
+      &.is-active:not(.is-disabled) {
+        cursor: default;
+        background-color: $actionMenuItemActiveBackgroundColor;
+      }
+
+      &.is-disabled {
+        cursor: default;
+        opacity: 0.4;
+        pointer-events: none;
+
+        &:focus-visible {
+          outline: 0;
+        }
+      }
+
+      .#{$action-menu}__item-left {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        column-gap: $actionMenuItemLeftColumnGap;
+      }
+
+      .#{$action-menu}__item-right {
+        display: flex;
+        align-items: center;
+        column-gap: $actionMenuItemRightColumnGap;
+      }
+    }
+
+    // Modifiers
+    &.#{$action-menu}--border {
+      .#{$action-menu}__item {
+        border: 0.1rem solid $actionMenuBorderItemBorderColor;
+
+        &:focus-visible:not(.is-disabled) {
+          border: 0.1rem solid $actionMenuBorderItemfocusVisibleBorder;
+          outline: 0.1rem solid $actionMenuBorderItemfocusVisibleOutline;
+        }
+
+        &.is-active:not(.is-disabled) {
+          border-color: $actionMenuBorderItemActiveBorderColor;
+        }
+      }
+    }
+
+    &.#{$action-menu}--corner {
+      .#{$action-menu}__item {
+        border-radius: $actionMenuCornerItemBorderRadius;
+      }
+    }
+
+    &.#{$action-menu}--gap {
+      &-2 {
+        row-gap: $actionMenuGap2RowGap;
+      }
+
+      &-4 {
+        row-gap: $actionMenuGap4RowGap;
+      }
+
+      &-8 {
+        row-gap: $actionMenuGap8RowGap;
+      }
+    }
+  }
+
+  .#{$action-menu-accordion} {
+    overflow: hidden;
+    border-radius: $actionMenuAccordionBorderRadius;
+    border: 0.1rem solid transparent;
+    transition: border-width 0.2s linear;
+
+    &:focus-visible {
+      outline: 0.2px solid $actionMenuAccordionFocus;
+    }
+
+    .#{$action-menu-accordion}__header {
+      border-radius: 0 !important;
+      transition: background 150ms linear;
+
+      .#{$action-menu-accordion}__icon {
+        transition: transform 0.2s linear;
+      }
+    }
+
+    &.is-active {
+      border-color: $actionMenuActiveBorderColor;
+
+      .#{$action-menu-accordion}__header {
+        background-color: $actionMenuActiveHeaderBackgroundColor;
+
+        // Rotate Icon
+        .#{$action-menu-accordion}__icon {
+          transform: rotate(-180deg);
+        }
+      }
+    }
+
+    .#{$action-menu-accordion}__content {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.2s linear;
+
+      .#{$action-menu-accordion}__content-inner {
+        padding: $actionMenuAccordionContentInnerPadding;
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/fieldCheckGroup' as lightFieldCheckGroup;
+@use '../../../settings/themes/dark/fieldCheckGroup' as darkFieldCheckGroup;
+@use 'fieldcheckgroupMixin' as checkGroupMixin;
+@use '../../../settings/themes/test/fieldCheckGroup' as testFieldCheckGroup;
+
+$field-check-group: component.$field-check-group;
+
+@mixin fieldCheckGroup($theme) {
+  @if $theme == theme.$theme-light {
+    @include fieldCheckGroupStyles(lightFieldCheckGroup.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include fieldCheckGroupStyles(darkFieldCheckGroup.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include fieldCheckGroupStyles(testFieldCheckGroup.$map, $theme);
+  }
+}
+
+@mixin fieldCheckGroupStyles($map, $theme) {
+  @include checkGroupMixin.fieldCheckGroupMixin(
+    $theme,
+    map.get($map, 'fieldCheckGroupPadding'),
+    map.get($map, 'fieldCheckGroupVerticalRowGap'),
+    map.get($map, 'fieldCheckGroupHorizontalRowGap'),
+    map.get($map, 'fieldCheckGroupHorizontalColumnGap')
+  );
+}

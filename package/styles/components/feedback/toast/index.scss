@@ -1,0 +1,62 @@
+@use 'sass:map';
+@use 'toastMixin' as toastMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/toast' as lightToast;
+@use '../../../settings/themes/dark/toast' as darkToast;
+@use '../../../settings/themes/test/toast' as testToast;
+
+@mixin toast($theme) {
+  @if $theme == theme.$theme-light {
+    @include toastStyles(lightToast.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include toastStyles(darkToast.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include toastStyles(testToast.$map, $theme);
+  }
+}
+
+@mixin toastStyles($map, $theme) {
+  @include toastMixin.toastMixin(
+    $theme,
+    map.get($map, 'toastRowGap'),
+    map.get($map, 'toastGroupTopStartTop'),
+    map.get($map, 'toastGroupTopStartLeft'),
+    map.get($map, 'toastGroupTopEndTop'),
+    map.get($map, 'toastGroupTopEndRight'),
+    map.get($map, 'toastGroupBottomStartBottom'),
+    map.get($map, 'toastGroupBottomStartLeft'),
+    map.get($map, 'toastGroupBottomEndBottom'),
+    map.get($map, 'toastGroupBottomEndRight'),
+    map.get($map, 'toastWidth'),
+    map.get($map, 'toastPadding'),
+    map.get($map, 'toastColumnGap'),
+    map.get($map, 'toastBorder'),
+    map.get($map, 'toastBorderRadius'),
+    map.get($map, 'toastBoxShadow'),
+    map.get($map, 'toastIconContainerWidth'),
+    map.get($map, 'toastIconContainerHeight'),
+    map.get($map, 'toastIconContainerBorderRadius'),
+    map.get($map, 'toastIconContainerFontSize'),
+    map.get($map, 'toastContentMarginRight'),
+    map.get($map, 'toastActionColor'),
+    map.get($map, 'toastActionWidth'),
+    map.get($map, 'toastActionHeight'),
+    map.get($map, 'toastActionFontSize'),
+    map.get($map, 'toastSuccessBackground'),
+    map.get($map, 'toastSuccessColor'),
+    map.get($map, 'toastSuccessIconContainerBackgroundColor'),
+    map.get($map, 'toastFailureBackground'),
+    map.get($map, 'toastFailureColor'),
+    map.get($map, 'toastFailureIconContainerBackgroundColor'),
+    map.get($map, 'toastInfoBackground'),
+    map.get($map, 'toastInfoColor'),
+    map.get($map, 'toastInfoIconContainerBackgroundColor'),
+    map.get($map, 'toastCautionBackground'),
+    map.get($map, 'toastCautionColor'),
+    map.get($map, 'toastCautionIconContainerBackgroundColor')
+  );
+}

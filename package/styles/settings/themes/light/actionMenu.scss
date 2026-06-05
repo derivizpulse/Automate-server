@@ -1,0 +1,35 @@
+@use 'sass:map';
+@use 'maps/corner' as cornerMap;
+@use 'maps/color' as colorMap;
+@use '../../spacing' as spacingMap;
+
+$map: (
+  'actionMenuBlackItemColor': map.get(colorMap.$color, 'white'),
+  'actionMenuBlackItemHoverBackgroundImage': linear-gradient(rgba(255, 255, 255, 8%), rgba(255, 255, 255, 8%)),
+  'actionMenuBlackItemActiveBackgroundColor': map.get(colorMap.$color, 'interactive', 40),
+  'actionMenuBlackItemActiveColor': map.get(colorMap.$color, 'grayscale', 80),
+  'actionMenuBlackBorderItemBorder': 0.1rem solid map.get(colorMap.$color, 'grayscale', 40),
+  'actionMenuBlackBorderItemActiveColor': map.get(colorMap.$color, 'grayscale', 80),
+  'actionMenuBlackBorderItemActiveBorderColor': map.get(colorMap.$color, 'interactive', 20),
+  'actionMenuItemPadding': map.get(spacingMap.$spacing, 8),
+  'actionMenuItemColumnGap': map.get(spacingMap.$spacing, 12),
+  'actionMenuItemColor': map.get(colorMap.$color, 'grayscale', 100),
+  'actionMenuItemHoverBackground': linear-gradient(rgba(13, 22, 29, 5%), rgba(13, 22, 29, 5%)),
+  'actionMenuItemfocusOutline': map.get(colorMap.$color, 'accent', 'blue', 80),
+  'actionMenuItemActiveBackgroundColor': map.get(colorMap.$color, 'interactive', 10),
+  'actionMenuItemLeftColumnGap': map.get(spacingMap.$spacing, 8),
+  'actionMenuItemRightColumnGap': map.get(spacingMap.$spacing, 8),
+  'actionMenuBorderItemBorderColor': map.get(colorMap.$color, 'grayscale', 20),
+  'actionMenuBorderItemfocusVisibleBorder': map.get(colorMap.$color, 'accent', 'blue', 80),
+  'actionMenuBorderItemfocusVisibleOutline': map.get(colorMap.$color, 'accent', 'blue', 80),
+  'actionMenuBorderItemActiveBorderColor': map.get(colorMap.$color, 'interactive', 20),
+  'actionMenuCornerItemBorderRadius': map.get(cornerMap.$corner, 'default'),
+  'actionMenuGap2RowGap': map.get(spacingMap.$spacing, 2),
+  'actionMenuGap4RowGap': map.get(spacingMap.$spacing, 4),
+  'actionMenuGap8RowGap': map.get(spacingMap.$spacing, 8),
+  'actionMenuAccordionBorderRadius': map.get(cornerMap.$corner, 'default'),
+  'actionMenuAccordionFocus': map.get(colorMap.$color, 'accent', 'blue', 80),
+  'actionMenuActiveBorderColor': map.get(colorMap.$color, 'grayscale', 20),
+  'actionMenuActiveHeaderBackgroundColor': map.get(colorMap.$color, 'interactive', 10),
+  'actionMenuAccordionContentInnerPadding': map.get(spacingMap.$spacing, 8)
+);

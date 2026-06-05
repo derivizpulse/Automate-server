@@ -1,0 +1,23 @@
+@use 'sass:map';
+@use 'maps/typography' as typography;
+@use 'maps/color' as colors;
+@use 'maps/corner' as corner;
+
+$map: (
+  '$modalMargin': 6rem 0,
+  '$modalBorder':none,
+  '$modalBackground': map.get(colors.$color, 'white'),
+  '$modalBoxShadow': 0 0.4rem 1.2rem rgb(13 22 29 / 24%),
+  '$modalBorderRadius': map.get(corner.$corner, 'default'),
+  '$modalMaxHeight': calc(100dvh - 120px),
+  '$modalHeaderHeight': 4rem,
+  '$modalHeaderPadding': 0.8rem 1.2rem,
+  '$modalHeaderBackgroundColor': map.get(colors.$color, 'grayscale', 5),
+  '$modalHeaderBorderBottom': 0.1rem solid map.get(colors.$color, 'grayscale', 10),
+  '$modalFooterPadding': 0.8rem  1.2rem,
+  '$modalFooterBorderTop': 1px solid map.get(colors.$color, 'grayscale', 10),
+  '$modalSmallWidth': calc(100vw / 12 * 3),
+  '$modalMediumWidth': calc(100vw / 12 * 5),
+  '$modalLargeWidth': calc(100vw / 12 * 7),
+  '$modalXLargeWidth': calc(100vw / 12 * 9)
+);

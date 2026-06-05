@@ -1,0 +1,60 @@
+@use 'sass:map';
+@use '../../../settings/color' as colors;
+
+$tag: (
+  'green': (
+    'color': map.get(colors.$color, 'indicator', 'green', 80),
+    'color-light': map.get(colors.$color, 'indicator', 'green', 60),
+    'color-lighter': map.get(colors.$color, 'indicator', 'green', 5)
+  ),
+  'red': (
+    'color': map.get(colors.$color, 'indicator', 'red', 80),
+    'color-light': map.get(colors.$color, 'indicator', 'red', 60),
+    'color-lighter': map.get(colors.$color, 'indicator', 'red', 5)
+  ),
+  'orange': (
+    'color': map.get(colors.$color, 'indicator', 'orange', 80),
+    'color-light': map.get(colors.$color, 'indicator', 'orange', 60),
+    'color-lighter': map.get(colors.$color, 'indicator', 'orange', 5)
+  ),
+  'brown': (
+    'color': map.get(colors.$color, 'accent', 'brown', 80),
+    'color-light': map.get(colors.$color, 'accent', 'brown', 60),
+    'color-lighter': map.get(colors.$color, 'accent', 'brown', 5),
+  ),
+  'gold': (
+    'color': map.get(colors.$color, 'accent', 'gold', 80),
+    'color-light': map.get(colors.$color, 'accent', 'gold', 60),
+    'color-lighter': map.get(colors.$color, 'accent', 'gold', 5),
+  ),
+  'olive': (
+    'color': map.get(colors.$color, 'accent', 'olive', 80),
+    'color-light': map.get(colors.$color, 'accent', 'olive', 60),
+    'color-lighter': map.get(colors.$color, 'accent', 'olive', 5),
+  ),
+  'turquoise': (
+    'color': map.get(colors.$color, 'accent', 'turquoise', 80),
+    'color-light': map.get(colors.$color, 'accent', 'turquoise', 60),
+    'color-lighter': map.get(colors.$color, 'accent', 'turquoise', 5),
+  ),
+  'blue': (
+    'color': map.get(colors.$color, 'accent', 'blue', 80),
+    'color-light': map.get(colors.$color, 'accent', 'blue', 60),
+    'color-lighter': map.get(colors.$color, 'accent', 'blue', 5),
+  ),
+  'purple': (
+    'color': map.get(colors.$color, 'accent', 'purple', 80),
+    'color-light': map.get(colors.$color, 'accent', 'purple', 60),
+    'color-lighter': map.get(colors.$color, 'accent', 'purple', 5),
+  ),
+  'pink': (
+    'color': map.get(colors.$color, 'accent', 'pink', 80),
+    'color-light': map.get(colors.$color, 'accent', 'pink', 60),
+    'color-lighter': map.get(colors.$color, 'accent', 'pink', 5),
+  ),
+  'gray': (
+    'color': map.get(colors.$color, 'grayscale', 60),
+    'color-light': map.get(colors.$color, 'grayscale', 40),
+    'color-lighter': map.get(colors.$color, 'grayscale', 5),
+  ),
+);

@@ -1,0 +1,28 @@
+@mixin grow($theme) {
+  @include growStyles;
+}
+
+@mixin growStyles {
+  ///
+  /// Initial Value
+  /// flex-grow: 0;
+  /// flex-shrink: 1;
+  /// flex-basis: auto
+  /// flex: 0 1 auto;
+  ///
+
+  // Grow
+  .cfu-flex-grow {
+    &-none {
+      flex: 0 0 auto;
+    }
+
+    @for $i from 1 through 10 {
+      &-#{$i} {
+        flex: $i 1 0%;
+        min-width: 0;
+        min-height: 0;
+      }
+    }
+  }
+}

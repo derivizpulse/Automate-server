@@ -1,0 +1,260 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin wizardMixin(
+  $theme,
+  $wizardPadding,
+  $wizardMargin,
+  $wizardGap,
+  $wizardStepWidth,
+  $wizardStepHeight,
+  $wizardStepBorderRadius,
+  $wizardStepBorder,
+  $wizardStepBackground,
+  $wizardStepColor,
+  $wizardStepFontWeight,
+  $wizardHeaderColumnGap,
+  $wizardHeaderMinHeight,
+  $wizardTitleFontWeight,
+  $wizardTitleColor,
+  $wizardItemRowGap,
+  $wizardItemAfterWidth,
+  $wizardItemAfterHeight,
+  $wizardItemAfterBackground,
+  $wizardItemAfterBorder,
+  $wizardItemAfterBorderRadius,
+  $wizardItemAfterTop,
+  $wizardItemBeforeTop,
+  $wizardItemBeforeHeight,
+  $wizardItemBeforeBackground,
+  $wizardItemBeforeBackgroundSize,
+  $wizardItemIsActiveStepBackground,
+  $wizardItemIsActiveStepColor,
+  $wizardItemIsActiveStepBorderColor,
+  $wizardItemIsActiveTitleColor,
+  $wizardItemIsSelectedAfterBorderColor,
+  $wizardItemIsCompletedStepBackground,
+  $wizardItemIsCompletedStepColor,
+  $wizardItemIsCompletedStepBorderColor,
+  $wizardItemIsCompletedStepBeforeBackground,
+  $wizardItemIsCompletedStepBeforeWidth,
+  $wizardItemIsCompletedStepBeforeHeight,
+  $wizardItemIsCompletedStepBeforeBackgroundImage,
+  $wizardItemIsCompletedTitleColor,
+  $wizardItemIsCompletedIsSelectedAfterBorderColor,
+  $wizardVerticalPaddingLeft,
+  $wizardVerticalBodyRowGap,
+  $wizardVerticalContentPaddingBottom,
+  $wizardVerticalItemColumnGap,
+  $wizardVerticalItemMinHeight,
+  $wizardVerticalItemAfterLeft,
+  $wizardVerticalItemBeforeWidth,
+  $wizardVerticalItemBeforeLeft,
+  $wizardVerticalItemBeforeTop,
+  $wizardVerticalItemBeforeBackground
+) {
+  $wizard: component.$wizard;
+  .#{$wizard} {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $wizardPadding;
+    margin: $wizardMargin;
+    gap: $wizardGap;
+
+    .#{$wizard}__step {
+      position: relative;
+      width: $wizardStepWidth;
+      height: $wizardStepHeight;
+      border-radius: $wizardStepBorderRadius;
+      border: $wizardStepBorder;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: $wizardStepBackground;
+      color: $wizardStepColor;
+      font-weight: $wizardStepFontWeight;
+      z-index: 2;
+      overflow: hidden;
+      transition: 0.2s ease-in;
+    }
+    .#{$wizard}__header {
+      display: flex;
+      align-items: center;
+      column-gap: $wizardHeaderColumnGap;
+      min-height: $wizardHeaderMinHeight;
+    }
+    .#{$wizard}__title {
+      transition: 0.2s ease-in;
+      font-weight: $wizardTitleFontWeight;
+      color: $wizardTitleColor;
+    }
+
+    .#{$wizard}__item {
+      position: relative;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      row-gap: $wizardItemRowGap;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+
+      &::after {
+        content: '';
+        position: absolute;
+        width: $wizardItemAfterWidth;
+        height: $wizardItemAfterHeight;
+        background: $wizardItemAfterBackground;
+        border: $wizardItemAfterBorder;
+        border-radius: $wizardItemAfterBorderRadius;
+        top: $wizardItemAfterTop;
+        z-index: 1;
+        transition: 0.2s ease-in;
+      }
+
+      &:first-child {
+        &::before {
+          display: none;
+        }
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: $wizardItemBeforeTop;
+        width: calc(100% - ($wizardItemAfterWidth - $wizardGap));
+        right: calc(50% + ($wizardItemAfterWidth / 2));
+        height: $wizardItemBeforeHeight;
+        display: block;
+        background: $wizardItemBeforeBackground;
+        background-size: $wizardItemBeforeBackgroundSize;
+        transition: 0.2s ease-in;
+      }
+
+      // is active
+
+      &.is-active {
+        &::before {
+          background-position: left;
+        }
+        .#{$wizard}__step {
+          background: $wizardItemIsActiveStepBackground;
+          color: $wizardItemIsActiveStepColor;
+          border-color: $wizardItemIsActiveStepBorderColor;
+        }
+        .#{$wizard}__title {
+          color: $wizardItemIsActiveTitleColor;
+        }
+
+        &.is-selected {
+          &::after {
+            border-color: $wizardItemIsSelectedAfterBorderColor;
+          }
+        }
+      }
+
+      // is completed
+      &.is-completed {
+        &::before {
+          background-position: left;
+        }
+        .#{$wizard}__step {
+          background: $wizardItemIsCompletedStepBackground;
+          color: $wizardItemIsCompletedStepColor;
+          border-color: $wizardItemIsCompletedStepBorderColor;
+
+          &::before {
+            content: '';
+            background: $wizardItemIsCompletedStepBeforeBackground;
+            width: $wizardItemIsCompletedStepBeforeWidth;
+            height: $wizardItemIsCompletedStepBeforeHeight;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: $wizardItemIsCompletedStepBeforeBackgroundImage;
+            background-position: center center;
+            background-repeat: no-repeat;
+          }
+        }
+        .#{$wizard}__title {
+          color: $wizardItemIsCompletedTitleColor;
+        }
+
+        &.is-selected {
+          &::after {
+            border-color: $wizardItemIsCompletedIsSelectedAfterBorderColor;
+          }
+        }
+      }
+    }
+  }
+
+  // wizard vertical
+
+  .#{$wizard}--vertical {
+    flex-direction: column;
+    height: 100%;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-left: $wizardVerticalPaddingLeft;
+
+    .#{$wizard}__body {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      row-gap: $wizardVerticalBodyRowGap;
+    }
+    .#{$wizard}__content {
+      padding-bottom: $wizardVerticalContentPaddingBottom;
+    }
+
+    .#{$wizard}__item {
+      flex-direction: row;
+      column-gap: $wizardVerticalItemColumnGap;
+      align-items: flex-start;
+      flex: none;
+      min-height: $wizardVerticalItemMinHeight;
+
+      &::after {
+        left: $wizardVerticalItemAfterLeft;
+      }
+
+      &:first-child {
+        &::before {
+          display: block;
+          background-position: bottom;
+        }
+      }
+
+      &::before {
+        content: '';
+        width: $wizardVerticalItemBeforeWidth;
+        height: calc(100% - ($wizardItemAfterWidth - $wizardGap));
+        right: auto;
+        left: $wizardVerticalItemBeforeLeft;
+        top: calc(($wizardItemAfterWidth / 2) + $wizardGap);
+        background: $wizardVerticalItemBeforeBackground;
+        background-size: 100% 200%;
+        display: block;
+      }
+
+      &:last-child {
+        &::before {
+          display: none;
+        }
+      }
+
+      &.is-active,
+      &.is-completed {
+        &::before {
+          background-position: top;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+@use 'sass:map';
+@use 'timePickerMixin' as timePickerMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/timePicker' as lightTimePicker;
+@use '../../../settings/themes/test/timePicker' as testTimePicker;
+
+@mixin timePicker($theme) {
+  @if $theme == theme.$theme-light {
+    @include timePickerStyles(lightTimePicker.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include timePickerStyles(testTimePicker.$map, $theme);
+  }
+}
+
+@mixin timePickerStyles($map, $theme) {
+  @include timePickerMixin.timePickerMixin(
+    $theme,
+    map.get($map, 'timePickerBackground'),
+    map.get($map, 'timePickerWidth'),
+    map.get($map, 'timePickerBorder'),
+    map.get($map, 'timePickerBoxShadow'),
+    map.get($map, 'timePickerBorderRadius'),
+    map.get($map, 'timePickerContentColumnGap'),
+    map.get($map, 'timePickerContentPadding'),
+    map.get($map, 'timePickerHoursRowGap'),
+    map.get($map, 'timePickerHoursFocusVisibleOutline'),
+    map.get($map, 'timePickerHoursCellIsSelectedFontWeight'),
+    map.get($map, 'timePickerHoursCellIsSelectedBackground'),
+    map.get($map, 'timePickerHoursCellIsSelectedBorderRadius'),
+    map.get($map, 'timePickerMinutesRowGap'),
+    map.get($map, 'timePickerMinutesFocusVisibleOutline'),
+    map.get($map, 'timePickerMinutesCellIsSelectedFontWeight'),
+    map.get($map, 'timePickerMinutesCellIsSelectedBackground'),
+    map.get($map, 'timePickerMinutesCellIsSelectedBorderRadius'),
+    map.get($map, 'timePickerDayNotationRowGap'),
+    map.get($map, 'timePickerDayNotationFocusVisibleOutline'),
+    map.get($map, 'timePickerDayNotationCellIsSelectedFontWeight'),
+    map.get($map, 'timePickerDayNotationCellIsSelectedBackground'),
+    map.get($map, 'timePickerDayNotationCellIsSelectedBorderRadius'),
+    map.get($map, 'timePickerCellPadding'),
+    map.get($map, 'timePickerCellFontWeight'),
+    map.get($map, 'timePickerCellFontSize'),
+    map.get($map, 'timePickerCellLineHeight'),
+    map.get($map, 'timePickerCellColor'),
+    map.get($map, 'timePickerCellHoverBackground'),
+    map.get($map, 'timePickerCellHoverBorderRadius'),
+    map.get($map, 'timePickerFooterBackgroundColor'),
+    map.get($map, 'timePickerFooterBorderTop'),
+    map.get($map, 'timePickerFooterBorderRadius'),
+    map.get($map, 'timePickerFooterPadding'),
+    map.get($map, 'timePickerFooterColumnGap')
+  );
+}

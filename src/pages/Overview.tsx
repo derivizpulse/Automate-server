@@ -8,7 +8,6 @@ import {
   DateRangePickers,
   boundsFromIsoRange,
   formatRangeLabel,
-  shiftIsoDate,
   type DateRangeBounds,
 } from "../components/DateRangeFilter";
 import {
@@ -50,7 +49,7 @@ function isoDateOnly(value: string): string {
 }
 
 function isoInDateRange(iso: string | null, bounds: DateRangeBounds | null): boolean {
-  if (!bounds) return Boolean(iso);
+  if (!bounds) return true;
   if (!iso) return false;
   const d = isoDateOnly(iso);
   return d >= bounds.from && d <= bounds.to;
@@ -423,8 +422,10 @@ export function Overview({
     dbId: string;
     action: ConfirmOverrideAction;
   } | null>(null);
-  const [showLegendInfo, setShowLegendInfo] = useState(false);
-  const legendRef = useRef<HTMLDivElement | null>(null);
+  const [showLegendInfo, setShowLegendInfo] = useState(() => {
+    const p = new URLSearchParams(window.location.search).get("legend");
+    return p === "1" || p === "open" || p === "true";
+  });
   const tableSectionRef = useRef<HTMLDivElement | null>(null);
   const [nowIso, setNowIso] = useState<string>(() => new Date().toISOString());
   /** Freeze row order while editing and after Save until sort changes (avoids row “jumping”). */
@@ -438,23 +439,7 @@ export function Overview({
     return () => window.clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    if (!showLegendInfo) return;
-    function handleOutsideClick(event: MouseEvent) {
-      if (!legendRef.current) return;
-      if (legendRef.current.contains(event.target as Node)) return;
-      setShowLegendInfo(false);
-    }
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [showLegendInfo]);
-
   const todayIso = nowIso.slice(0, 10);
-
-  useEffect(() => {
-    setRangeFrom((f) => f || shiftIsoDate(todayIso, -7));
-    setRangeTo((t) => t || shiftIsoDate(todayIso, 7));
-  }, [todayIso]);
 
   const dateRangeBounds = useMemo(
     () => (rangeFrom && rangeTo ? boundsFromIsoRange(rangeFrom, rangeTo) : null),
@@ -804,13 +789,14 @@ export function Overview({
         </div>
 
         {subTab !== "Audit Log" && (
-          <div ref={legendRef} className="relative flex shrink-0 items-center border-l border-cf-border-soft px-2">
+          <div className="flex shrink-0 items-center border-l border-cf-border-soft px-2">
             <button
               type="button"
               aria-label="Open status legend"
               aria-expanded={showLegendInfo}
+              aria-haspopup="dialog"
               className="inline-flex h-[28px] w-[28px] items-center justify-center rounded-full text-cf-primary transition-colors hover:bg-cf-primary-light/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-cf-primary focus-visible:ring-offset-1"
-              onClick={() => setShowLegendInfo((v) => !v)}
+              onClick={() => setShowLegendInfo(true)}
             >
               <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden className="text-cf-primary">
                 <circle cx="7" cy="7" r="6.25" fill="none" stroke="currentColor" strokeWidth="1" />
@@ -818,72 +804,6 @@ export function Overview({
                 <circle cx="7" cy="3.85" r="0.85" fill="currentColor" />
               </svg>
             </button>
-
-            {showLegendInfo && (
-              <div className="c-card absolute right-2 top-[calc(100%+4px)] z-[230] w-[540px] max-w-[calc(100vw-24px)] overflow-hidden shadow-lg">
-                <div className="c-card-header flex items-center justify-between">
-                  <p className="text-[12px] font-medium text-cf-secondary">Status reference</p>
-                  <button
-                    type="button"
-                    className="text-[12px] text-cf-muted transition-colors hover:text-cf-secondary"
-                    onClick={() => setShowLegendInfo(false)}
-                    aria-label="Close status legend"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <div className="grid gap-3 p-3 md:grid-cols-2">
-                  <div>
-                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-cf-muted">
-                      Status
-                    </p>
-                    <ul className="space-y-1.5">
-                      {STATUS_LEGEND.map((item) => {
-                        const s = STATUS_STYLE[item.label] ?? STATUS_STYLE["Active"];
-                        return (
-                          <li
-                            key={item.label}
-                            className="rounded-cf-sm border border-cf-border-soft bg-white px-2 py-1"
-                          >
-                            <div
-                              className="mb-1 inline-flex rounded-[3px] px-1.5 py-0.5 text-[10px] font-medium"
-                              style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
-                            >
-                              {item.label}
-                            </div>
-                            <p className="text-[10px] leading-[15px] text-cf-secondary">{item.meaning}</p>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                  <div>
-                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-cf-muted">
-                      Deliverable / Conv. Status
-                    </p>
-                    <ul className="space-y-1.5">
-                      {DELIVERABLE_LEGEND.map((item) => {
-                        const s = DELIVERABLE_STYLE[item.label] ?? DELIVERABLE_STYLE.Active;
-                        return (
-                          <li
-                            key={item.label}
-                            className="rounded-cf-sm border border-cf-border-soft bg-white px-2 py-1"
-                          >
-                            <div
-                              className="mb-1 inline-flex rounded-[3px] px-1.5 py-0.5 text-[10px] font-medium"
-                              style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
-                            >
-                              {item.label}
-                            </div>
-                            <p className="text-[10px] leading-[15px] text-cf-secondary">{item.meaning}</p>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
@@ -1077,48 +997,50 @@ export function Overview({
       {subTab !== "Audit Log" && (
         <div ref={tableSectionRef} className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
           {/* Filters row */}
-          <div className="shrink-0 flex flex-wrap items-end gap-x-3 gap-y-2">
+          <div className="shrink-0 flex flex-wrap items-end justify-between gap-x-3 gap-y-2">
+            <div className="flex flex-wrap items-end gap-x-3 gap-y-2">
+              <div className="flex min-w-[200px] flex-1 flex-col gap-1">
+                <label htmlFor="overview-db-search" className="cf-field-label">
+                  Search
+                </label>
+                <input
+                  id="overview-db-search"
+                  className="c-input w-full"
+                  placeholder="Database, account, conversion, or server…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  aria-label="Search databases by name, account, conversion, or server"
+                />
+              </div>
+              <MultiSelectFilter
+                id="server-filter"
+                label="Server"
+                className="min-w-[180px]"
+                allLabel="All servers"
+                options={serverOptions}
+                value={serverFilters}
+                onChange={setServerFilters}
+              />
+              <MultiSelectFilter
+                id="status-filter"
+                label="Status"
+                className="min-w-[200px]"
+                allLabel="All statuses"
+                options={[...STATUS_FILTER_OPTIONS]}
+                value={statusFilters}
+                onChange={setStatusFilters}
+                treatEmptyAsAll={false}
+                onShowAll={() => setStatusFilters([...STATUS_FILTER_OPTIONS])}
+              />
+            </div>
             <DateRangePickers
-              className="min-w-[min(100%,440px)] basis-full lg:basis-auto lg:flex-1"
+              className="min-w-[min(100%,440px)] shrink-0"
               label="Action date"
               dateFrom={rangeFrom}
               dateTo={rangeTo}
               onDateFromChange={setRangeFrom}
               onDateToChange={setRangeTo}
               rangeLabel={dateRangeLabel}
-            />
-            <div className="flex min-w-[200px] flex-1 flex-col gap-1">
-              <label htmlFor="overview-db-search" className="cf-field-label">
-                Search
-              </label>
-              <input
-                id="overview-db-search"
-                className="c-input w-full"
-                placeholder="Database, account, conversion, or server…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                aria-label="Search databases by name, account, conversion, or server"
-              />
-            </div>
-            <MultiSelectFilter
-              id="server-filter"
-              label="Server"
-              className="min-w-[180px]"
-              allLabel="All servers"
-              options={serverOptions}
-              value={serverFilters}
-              onChange={setServerFilters}
-            />
-            <MultiSelectFilter
-              id="status-filter"
-              label="Status"
-              className="min-w-[200px]"
-              allLabel="All statuses"
-              options={[...STATUS_FILTER_OPTIONS]}
-              value={statusFilters}
-              onChange={setStatusFilters}
-              treatEmptyAsAll={false}
-              onShowAll={() => setStatusFilters([...STATUS_FILTER_OPTIONS])}
             />
           </div>
 
@@ -1377,6 +1299,98 @@ export function Overview({
           onClose={() => setSelected(null)}
           readOnly={selected ? effectiveDeletedIds.includes(selected) : false}
         />
+      )}
+
+      {/* Status legend modal */}
+      {showLegendInfo && (
+        <>
+          <div
+            className="cf-modal-overlay fixed inset-0 z-[200]"
+            onClick={() => setShowLegendInfo(false)}
+            aria-hidden
+          />
+          <div
+            className="cf-modal-panel fixed left-1/2 top-1/2 z-[210] max-h-[min(90vh,640px)] w-[560px] max-w-[calc(100vw-32px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="status-legend-title"
+          >
+            <div className="cf-modal-header">
+              <h3 id="status-legend-title" className="cf-modal-title">
+                Status reference
+              </h3>
+              <button
+                type="button"
+                className="text-[16px] leading-none text-cf-muted transition-colors hover:text-cf-secondary"
+                onClick={() => setShowLegendInfo(false)}
+                aria-label="Close status legend"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="max-h-[min(70vh,520px)] overflow-auto">
+              <div className="grid gap-3 p-4 md:grid-cols-2">
+                <div>
+                  <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-cf-muted">
+                    Status
+                  </p>
+                  <ul className="space-y-1.5">
+                    {STATUS_LEGEND.map((item) => {
+                      const s = STATUS_STYLE[item.label] ?? STATUS_STYLE["Active"];
+                      return (
+                        <li
+                          key={item.label}
+                          className="rounded-cf-sm border border-cf-border-soft bg-white px-2 py-1"
+                        >
+                          <div
+                            className="mb-1 inline-flex rounded-[3px] px-1.5 py-0.5 text-[10px] font-medium"
+                            style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
+                          >
+                            {item.label}
+                          </div>
+                          <p className="text-[10px] leading-[15px] text-cf-secondary">{item.meaning}</p>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+                <div>
+                  <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.04em] text-cf-muted">
+                    Deliverable / Conv. Status
+                  </p>
+                  <ul className="space-y-1.5">
+                    {DELIVERABLE_LEGEND.map((item) => {
+                      const s = DELIVERABLE_STYLE[item.label] ?? DELIVERABLE_STYLE.Active;
+                      return (
+                        <li
+                          key={item.label}
+                          className="rounded-cf-sm border border-cf-border-soft bg-white px-2 py-1"
+                        >
+                          <div
+                            className="mb-1 inline-flex rounded-[3px] px-1.5 py-0.5 text-[10px] font-medium"
+                            style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
+                          >
+                            {item.label}
+                          </div>
+                          <p className="text-[10px] leading-[15px] text-cf-secondary">{item.meaning}</p>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="cf-modal-footer">
+              <button
+                type="button"
+                className="c-btn-primary"
+                onClick={() => setShowLegendInfo(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </>
       )}
 
       {/* Schedule override modal (replaces Exclude in table actions) */}

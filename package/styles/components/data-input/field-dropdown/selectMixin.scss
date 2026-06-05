@@ -1,0 +1,145 @@
+///
+/// Field - Dropdown Styles
+///
+
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/color' as colors;
+@use '../../../settings/typography' as typography;
+@use '../../../settings/spacing' as spacing;
+@use '../../../settings/elevation' as elevation;
+
+@mixin fieldSelectMixin(
+  $theme,
+  $fieldSelectFontWeight,
+  $fieldSelectFocusOutline,
+  $fieldSelectDisabledFocusOutline,
+  $fieldSelectHeadHeight,
+  $fieldSelectHeadBorder,
+  $fieldSelectHeadBackgroundColor,
+  $fieldSelectHeadBorderRadius,
+  $fieldSelectHeadColumnGap,
+  $fieldSelectHeadPadding,
+  $fieldSelectHeadHoverBorder,
+  $fieldSelectHeadHoverBackgroundColor,
+  $fieldSelectHeadFocusBorder,
+  $fieldSelectHeadFocusOutline,
+  $fieldSelectHeadDisabledBackgroundColor,
+  $fieldSelectHeadDisabledBorderColor,
+  $fieldSelectHeadErrorBorderColor,
+  $fieldSelectHeadErrorOutlineColor,
+  $fieldSelectHeadContentColumnGap,
+  $fieldSelectHeadContentPlaceholderColor,
+  $fieldSelectHeadContentColor,
+  $fieldSelectHeadContentInactive,
+  $fieldSelectHeadContentDisabledColor,
+  $fieldSelectHeadContentInactiveDisabledColor,
+  $fieldSelectHeadIconsColumnGap,
+  $fieldSelectHeadIconsColor,
+  $fieldSelectDropdownWidth,
+  $fieldSelectDropdownMinWidth,
+  $fieldSelectDropdownBackgroundColor
+) {
+  .cfc-field-select {
+    font-weight: $fieldSelectFontWeight;
+    text-align: left;
+    position: relative;
+
+    &:focus-visible:not(.is-disabled) {
+      outline: $fieldSelectFocusOutline;
+    }
+
+    .cfc-field-select__head {
+      height: $fieldSelectHeadHeight;
+      border: $fieldSelectHeadBorder;
+      background-color: $fieldSelectHeadBackgroundColor;
+      border-radius: $fieldSelectHeadBorderRadius;
+      display: flex;
+      align-items: center;
+      column-gap: $fieldSelectHeadColumnGap;
+      padding: $fieldSelectHeadPadding;
+      cursor: pointer;
+
+      &:hover {
+        border: $fieldSelectHeadHoverBorder;
+        background-color: $fieldSelectHeadHoverBackgroundColor;
+      }
+
+      &:focus-visible {
+        border: $fieldSelectHeadFocusBorder;
+        outline: $fieldSelectHeadFocusOutline;
+      }
+
+      .cfc-field-select__head-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        column-gap: $fieldSelectHeadContentColumnGap;
+        align-items: center;
+        color: $fieldSelectHeadContentColor;
+
+        &-text {
+          max-width: 100%;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+
+        &.cfc-field-select__head-content--placeholder {
+          color: $fieldSelectHeadContentPlaceholderColor;
+        }
+
+        .cfc-field-select__head-content-inactive {
+          color: $fieldSelectHeadContentInactive;
+        }
+      }
+
+      .cfc-field-select__head-icons {
+        display: flex;
+        column-gap: $fieldSelectHeadIconsColumnGap;
+        color: $fieldSelectHeadIconsColor;
+      }
+    }
+
+    // Supposed to come inside CDK Overlay
+    .cfc-field-select__dropdown {
+      width: $fieldSelectDropdownWidth;
+      min-width: $fieldSelectDropdownMinWidth;
+      background-color: $fieldSelectDropdownBackgroundColor;
+    }
+
+    &.is-disabled {
+      &:focus-visible {
+        outline: $fieldSelectDisabledFocusOutline;
+      }
+
+      .cfc-field-select__head {
+        pointer-events: none;
+        cursor: not-allowed;
+        background-color: $fieldSelectHeadDisabledBackgroundColor;
+        border-color: $fieldSelectHeadDisabledBorderColor;
+
+        .cfc-field-select__head-content {
+          color: $fieldSelectHeadContentDisabledColor;
+
+          .cfc-field-select__head-content-inactive {
+            color: $fieldSelectHeadContentInactiveDisabledColor;
+          }
+        }
+      }
+    }
+  }
+
+  // Handle Error
+  /* stylelint-disable-next-line no-descending-specificity */
+  .has-error .cfc-field-select__head {
+    border-color: $fieldSelectHeadErrorBorderColor;
+
+    &:hover,
+    &:focus-visible,
+    &:active {
+      border-color: $fieldSelectHeadErrorBorderColor;
+      outline-color: $fieldSelectHeadErrorOutlineColor;
+    }
+  }
+}

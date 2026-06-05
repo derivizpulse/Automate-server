@@ -1,0 +1,96 @@
+///
+/// Careflow Button Mixin
+///
+
+@use 'sass:map';
+@use '../../../../settings/components' as component;
+@use '../../../../settings/theme' as theme;
+
+@mixin buttonBaseMixin(
+  $theme,
+  $buttonMinWidth,
+  $buttonHeight,
+  $buttonPadding,
+  $buttonColumnGap,
+  $buttonFontSize,
+  $buttonLineHeight,
+  $buttonFontWeight,
+  $buttonBorderRadius
+) {
+  $button: component.$button;
+
+  .#{$button} {
+    min-width: $buttonMinWidth;
+    height: $buttonHeight;
+    padding: $buttonPadding;
+    column-gap: $buttonColumnGap;
+    font-size: $buttonFontSize;
+    line-height: $buttonLineHeight;
+    font-weight: $buttonFontWeight;
+    border-radius: $buttonBorderRadius;
+    cursor: pointer;
+    outline: 0;
+    background-color: transparent;
+    border-width: 0.1rem;
+    border-style: solid;
+    border-color: transparent;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:not(button) { // All other elements occupy 100% width by default
+      display: inline-flex;
+    }
+
+    @content;
+
+    // Modifier
+    &.#{$button}--min-width {
+      min-width: 5.6rem;
+    }
+  }
+}
+
+@mixin buttonMixin(
+  $borderColor,$backgroundColor,$color,$boxShadow,
+  $hoverBorderColor,$hoverBackgroundColor,$hoverColor,$hoverBoxShadow,
+  $activeBorderColor,$activeBackgroundColor,$activeColor,$activeBoxShadow,
+  $focusBorderColor,$focusBackgroundColor,$focusColor,$focusOutline,$focusOutlineOffset,
+  $disabledBorderColor,$disabledBackgroundColor,$disabledColor
+) {
+  border-color: $borderColor;
+  background: $backgroundColor;
+  color: $color;
+  box-shadow: $boxShadow;
+
+  &:hover {
+    border-color: $hoverBorderColor;
+    background: $hoverBackgroundColor;
+    color: $hoverColor;
+    box-shadow: $hoverBoxShadow;
+  }
+
+  &:focus-visible {
+    border-color: $focusBorderColor;
+    background: $focusBackgroundColor;
+    color: $focusColor;
+    outline: $focusOutline;
+    outline-offset: $focusOutlineOffset;
+  }
+
+  &:active {
+    border-color: $activeBorderColor;
+    background: $activeBackgroundColor;
+    color: $activeColor;
+    box-shadow: $activeBoxShadow;
+  }
+
+  &:disabled,
+  &.is-disabled {
+    cursor: default;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.4;
+  }
+}

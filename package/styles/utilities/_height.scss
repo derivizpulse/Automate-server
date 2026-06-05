@@ -1,0 +1,15 @@
+@mixin height($theme) {
+  @include heightStyles;
+}
+
+@mixin heightStyles {
+  .cfu-height {
+    &-percentage {
+      @for $i from 1 through 10 {
+        &-#{$i}0 {
+          height: $i * 10%;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,9 @@
+@use 'align-content' as alignContent;
+@use 'align-items' as alignItems;
+@use 'align-self' as alignSelf;
+
+@mixin align($theme) {
+  @include alignContent.alignContent($theme);
+  @include alignItems.alignItems($theme);
+  @include alignSelf.alignSelf($theme);
+}

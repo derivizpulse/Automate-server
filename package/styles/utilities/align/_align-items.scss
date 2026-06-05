@@ -1,0 +1,51 @@
+@mixin alignItems($theme) {
+  @include alignItemsStyles;
+}
+
+@mixin alignItemsStyles {
+  .cfu-align-items {
+    &-normal {
+      align-items: normal;
+    }
+
+    &-stretch {
+      align-items: stretch;
+    }
+
+    &-center {
+      align-items: center;
+    }
+
+    &-start {
+      align-items: start;
+    }
+
+    &-end {
+      align-items: end;
+    }
+
+    &-flex {
+      &-start {
+        align-items: flex-start;
+      }
+
+      &-end {
+        align-items: flex-end;
+      }
+    }
+
+    &-self {
+      &-start {
+        align-items: self-start;
+      }
+
+      &-end {
+        align-items: self-end;
+      }
+    }
+
+    &-baseline {
+      align-items: baseline;
+    }
+  }
+}

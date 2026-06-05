@@ -1,0 +1,52 @@
+@use 'sass:map';
+@use 'maps/color' as color;
+
+$map: (
+  'tabWrapperBorderBottom': 1px solid map.get(color.$color, 'grayscale', 10),
+  'tabWrapperPadding': 0.8rem 1.2rem,
+  'tabHeight': 2.4rem,
+  'tabColumnGap': 0.2rem,
+  'tabItemFontSize': 1.2rem,
+  'tabItemFontWeight': 600,
+  'tabItemLineHeight': 1.6rem,
+  'tabItemColor': map.get(color.$color, 'grayscale', 80),
+  'tabItemColumnGap': 0.4rem,
+  // Priamry
+  'tabPrimaryItemBorderRadius': 0.4rem,
+  'tabPrimaryItemPadding': 0.8rem,
+  'tabPrimaryItemMargin': -0.4rem 0,
+  'tabPrimaryItemHoverBackground': rgba(53, 71, 86, 6%),
+  'tabPrimaryItemFocusVisibleOutline': 0.2rem solid map.get(color.$color, 'accent', 'blue', 80),
+  'tabPrimaryItemIsActiveBackground': map.get(color.$color, 'interactive', 20),
+  'tabPrimaryItemIsActiveColor': map.get(color.$color, 'interactive', 100),
+  // Secondary
+  'tabSecondaryItemPadding': 0.8rem,
+  'tabSecondaryItemMargin': -0.8rem 0,
+  'tabSecondaryItemBeforeHeight': 0.4rem,
+  'tabSecondaryItemHoverBackground': rgba(53, 71, 86, 6%),
+  'tabSecondaryItemFocusVisibleOutline': 0.2rem solid map.get(color.$color, 'accent', 'blue', 80),
+  'tabSecondaryItemFocusVisibleOutlineOffset': -0.2rem,
+  'tabSecondaryItemIsActiveColor': map.get(color.$color, 'interactive', 80),
+  'tabSecondaryItemIsActiveBeforeBackground': map.get(color.$color, 'interactive', 80),
+  // Slideout
+  'tabSlideoutItemPadding': 0.8rem,
+  'tabSlideoutItemMargin': -0.8rem 0,
+  'tabSlideoutItemColor': map.get(color.$color, 'white'),
+  'tabSlideoutItemBeforeHeight': 0.4rem,
+  'tabSlideoutItemHoverBackground': rgba(0, 0, 0, 12%),
+  'tabSlideoutItemFocusVisibleOutline': 0.2rem solid map.get(color.$color, 'accent', 'blue', 80),
+  'tabSlideoutItemFocusVisibleOutlineOffset': -0.2rem,
+  'tabSlideoutItemIsActiveColor': map.get(color.$color, 'interactive', 40),
+  'tabSlideoutItemIsActiveBackground': map.get(color.$color, 'interactive', 40),
+  // Tertiary
+  'tabTertiaryItemBorderRadius': 0.4rem 0.4rem 0 0,
+  'tabTertiaryItemPadding': 0.8rem,
+  'tabTertiaryItemMargin': -0.8rem 0,
+  'tabTertiaryItemBeforeHeight': 0.4rem,
+  'tabTertiaryItemHoverBackground': rgba(53, 71, 86, 6%),
+  'tabTertiaryItemFocusVisibleOutline': 0.2rem solid map.get(color.$color, 'accent', 'blue', 80),
+  'tabTertiaryItemFocusVisibleOutlineOffset': -0.2rem,
+  'tabTertiaryItemIsActiveColor': map.get(color.$color, 'interactive', 80),
+  'tabTertiaryItemIsActiveBeforeBackground': map.get(color.$color, 'interactive', 80),
+  'tabTertiaryItemIsActiveBackground': map.get(color.$color, 'white'),
+);

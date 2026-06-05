@@ -1,0 +1,9 @@
+@use 'justify-content' as justifyContent;
+@use 'justify-items' as justifyItems;
+@use 'justify-self' as justifySelf;
+
+@mixin justify($theme) {
+  @include justifyContent.justifyContent(theme);
+  @include justifyItems.justifyItems(theme);
+  @include justifySelf.justifySelf(theme);
+}

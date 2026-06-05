@@ -1,0 +1,9 @@
+@use 'gap' as gap;
+@use 'margin' as margin;
+@use 'padding' as padding;
+
+@mixin spacing($theme) {
+  @include gap.gap(theme);
+  @include margin.margin(theme);
+  @include padding.padding(theme);
+}

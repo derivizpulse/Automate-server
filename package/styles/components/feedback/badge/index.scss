@@ -1,0 +1,50 @@
+@use 'sass:map';
+@use 'badgeMixin' as badgeMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/badge' as lightBadge;
+@use '../../../settings/themes/dark/badge' as darkBadge;
+@use '../../../settings/themes/test/badge' as testBadge;
+
+@mixin badge($theme) {
+  @if $theme == theme.$theme-light {
+    @include badgeStyles(lightBadge.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include badgeStyles(darkBadge.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include badgeStyles(testBadge.$map, $theme);
+  }
+}
+
+@mixin badgeStyles($map, $theme) {
+  @include badgeMixin.badgeMixin(
+    $theme,
+    map.get($map, '$badgePadding'),
+    map.get($map, '$badgeMinWidth'),
+    map.get($map, '$badgeHeight'),
+    map.get($map, '$badgeBorder'),
+    map.get($map, '$badgeBorderRadius'),
+    map.get($map, '$badgeColor'),
+    map.get($map, '$badgeFontWeight'),
+    map.get($map, '$badgeFontSize'),
+    map.get($map, '$badgeLineHeight'),
+    map.get($map, '$badgeCounterQuantityBackgroundColor'),
+    map.get($map, '$badgeCounterAlertBackgroundColor'),
+    map.get($map, '$badgeStateSuccessPadding'),
+    map.get($map, '$badgeStateSuccessBackgroundColor'),
+    map.get($map, '$badgeStateSuccessFontSize'),
+    map.get($map, '$badgeStatusCautionPadding'),
+    map.get($map, '$badgeStatusCautionBackgroundColor'),
+    map.get($map, '$badgeStatusCautionFontSize'),
+    map.get($map, '$badgeLabelPatientBackgroundColor'),
+    map.get($map, '$badgeLabelProviderBackgroundColor'),
+    map.get($map, '$badgeDotPadding'),
+    map.get($map, '$badgeDotWidth'),
+    map.get($map, '$badgeDotMinWidth'),
+    map.get($map, '$badgeDotHeight'),
+    map.get($map, '$badgeDotBackgroundColor')
+  );
+}

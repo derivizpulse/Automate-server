@@ -1,0 +1,28 @@
+@use 'sass:map';
+@use 'pageMixin' as pageMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/page' as lightPage;
+@use '../../../settings/themes/test/page' as testPage;
+
+@mixin page($theme) {
+  @if $theme == theme.$theme-light {
+    @include pageStyles(lightPage.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include pageStyles(testPage.$map, $theme);
+  }
+}
+
+@mixin pageStyles($map, $theme) {
+  @include pageMixin.pageMixin(
+    $theme,
+    map.get($map, 'pagePanelMinHeight'),
+    map.get($map, 'pagePadding'),
+    map.get($map, 'pageBackgroundColor'),
+    map.get($map, 'pageBorderBottom'),
+    map.get($map, 'pageSidebarBorderRight'),
+    map.get($map, 'pageSidebarBackgroundColor'),
+    map.get($map, 'pageMainBackgroundColor'),
+  );
+}

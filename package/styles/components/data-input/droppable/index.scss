@@ -1,0 +1,48 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/droppable' as lightDroppable;
+@use '../../../settings/themes/test/droppable' as testDroppable;
+
+// @use '../../../settings/themes/dark/droppable' as darkDroppable;
+@use 'droppableMixin' as droppableMixin;
+
+@mixin droppable($theme) {
+  @if $theme == theme.$theme-light {
+    @include droppableStyles(lightDroppable.$map, $theme);
+  }
+
+  // @if $theme == theme.$theme-dark {
+  //   @include droppableStyles(darkDroppable.$map, $theme);
+  // }
+
+  @if $theme == theme.$theme-test {
+    @include droppableStyles(testDroppable.$map, $theme);
+  }
+}
+
+@mixin droppableStyles($map, $theme) {
+  @include droppableMixin.droppableMixin(
+    $theme,
+    map.get($map, 'droppableRowGap'),
+    map.get($map, 'droppableBorderRadius'),
+    map.get($map, 'droppableBorder'),
+    map.get($map, 'droppableBackgroundColor'),
+    map.get($map, 'droppablePadding'),
+    map.get($map, 'droppableIsActiveBorderColor'),
+    map.get($map, 'droppableIsActiveBackgroundColor'),
+    map.get($map, 'droppableHelperRowGap'),
+    map.get($map, 'droppableHelperTextFontWeight'),
+    map.get($map, 'droppableHelperDividerColumnGap'),
+    map.get($map, 'droppableHelperDividerColor'),
+    map.get($map, 'droppableHelperDividerbeforeWidth'),
+    map.get($map, 'droppableHelperDividerbeforeHeight'),
+    map.get($map, 'droppableHelperDividerbeforeBackgroundColor'),
+    map.get($map, 'droppableHelperActionsColumnGap'),
+    map.get($map, 'droppableHelperSubtextColor'),
+    map.get($map, 'droppableHelperSubtextFontSize'),
+    map.get($map, 'droppableHelperSubtextLineHeight'),
+    map.get($map, 'droppableHelperActionTextFontWeight'),
+    map.get($map, 'droppableHelperActionTextColor'),
+  );
+}

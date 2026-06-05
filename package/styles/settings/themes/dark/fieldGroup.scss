@@ -1,0 +1,20 @@
+@use 'sass:map';
+@use 'maps/color' as colorMap;
+
+$map: (
+  'fieldgroupActionsColumnGap': 0.8rem,
+  'fieldgroupActionsRight': 0.8rem,
+  'fieldgroupActionsColor': map.get(colorMap.$color, 'font', 100),
+  'fieldgroupAction1FieldPaddingRight': calc(0.8rem + 1.2rem + 0.8rem),
+  'fieldgroupAction2FieldPaddingRight': calc(0.8rem + 1.2rem + 0.8rem + 1.2rem + 0.8rem),
+  'fieldgroupLabelTop': 0.1rem,
+  'fieldgroupLabelWidth': 3.6rem,
+  'fieldgroupLabelHeight': 3.6rem,
+  'fieldgroupLabelBackgroundColor': map.get(colorMap.$color, 'background', 20),
+  'fieldgroupLabelLeftFieldPaddingLeft': calc(2.4rem + 0.8rem),
+  'fieldgroupLabelLeftLabelLeft': 0.1rem,
+  'fieldgroupLabelLeftLabelBorderRadius': 0.4rem 0 0 0.4rem,
+  'fieldgroupLabelRightFieldPaddingRight': calc(2.4rem + 0.8rem),
+  'fieldgroupLabelRightLabelRight': 0.1rem,
+  'fieldgroupLabelRightLabelBorderRadius': 0 0.5rem 0.5rem 0
+);

@@ -1,0 +1,33 @@
+$typography: (
+  'scale': (
+    'sm': (
+      'size': 1.2rem,
+      'height': 1.8rem,
+    ),
+    'base': (
+      'size': 1.4rem,
+      'height': 2rem,
+    ),
+    'lg': (
+      'size': 1.6rem,
+      'height': 2.2rem,
+    ),
+    'xl': (
+      'size': 1.8rem,
+      'height': 2.4rem,
+    ),
+    '2xl': (
+      'size': 2rem,
+      'height': 2.8rem,
+    ),
+    '3xl': (
+      'size': 2.2rem,
+      'height': 3.2rem,
+    ),
+  ),
+  'weight': (
+    'regular': 400,
+    'medium': 500,
+    'bold': 600,
+  )
+);

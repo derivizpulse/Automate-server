@@ -1,0 +1,121 @@
+@use 'sass:map';
+@use '../../settings/theme' as theme;
+@use '../../settings/themes/light/maps/color.scss' as lightColor;
+@use '../../settings/themes/dark/maps/color.scss' as darkColor;
+
+@mixin color($theme) {
+  @if $theme == theme.$theme-light {
+    @include colorLightStyles(lightColor.$color);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include colorDarktStyles(darkColor.$color);
+  }
+}
+
+@mixin colorLightStyles($color) {
+  .cfu-color {
+    // Interactive
+    &-interactive {
+      @each $name, $value in map.get($color, 'interactive') {
+        &-#{$name} {
+          color: $value;
+        }
+      }
+    }
+
+    // Grayscale
+    &-grayscale {
+      @each $name, $value in map.get($color, 'grayscale') {
+        &-#{$name} {
+          color: $value;
+        }
+      }
+    }
+
+    // Indicator
+    &-indicator {
+      @each $name, $value in map.get($color, 'indicator') {
+        &-#{$name} {
+          @each $name2, $value2 in $value {
+            &-#{$name2} {
+              color: $value2;
+            }
+          }
+        }
+      }
+    }
+
+    // Accent
+    &-accent {
+      @each $name, $value in map.get($color, 'accent') {
+        &-#{$name} {
+          @each $name2, $value2 in $value {
+            &-#{$name2} {
+              color: $value2;
+            }
+          }
+        }
+      }
+    }
+
+    // White
+    &-white {
+      color: map.get($color, 'white');
+    }
+  }
+}
+
+@mixin colorDarktStyles($color) {
+  .cfu-color {
+    // Background
+    &-background {
+      @each $name, $value in map.get($color, 'background') {
+        &-#{$name} {
+          color: $value;
+        }
+      }
+    }
+
+    // Font
+    &-font {
+      @each $name, $value in map.get($color, 'font') {
+        &-#{$name} {
+          color: $value;
+        }
+      }
+    }
+
+    // Primary
+    &-primary {
+      @each $name, $value in map.get($color, 'primary') {
+        &-#{$name} {
+          color: $value;
+        }
+      }
+    }
+
+    // Accent
+    &-accent {
+      @each $name, $value in map.get($color, 'accent') {
+        &-#{$name} {
+          @each $name2, $value2 in $value {
+            &-#{$name2} {
+              color: $value2;
+            }
+          }
+        }
+      }
+    }
+
+    // Black
+    &-black {
+      color: map.get($color, 'black');
+    }
+
+    // White
+    &-white {
+      color: map.get($color, 'white');
+    }
+  }
+}

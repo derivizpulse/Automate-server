@@ -1,0 +1,39 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/sidebar' as lightSidebar;
+@use '../../../settings/themes/test/sidebar' as testSidebar;
+@use 'sidebarMixin' as sidebarMixin;
+
+@mixin sidebar($theme) {
+  @if $theme == theme.$theme-light {
+    @include sidebarStyles(lightSidebar.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include sidebarStyles(testSidebar.$map, $theme);
+  }
+}
+
+@mixin sidebarStyles($map, $theme) {
+  @include sidebarMixin.sidebarMixin(
+    $theme,
+    map.get($map, 'sidebarWidth'),
+    map.get($map, 'sidebarBackgroundColor'),
+    map.get($map, 'sidebarBorderRight'),
+    map.get($map, 'sidebarIconMarginBottom'),
+    map.get($map, 'sidebarIconSpanFontSize'),
+    map.get($map, 'sidebarIconSpanColor'),
+    map.get($map, 'sidebarTextFontSize'),
+    map.get($map, 'sidebarTextLineHeight'),
+    map.get($map, 'sidebarTextFontWeight'),
+    map.get($map, 'sidebarTextColor'),
+    map.get($map, 'sidebarItemPadding'),
+    map.get($map, 'sidebarItemHoverBackground'),
+    map.get($map, 'sidebarItemFocusVisibleOutline'),
+    map.get($map, 'sidebarItemFocusVisibleOutlineOffset'),
+    map.get($map, 'sidebarItemSelectedBorderLeft'),
+    map.get($map, 'sidebarItemSelectedBackgroundColor'),
+    map.get($map, 'sidebarItemSelectedIconColor'),
+    map.get($map, 'sidebarItemSelectedTextColor')
+  );
+}

@@ -1,0 +1,19 @@
+@keyframes fous-animation {
+  0% {
+    outline-width: 0;
+  }
+
+  50% {
+    outline-width: 6px;
+  }
+
+  100% {
+    outline-width: 2px;
+  }
+}
+
+@mixin focus($offset: 0) {
+  animation-name: focus;
+  animation-duration: 150ms;
+  animation-timing-function: linear;
+}

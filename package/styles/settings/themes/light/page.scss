@@ -1,0 +1,15 @@
+@use 'sass:map';
+@use 'maps/typography' as typography;
+@use 'maps/color' as color;
+@use 'maps/corner' as corner;
+@use '../../spacing' as spacing;
+
+$map: (
+  'pagePanelMinHeight': 4.1rem,
+  'pagePadding': 0 map.get(spacing.$spacing, 12),
+  'pageBackgroundColor': map.get(color.$color, 'white'),
+  'pageBorderBottom': 0.1rem solid map.get(color.$color, 'grayscale', 20),
+  'pageSidebarBorderRight': 0.1rem solid map.get(color.$color, 'grayscale', 20),
+  'pageSidebarBackgroundColor': map.get(color.$color, 'white'),
+  'pageMainBackgroundColor': map.get(color.$color, 'grayscale', 10)
+);

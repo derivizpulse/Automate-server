@@ -1,0 +1,30 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/section' as lightSection;
+@use '../../../settings/themes/test/section' as testSection;
+@use 'sectionMixin' as sectionMixin;
+
+@mixin section($theme) {
+  @if $theme == theme.$theme-light {
+    @include sectionStyles(lightSection.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include sectionStyles(testSection.$map, $theme);
+  }
+}
+
+@mixin sectionStyles($map, $theme) {
+  @include sectionMixin.sectionMixin(
+    $theme,
+    map.get($map, 'sectionHeaderMinHeight'),
+    map.get($map, 'sectionContentPadding'),
+    map.get($map, 'sectionContentPaddingTop'),
+    map.get($map, 'sectionAccordionBorder'),
+    map.get($map, 'sectionAccordionBorderRadius'),
+    map.get($map, 'sectionAccordionHeaderPadding'),
+    map.get($map, 'sectionAccordionContentPadding'),
+    map.get($map, 'sectionAccordionIsActiveBorderColor'),
+    map.get($map, 'sectionAccordionIsActiveHeaderPaddingLeft'),
+  );
+}

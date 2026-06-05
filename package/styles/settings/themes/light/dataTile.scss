@@ -1,0 +1,37 @@
+@use 'sass:map';
+@use 'maps/typography' as typography;
+@use 'maps/corner' as corner;
+@use 'maps/color' as colors;
+@use '../../spacing' as spacing;
+
+$map: (
+  'dataTileMinHeight': 92px,
+  'dataTileMinWidth': 0,
+  'dataTileBorder': 0.1rem solid map.get(colors.$color, 'grayscale', 20),
+  'dataTileBorderRadius': map.get(corner.$corner, 'default'),
+  'dataTileColumnGap': 2.4rem,
+  'dataTilePadding': 1rem 1.6rem,
+  'dataTileDataMinWidth': 0,
+  'dataTileDataRowGap': 0.4rem,
+  'dataTileHeaderColumnGap': 0.4rem,
+  'dataTileTitleFontWeight': map.get(typography.$typography, 'weight', 'regular'),
+  'dataTileTitleFontSize': map.get(typography.$typography, 'scale', 'base', 'size'),
+  'dataTileTitleLineHeight': map.get(typography.$typography, 'scale', 'base', 'height'),
+  'dataTileTitleColor': map.get(colors.$color, 'grayscale', 100),
+  'dataTileValueFontWeight': map.get(typography.$typography, 'weight', 'bold'),
+  'dataTileValueFontSize': map.get(typography.$typography, 'scale', '2xl', 'size'),
+  'dataTileValueLineHeight': 2.4rem,
+  'dataTileValueColor': map.get(colors.$color, 'grayscale', 100),
+  'dataTileSubtextColumnGap': 0.4rem,
+  'dataTileSubtextFontWeight': map.get(typography.$typography, 'weight', 'regular'),
+  'dataTileSubtextFontSize': map.get(typography.$typography, 'scale', 'base', 'size'),
+  'dataTileSubtextLineHeight': map.get(typography.$typography, 'scale', 'base', 'height'),
+  'dataTileSubtextColor': map.get(colors.$color, 'grayscale', 60),
+  'dataTileGroupBorder': 1px solid map.get(colors.$color, 'grayscale', 20),
+  'dataTileGroupBorderRadius': map.get(corner.$corner, 'default'),
+  'dataTileGroupTileBorder': 0 solid  map.get(colors.$color, 'grayscale', 20),
+  'dataTileGroupTileBeforeWidth': 1px,
+  'dataTileGroupTileBeforeHeight': calc(100% - 3.2em),
+  'dataTileGroupTileBeforeBackgroundColor': map.get(colors.$color, 'grayscale', 20),
+  'dataTileGroupTileBeforeTop': 1.6rem,
+);

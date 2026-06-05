@@ -1,0 +1,253 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin chipMixin(
+  $theme,
+  $chipGroupInfoGap,
+  $chipGroupGap,
+  $chipWidth,
+  $chipColor,
+  $chipBackgroud,
+  $chipoBorder,
+  $chipPadding,
+  $chipBorderRadius,
+  $chipGap,
+  $chipInfoPadding,
+  $chipInfoBorderColor,
+  $chipInfoBackgroud,
+  $chipInfoColor,
+  $chipInfoInactiveColor,
+  $chipInfoInactiveBackgroundColor,
+  $chipFilterBorderColor,
+  $chipFilterColor,
+  $chilFilterHoverBorderColor,
+  $chipFilterHoverBackgroundColor,
+  $chipFilterSelectedBorderColor,
+  $chipFilterSelectedBackgroundColor,
+  $chipFilterSelectedColor,
+  $chipFilterSelectedHoverBorderImage,
+  $chipFilterSelectedHoverbackgroundImage,
+  $chipFilterDisabledBorderColor,
+  $chipFilterDisabledColor,
+  $chipFilterDisabledBackgroundColor,
+  $chipFilterDisabledFocusVisibleOutline,
+  $chipFilterDisabledFocusVisibleOutlineFocus,
+  $chipInputBorderColor,
+  $chipInputColor,
+  $chipInputBackgroundColor,
+  $chipInputIconLeftColor,
+  $chipInputHoverBorderColor,
+  $chipInputHoverBackgroundColor,
+  $chipInputHoverColor,
+  $chipInputSelectedColor,
+  $chipInputSelectedBorderColor,
+  $chipInputSelectedBackgroundColor,
+  $chipInputSelectedIconRightColor,
+  $chipInputSelectedHoverBorderImage,
+  $chipInputSelectedHoverBackgroundImage,
+  $chipInputDisabledBorderColor,
+  $chipInputDisabledColor,
+  $chipInputDisabledBackgroudColor,
+  $chipInputDisabledIconColor,
+  $chipInputDisabledFocusVisibleOutline,
+  $chipInputDisabledFocusVisibleOutlineOffset,
+  $chipSelectionBorderColor,
+  $chipSelectionColor,
+  $chipSelectionHoverBorderColor,
+  $chipSelectionHoverBackgroundColor,
+  $chipSelectionSelectedColor,
+  $chipSelectionSelectedBorderColor,
+  $chipSelectionSelectedBackgroundColor,
+  $chipSelectionSeletedHoverBorderImage,
+  $chipSelectionSeletedHoverBackgroundImage,
+  $chipSelectionDisabledBorderColor,
+  $chipSelectionDisabledColor,
+  $chipSelectionDisabledBackgroudColor,
+  $chipSelectionDisabledFocusVisibleOutline,
+  $chipSelectionDisabledFocusVisibleOutlineOffset,
+) {
+  $chip: component.$chip;
+
+  .#{$chip}-group {
+    display: flex;
+    gap: $chipGroupGap;
+
+    &.#{$chip}-group--vertical {
+      flex-direction: column;
+    }
+
+    &.#{$chip}-group--horizontal {
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    &.#{$chip}-group--info {
+      column-gap: $chipGroupInfoGap;
+    }
+  }
+
+  .#{$chip} {
+    width: $chipWidth;
+    color: $chipColor;
+    background: $chipBackgroud;
+    border: $chipoBorder;
+    padding: $chipPadding;
+    border-radius: $chipBorderRadius;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: $chipGap;
+    transition: background-color 0.5s ease;
+
+    &.#{$chip}--info {
+      padding: $chipInfoPadding;
+      border-color: $chipInfoBorderColor;
+      background: $chipInfoBackgroud;
+      color: $chipInfoColor;
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &.in-active {
+        cursor: default;
+        color: $chipInfoInactiveColor;
+        background: $chipInfoInactiveBackgroundColor;
+      }
+    }
+
+    &.#{$chip}--filter {
+      border-color: $chipFilterBorderColor;
+
+      &:hover {
+        border-color: $chilFilterHoverBorderColor;
+        background: $chipFilterHoverBackgroundColor;
+      }
+
+      &.is-selected {
+        border-color: $chipFilterSelectedBorderColor;
+        background: $chipFilterSelectedBackgroundColor;
+        color: $chipFilterSelectedColor;
+
+        &:hover {
+          border-image: $chipFilterSelectedHoverBorderImage;
+          background-image: $chipFilterSelectedHoverbackgroundImage;
+          color: $chipFilterSelectedColor;
+        }
+      }
+
+      &.is-disabled {
+        &.#{$chip} {
+          border-color: $chipFilterDisabledBorderColor;
+          color: $chipFilterDisabledColor;
+          background: $chipFilterDisabledBackgroundColor;
+          cursor: default;
+          pointer-events: none;
+        }
+      }
+
+      &:not(.is-disabled):focus-visible {
+        outline: $chipFilterDisabledFocusVisibleOutline;
+        outline-offset: $chipFilterDisabledFocusVisibleOutlineFocus;
+      }
+    }
+
+    &.#{$chip}--input {
+      position: relative;
+
+      &.#{$chip} {
+        border-color: $chipInputBorderColor;
+        color: $chipInputColor;
+        background: $chipInputBackgroundColor;
+
+        .#{$chip}__icon-right {
+          display: none;
+        }
+
+        .#{$chip}__icon-left {
+          display: block;
+          color: $chipInputIconLeftColor;
+        }
+      }
+
+      &:hover {
+        border-color: $chipInputHoverBorderColor;
+        background: $chipInputHoverBackgroundColor;
+        color: $chipInputHoverColor;
+      }
+
+      &.is-selected {
+        color: $chipInputSelectedColor;
+        border-color: $chipInputSelectedBorderColor;
+        background: $chipInputSelectedBackgroundColor;
+
+        .#{$chip}__icon-right {
+          display: block;
+          color: $chipInputSelectedIconRightColor;
+        }
+
+        .#{$chip}__icon-left {
+          display: none;
+        }
+
+        &:hover {
+          border-image: $chipInputSelectedHoverBorderImage;
+          background-image: $chipInputSelectedHoverBackgroundImage;
+        }
+      }
+
+      &.is-disabled {
+        border-color: $chipInputDisabledBorderColor;
+        color: $chipInputDisabledColor;
+        background: $chipInputDisabledBackgroudColor;
+        cursor: default;
+        pointer-events: none;
+
+        .#{$chip}__icon-left {
+          color: $chipInputDisabledIconColor;
+        }
+      }
+
+      &:not(.is-disabled):focus-visible {
+        outline: $chipInputDisabledFocusVisibleOutline;
+        outline-offset: $chipInputDisabledFocusVisibleOutlineOffset;
+      }
+    }
+
+    &.#{$chip}--selection {
+      position: relative;
+      border-color: $chipSelectionBorderColor;
+      color: $chipSelectionColor;
+
+      &:hover {
+        border-color: $chipSelectionHoverBorderColor;
+        background: $chipSelectionHoverBackgroundColor;
+      }
+
+      &.is-selected {
+        color: $chipSelectionSelectedColor;
+        border-color: $chipSelectionSelectedBorderColor;
+        background: $chipSelectionSelectedBackgroundColor;
+
+        &:hover {
+          border-image: $chipSelectionSeletedHoverBorderImage;
+          background-image: $chipSelectionSeletedHoverBackgroundImage;
+        }
+      }
+
+      &.is-disabled {
+        border-color: $chipSelectionDisabledBorderColor;
+        color: $chipSelectionDisabledColor;
+        background: $chipSelectionDisabledBackgroudColor;
+        pointer-events: none;
+        cursor: default;
+      }
+
+      &:not(.is-disabled):focus-visible {
+        outline: $chipSelectionDisabledFocusVisibleOutline;
+        outline-offset: $chipSelectionDisabledFocusVisibleOutlineOffset;
+      }
+    }
+  }
+}

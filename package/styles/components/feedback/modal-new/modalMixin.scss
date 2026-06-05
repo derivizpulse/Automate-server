@@ -1,0 +1,140 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/mixins/block.mixin' as lblock;
+@use '../../../settings/themes/dark/mixins/block.mixin' as dblock;
+@use '../../../settings/themes/test/mixins/block.mixin' as tblock;
+@use '../../../settings/themes/light/mixins/scroll.mixin' as lscroll;
+@use '../../../settings/themes/dark/mixins/scroll.mixin' as dscroll;
+@use '../../../settings/themes/test/mixins/scroll.mixin' as tscroll;
+
+@mixin modalMixin(
+  $theme,
+  $modalMargin,
+  $modalBorder,
+  $modalBackground,
+  $modalBoxShadow,
+  $modalBorderRadius,
+  $modalMaxHeight,
+  $modalHeaderHeight,
+  $modalHeaderPadding,
+  $modalHeaderBackgroundColor,
+  $modalHeaderBorderBottom,
+  $modalFooterPadding,
+  $modalFooterBorderTop,
+  $modalSmallWidth,
+  $modalMediumWidth,
+  $modalLargeWidth,
+  $modalXLargeWidth,
+) {
+  $modal: 'cfc-modal-new';
+
+  .#{$modal} {
+    margin: $modalMargin;
+    border: $modalBorder;
+    background: $modalBackground;
+    box-shadow: $modalBoxShadow;
+    border-radius: $modalBorderRadius;
+    max-height: $modalMaxHeight;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+
+    @if $theme == theme.$theme-light {
+      @include lblock.block($modal);
+    }
+
+    @if $theme == theme.$theme-dark {
+      @include dblock.block($modal);
+    }
+
+    @if $theme == theme.$theme-test {
+      @include tblock.block($modal);
+    }
+
+    &.is-active {
+      opacity: 1;
+    }
+
+    .#{$modal}__header {
+      height: $modalHeaderHeight;
+      padding: $modalHeaderPadding;
+      background-color: $modalHeaderBackgroundColor;
+      border-bottom: $modalHeaderBorderBottom;
+    }
+
+    .#{$modal}__content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+
+      // TODO: Scroll should be on content-inner
+      overflow: hidden auto;
+
+      @if $theme == theme.$theme-light {
+        @include lscroll.scroll;
+      }
+
+      @if $theme == theme.$theme-dark {
+        @include dscroll.scroll;
+      }
+
+      @if $theme == theme.$theme-test {
+        @include tscroll.scroll;
+      }
+
+      &:focus-visible {
+        outline: none;
+      }
+    }
+
+    .#{$modal}__content-inner {
+      flex: 1;
+      min-height: 0;
+    }
+
+    .#{$modal}__footer {
+      padding: $modalFooterPadding;
+      border-top: $modalFooterBorderTop;
+    }
+
+    &.#{$modal}--small {
+      &.#{$modal} {
+        width: $modalSmallWidth;
+      }
+    }
+
+    &.#{$modal}--medium {
+      &.#{$modal} {
+        width: $modalMediumWidth;
+      }
+    }
+
+    &.#{$modal}--large {
+      &.#{$modal} {
+        width: $modalLargeWidth;
+      }
+    }
+
+    &.#{$modal}--x-large {
+      &.#{$modal} {
+        width: $modalXLargeWidth;
+      }
+    }
+  }
+
+  .#{$modal}-backdrop {
+    @if $theme == theme.$theme-light {
+      background: rgb(32 49 64 / 80%);
+    }
+
+    @if $theme == theme.$theme-dark {
+      background: rgb(0 0 0 / 65%);
+    }
+
+    @if $theme == theme.$theme-test {
+      background: rgb(32 49 64 / 80%);
+    }
+  }
+}

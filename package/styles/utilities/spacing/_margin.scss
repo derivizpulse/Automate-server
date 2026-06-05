@@ -1,0 +1,71 @@
+@use '../../settings/spacing' as spacing;
+
+@mixin margin($theme) {
+  @include marginStyles(spacing.$spacing);
+}
+
+@mixin marginStyles($spacing) {
+  .cfu-margin {
+    &-auto {
+      margin: auto;
+    }
+
+    &-top-auto {
+      margin-top: auto;
+    }
+
+    &-right-auto {
+      margin-right: auto;
+    }
+
+    &-bottom-auto {
+      margin-bottom: auto;
+    }
+
+    &-left-auto {
+      margin-left: auto;
+    }
+
+    &-horizontal-auto {
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    &-vertical-auto {
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+    @each $label, $value in $spacing {
+      &-#{$label} {
+        margin: $value;
+      }
+
+      &-top-#{$label} {
+        margin-top: $value;
+      }
+
+      &-right-#{$label} {
+        margin-right: $value;
+      }
+
+      &-bottom-#{$label} {
+        margin-bottom: $value;
+      }
+
+      &-left-#{$label} {
+        margin-left: $value;
+      }
+
+      &-horizontal-#{$label} {
+        margin-left: $value;
+        margin-right: $value;
+      }
+
+      &-vertical-#{$label} {
+        margin-top: $value;
+        margin-bottom: $value;
+      }
+    }
+  }
+}

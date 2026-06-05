@@ -1,0 +1,125 @@
+///
+/// Careflow fieldtextarea Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin textareaMixin(
+  $theme,
+  $textareaWrapperCountBottom,
+  $textareaWrapperCountRight,
+  $textareaWrapperCountColor,
+  $textareaWrapperCountBackgroundColor,
+  $textareaWrapperCountPadding,
+  $textareaWrapperCountFontsize,
+  $textareaWrapperCountLineHeight,
+  $textareaWrapperTextareapadding,
+  $textareaOutlineWidth,
+  $textareaHeight,
+  $textareaBackgroundColor,
+  $textareaborder,
+  $textareaBorderRadius,
+  $textareaPadding,
+  $textareaColor,
+  $textareaminheight,
+  $textareaFontsize,
+  $textareaLineHeight,
+  $textareaFontWeight,
+  $textareaResizerBackgroundSize,
+  $textareaResizerBackgroundPosition,
+  $textareaResizerBackgroundimage,
+  $textareaPlaceHolderColor,
+  $textareaHoverBorder,
+  $textareaHoverBackgroundColor,
+  $textareaFocusBorder,
+  $textareaFocusOutline,
+  $textareaDisabledBackgroundColor,
+  $textareaDisableColor,
+  $textareaHaserrorBorderColor,
+  $textareaHaserrorHoverBorderColor,
+  $textareaHaserrorHoverOutlineColor
+) {
+  $textarea: component.$textarea;
+  .#{$textarea}-wrapper {
+    position: relative;
+
+    .#{$textarea}-count {
+      position: absolute;
+      bottom: $textareaWrapperCountBottom;
+      right: $textareaWrapperCountRight;
+      color: $textareaWrapperCountColor;
+      background-color: $textareaWrapperCountBackgroundColor;
+      display: block;
+      padding: $textareaWrapperCountPadding;
+      font-size: $textareaWrapperCountFontsize;
+      line-height: $textareaWrapperCountLineHeight;
+    }
+    .#{$textarea} {
+      padding: $textareaWrapperTextareapadding;
+    }
+  }
+  .#{$textarea} {
+    outline-width: $textareaOutlineWidth;
+    height: $textareaHeight;
+    background-color: $textareaBackgroundColor;
+    border: $textareaborder;
+    border-radius: $textareaBorderRadius;
+    padding: $textareaPadding;
+    color: $textareaColor;
+    width: 100%;
+    min-height: $textareaminheight;
+    display: block;
+    font-family: Roboto, sans-serif;
+    font-size: $textareaFontsize;
+    line-height: $textareaLineHeight;
+    font-weight: $textareaFontWeight;
+    resize: none;
+
+    &::-webkit-resizer {
+      z-index: 100;
+      background-size: $textareaResizerBackgroundSize;
+      background-position: $textareaResizerBackgroundPosition;
+      background-repeat: no-repeat;
+      background-image: $textareaResizerBackgroundimage;
+    }
+
+    &::placeholder {
+      color: $textareaPlaceHolderColor;
+    }
+
+    &:hover:not(:disabled) {
+      border: $textareaHoverBorder;
+      background-color: $textareaHoverBackgroundColor;
+    }
+
+    &:focus:not(:disabled),
+    &:active:not(:disabled) {
+      border: $textareaFocusBorder;
+      outline: $textareaFocusOutline;
+    }
+
+    &:disabled {
+      background-color: $textareaDisabledBackgroundColor;
+      color: $textareaDisableColor;
+    }
+
+    &.#{$textarea}--resize-vertical {
+      resize: vertical;
+    }
+  }
+
+  // Handle Error
+
+  .has-error .#{$textarea} {
+    border-color: $textareaHaserrorBorderColor;
+
+    &:hover,
+    &:focus,
+    &:active {
+      border-color: $textareaHaserrorHoverBorderColor;
+      outline-color: $textareaHaserrorHoverOutlineColor;
+    }
+  }
+}

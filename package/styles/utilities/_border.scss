@@ -1,0 +1,115 @@
+@use 'sass:map';
+@use '../settings/theme' as theme;
+@use '../settings/themes/light/divider' as lightDivider;
+
+@mixin border($theme) {
+  @if $theme == theme.$theme-light {
+    @include borderStyles(lightDivider.$map);
+  }
+}
+
+@mixin borderStyles($map) {
+  .cfu-border {
+    &-primary {
+      border: 0.1rem solid map.get($map, 'dividerPrimaryBackgroundColor');
+    }
+
+    &-secondary {
+      border: 0.1rem solid map.get($map, 'dividerSecondaryBackgroundColor');
+    }
+
+    &-dark {
+      &-primary {
+        border: 0.1rem solid map.get($map, 'dividerDarkPrimaryBackgroundColor');
+      }
+
+      &-secondary {
+        border: 0.1rem solid map.get($map, 'dividerDarkSecondaryBackgroundColor');
+      }
+    }
+
+    &-left {
+      &-primary {
+        border-left: 0.1rem solid map.get($map, 'dividerPrimaryBackgroundColor');
+      }
+
+      &-secondary {
+        border-left: 0.1rem solid map.get($map, 'dividerSecondaryBackgroundColor');
+      }
+
+      &-dark {
+        &-primary {
+          border-left: 0.1rem solid map.get($map, 'dividerDarkPrimaryBackgroundColor');
+        }
+
+        &-secondary {
+          border-left: 0.1rem solid map.get($map, 'dividerDarkSecondaryBackgroundColor');
+        }
+      }
+    }
+
+    &-right {
+      &-primary {
+        border-right: 0.1rem solid map.get($map, 'dividerPrimaryBackgroundColor');
+      }
+
+      &-secondary {
+        border-right: 0.1rem solid map.get($map, 'dividerSecondaryBackgroundColor');
+      }
+
+      &-dark {
+        &-primary {
+          border-right: 0.1rem solid map.get($map, 'dividerDarkPrimaryBackgroundColor');
+        }
+
+        &-secondary {
+          border-right: 0.1rem solid map.get($map, 'dividerDarkSecondaryBackgroundColor');
+        }
+      }
+    }
+
+    &-top {
+      &-primary {
+        border-top: 0.1rem solid map.get($map, 'dividerPrimaryBackgroundColor');
+      }
+
+      &-secondary {
+        border-top: 0.1rem solid map.get($map, 'dividerSecondaryBackgroundColor');
+      }
+
+      &-dark {
+        &-primary {
+          border-top: 0.1rem solid map.get($map, 'dividerDarkPrimaryBackgroundColor');
+        }
+
+        &-secondary {
+          border-top: 0.1rem solid map.get($map, 'dividerDarkSecondaryBackgroundColor');
+        }
+      }
+    }
+
+    &-bottom {
+      &-primary {
+        border-bottom: 0.1rem solid map.get($map, 'dividerPrimaryBackgroundColor');
+      }
+
+      &-secondary {
+        border-bottom: 0.1rem solid map.get($map, 'dividerSecondaryBackgroundColor');
+      }
+
+      &-dark {
+        &-primary {
+          border-bottom: 0.1rem solid map.get($map, 'dividerDarkPrimaryBackgroundColor');
+        }
+
+        &-secondary {
+          border-bottom: 0.1rem solid map.get($map, 'dividerDarkSecondaryBackgroundColor');
+        }
+      }
+    }
+
+    &-none {
+      border-width: 0;
+    }
+  }
+}

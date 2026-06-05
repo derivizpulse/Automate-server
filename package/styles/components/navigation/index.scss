@@ -1,0 +1,12 @@
+@use 'sass:meta';
+@use 'pagination' as pagination;
+@use 'sidebar' as sidebar;
+@use 'tab' as tab;
+@use 'wizard' as wizard;
+
+@mixin navigation($theme) {
+  @include pagination.pagination($theme);
+  @include sidebar.sidebar($theme);
+  @include tab.tab($theme);
+  @include wizard.wizard($theme);
+}

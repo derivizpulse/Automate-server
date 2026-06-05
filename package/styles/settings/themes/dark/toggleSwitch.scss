@@ -1,0 +1,37 @@
+@use 'sass:map';
+@use 'sass:color';
+@use 'maps/color' as colorMap;
+@use 'maps/corner' as cornerMap;
+@use '../../spacing' as spacing;
+@use 'maps/svg-image' as svg;
+
+$map: (
+  'toggleSwitchWidth': 3.6rem,
+  'toggleSwitchHeight': 2rem,
+  'toggleSwitchSliderHeight': 2rem,
+  'toggleSwitchSliderBackgroundColor': map.get(colorMap.$color, 'background', 80),
+  'toggleSwitchSliderBorder': 0.1rem solid  map.get(colorMap.$color, 'background', 20),
+  'toggleSwitchSliderBorderRadius': map.get(cornerMap.$corner, 'full'),
+  'toggleSwitchSliderBeforeHeight': 1.6rem,
+  'toggleSwitchSliderBeforeWidth': 1.6rem,
+  'toggleSwitchSliderBeforeLeft': 0.2rem,
+  'toggleSwitchSliderBeforeBackgroundColor': map.get(colorMap.$color, 'font', 80),
+  'toggleSwitchSliderBeforeBorderRadius': map.get(cornerMap.$corner, 'full'),
+  'toggleSwitchSliderBeforeBackgroundSize': 1.2rem,
+  'toggleSwitchSliderInputCheckedBackgroundColor': map.get(colorMap.$color, 'primary', 60),
+  'toggleSwitchSliderInputCheckedBorderColor': transparent,
+  'toggleSwitchSliderInputCheckedBeforeBackgroundColor': map.get(colorMap.$color, 'white'),
+  'toggleSwitchSliderInputCheckedBeforeBackgroundImage': url("#{map.get(svg.$svg, 'tick','primary')}"),
+  'toggleSwitchSliderInputCheckedBeforeLeft': 1.7rem,
+  'toggleSwitchSliderInputFocusVisibleOutline': 0.2rem solid #003940,
+  'toggleSwitchSliderInputFocusVisibleOutlineOffset': 0,
+  'toggleSwitchSliderInputNotCheckedHoverBorderColor': map.get(colorMap.$color, 'background', 5),
+  'toggleSwitchSliderInputCheckedHoverBackgroundColor': linear-gradient(0deg, rgba(255, 255, 255, 20%) 0%, rgba(255, 255, 255, 20%) 100%) map.get(colorMap.$color, 'primary', 40),
+  'toggleSwitchSliderInputDisabledBorderColor': map.get(colorMap.$color, 'background', 5),
+  'toggleSwitchSliderInputDisabledBackgroundColor': map.get(colorMap.$color, 'background', 20),
+  'toggleSwitchSliderInputDisabledBeforeBackgroundColor': map.get(colorMap.$color, 'font', 100),
+  'toggleSwitchSliderInputCheckedDisabledBackgroundColor':  map.get(colorMap.$color, 'background', 20),
+  'toggleSwitchSliderInputCheckedDisabledBorder': 0.1rem solid transparent,
+  'toggleSwitchSliderInputCheckedDisabledBeforeBackgroundColor': map.get(colorMap.$color, 'background', 5),
+  'toggleSwitchSliderInputCheckedDisabledBeforeBackgroundImage': url("#{map.get(svg.$svg, 'tick','white')}"),
+);

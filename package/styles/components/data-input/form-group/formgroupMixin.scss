@@ -1,0 +1,103 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin formgroupMixin(
+  $theme,
+  $formgroupPadding,
+  $formgroupLabelWidth,
+  $formgroupLabelPaddingRight,
+  $formgroupLabelColor,
+  $formgroupLabelBeforeTop,
+  $formgroupLabelBeforeRight,
+  $formgroupLabelXsmallWidth,
+  $formgroupLabelSmallWidth,
+  $formgroupLabelMediumWidth,
+  $formgroupLabelLargeWidth,
+  $formgroupLabelXlargeWidth,
+  $formgroupIsmandatoryLabelAfterMarginLeft,
+  $formgroupIsmandatoryLabelAfterColor,
+  $formgroupValueMinWidth,
+  $formgroupHorizontalColumnGap,
+  $formgroupVerticalRowGap,
+) {
+  $form-group: component.$form-group;
+
+  .#{$form-group} {
+    display: flex;
+    align-items: baseline;
+    padding: $formgroupPadding;
+
+    .#{$form-group}__label {
+      width: $formgroupLabelWidth;
+      position: relative;
+      padding-right: $formgroupLabelPaddingRight;
+      color: $formgroupLabelColor;
+
+      &::before {
+        content: ':';
+        position: absolute;
+        top: $formgroupLabelBeforeTop;
+        right: $formgroupLabelBeforeRight;
+      }
+
+      &.#{$form-group}__label--x-small {
+        width: $formgroupLabelXsmallWidth;
+      }
+
+      &.#{$form-group}__label--small {
+        width: $formgroupLabelSmallWidth;
+      }
+
+      &.#{$form-group}__label--medium {
+        width: $formgroupLabelMediumWidth;
+      }
+
+      &.#{$form-group}__label--large {
+        width: $formgroupLabelLargeWidth;
+      }
+
+      &.#{$form-group}__label--x-large {
+        width: $formgroupLabelXlargeWidth;
+      }
+    }
+
+    &.is-mandatory {
+      .#{$form-group}__label {
+        &::after {
+          content: '*';
+          margin-left: $formgroupIsmandatoryLabelAfterMarginLeft;
+          color: $formgroupIsmandatoryLabelAfterColor;
+        }
+      }
+    }
+
+    .#{$form-group}__value {
+      flex: 1;
+      min-width: $formgroupValueMinWidth;
+    }
+  }
+
+  .#{$form-group}-horizontal {
+    display: flex;
+    align-items: center;
+    column-gap: $formgroupHorizontalColumnGap;
+
+    .#{$form-group} {
+      padding: 0;
+
+      .#{$form-group}__label {
+        width: auto;
+      }
+    }
+  }
+  .#{$form-group}-vertical {
+    display: flex;
+    flex-direction: column;
+    row-gap: $formgroupVerticalRowGap;
+
+    .#{$form-group} {
+      padding: 0;
+    }
+  }
+}

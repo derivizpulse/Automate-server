@@ -1,0 +1,10 @@
+@use 'cfl-icon.css';
+
+span[class^='cfl-icon--'],
+span[class*=' cfl-icon--'] {
+  display: block;
+
+  &::before {
+    display: block;
+  }
+}

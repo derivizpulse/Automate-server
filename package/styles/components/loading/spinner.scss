@@ -1,0 +1,49 @@
+@use '../../settings/theme' as theme;
+
+@mixin spinner($theme) {
+  @if $theme == theme.$theme-light {
+    @include spinnerStyles($theme);
+  }
+}
+
+@mixin spinnerStyles($theme) {
+  @keyframes spin {
+    from {
+      rotate: 0deg;
+    }
+
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  .cfc-spinner {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 0.8rem;
+    background-color: rgba(#fff, 0.2);
+    color: #5d6f7e;
+    font-weight: 500;
+    text-align: center;
+
+    &::before {
+      content: '';
+      width: 4rem;
+      height: 4rem;
+      border-radius: 4rem;
+      background-image: conic-gradient(#00afaa00, #147b8d);
+      mask: radial-gradient(1.3rem, #0000 94%, #000);
+      animation: spin 1s linear infinite;
+    }
+  }
+}

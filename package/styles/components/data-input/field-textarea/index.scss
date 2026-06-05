@@ -1,0 +1,58 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/fieldTextarea' as lightFieldTextarea;
+@use '../../../settings/themes/dark/fieldTextarea' as darkFieldTextarea;
+@use '../../../settings/themes/test/fieldTextarea' as testFieldTextarea;
+@use 'textareaMixin' as textareaMixin;
+
+@mixin fieldTextarea($theme) {
+  @if $theme == theme.$theme-light {
+    @include fieldTextareaStyles(lightFieldTextarea.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include fieldTextareaStyles(darkFieldTextarea.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include fieldTextareaStyles(testFieldTextarea.$map, $theme);
+  }
+}
+
+@mixin fieldTextareaStyles($map, $theme) {
+  @include textareaMixin.textareaMixin(
+    $theme,
+    map.get($map, 'textareaWrapperCountBottom'),
+    map.get($map, 'textareaWrapperCountRight'),
+    map.get($map, 'textareaWrapperCountColor'),
+    map.get($map, 'textareaWrapperCountBackgroundColor'),
+    map.get($map, 'textareaWrapperCountPadding'),
+    map.get($map, 'textareaWrapperCountFontsize'),
+    map.get($map, 'textareaWrapperCountLineHeight'),
+    map.get($map, 'textareaWrapperTextareapadding'),
+    map.get($map, 'textareaOutlineWidth'),
+    map.get($map, 'textareaHeight'),
+    map.get($map, 'textareaBackgroundColor'),
+    map.get($map, 'textareaborder'),
+    map.get($map, 'textareaBorderRadius'),
+    map.get($map, 'textareaPadding'),
+    map.get($map, 'textareaColor'),
+    map.get($map, 'textareaminheight'),
+    map.get($map, 'textareaFontsize'),
+    map.get($map, 'textareaLineHeight'),
+    map.get($map, 'textareaFontWeight'),
+    map.get($map, 'textareaResizerBackgroundSize'),
+    map.get($map, 'textareaResizerBackgroundPosition'),
+    map.get($map, 'textareaResizerBackgroundimage'),
+    map.get($map, 'textareaPlaceHolderColor'),
+    map.get($map, 'textareaHoverBorder'),
+    map.get($map, 'textareaHoverBackgroundColor'),
+    map.get($map, 'textareaFocusBorder'),
+    map.get($map, 'textareaFocusOutline'),
+    map.get($map, 'textareaDisabledBackgroundColor'),
+    map.get($map, 'textareaDisableColor'),
+    map.get($map, 'textareaHaserrorBorderColor'),
+    map.get($map, 'textareaHaserrorHoverBorderColor'),
+    map.get($map, 'textareaHaserrorHoverOutlineColor')
+  );
+}

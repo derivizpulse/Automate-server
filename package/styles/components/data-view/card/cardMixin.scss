@@ -1,0 +1,100 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/mixins/block.mixin' as lblock;
+@use '../../../settings/themes/dark/mixins/block.mixin' as dblock;
+@use '../../../settings/themes/test/mixins/block.mixin' as tblock;
+
+@mixin cardMixin(
+  $theme,
+  $cardBorder,
+  $cardBackgroundColor,
+  $cardBorderRadius,
+  $cardHeaderMinHeight,
+  $cardHeaderBackgroundColor,
+  $cardHeaderPadding,
+  $cardHeaderBorderBottom,
+  $cardPanelMinHeight,
+  $cardPanelPadding,
+  $cardPanelBorderBottom,
+  $cardFooterMinHeight,
+  $cardFooterBorderTop,
+  $cardFooterPadding,
+  $cardAccordionHeaderHeight,
+  $cardAccordionHeaderBorderBottom,
+  $cardAccordionIsActiveHeaderBorderBottomColor,
+) {
+  $card: component.$card;
+  .#{$card} {
+    border: $cardBorder;
+    background-color: $cardBackgroundColor;
+    border-radius: $cardBorderRadius;
+    overflow: hidden;
+
+    @if $theme == theme.$theme-light {
+      @include lblock.block($card);
+    }
+
+    @if $theme == theme.$theme-dark {
+      @include dblock.block($card);
+    }
+
+    @if $theme == theme.$theme-test {
+      @include tblock.block($card);
+    }
+
+    .#{$card}__header {
+      min-height: $cardHeaderMinHeight; // Including Border
+      background-color: $cardHeaderBackgroundColor;
+      padding: $cardHeaderPadding;
+      border-bottom: $cardHeaderBorderBottom;
+    }
+
+    .#{$card}__panel {
+      min-height: $cardPanelMinHeight; // Including Border
+      padding: $cardPanelPadding;
+      border-bottom: $cardPanelBorderBottom;
+    }
+
+    .#{$card}__content {
+      // Nothing yet
+    }
+
+    .#{$card}__footer {
+      min-height: $cardFooterMinHeight; // Including Border
+      border-top: $cardFooterBorderTop;
+      padding: $cardFooterPadding;
+    }
+
+    &.#{$card}--accordion {
+      @if $theme == theme.$theme-light {
+        @include lblock.block-accordion($card);
+      }
+
+      @if $theme == theme.$theme-dark {
+        @include dblock.block-accordion($card);
+      }
+
+      @if $theme == theme.$theme-test {
+        @include tblock.block-accordion($card);
+      }
+      > .#{$card}__header {
+        height: $cardAccordionHeaderHeight;
+        border-bottom: $cardAccordionHeaderBorderBottom;
+        transition: border-width 0.2s linear;
+        box-sizing: content-box;
+      }
+
+      &.is-active {
+        > .#{$card}__header {
+          border-bottom-color: $cardAccordionIsActiveHeaderBorderBottomColor;
+        }
+      }
+
+      > .#{$card}__panel,
+      > .#{$card}__footer {
+        display: none;
+      }
+    }
+  }
+}

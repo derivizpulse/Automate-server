@@ -5,7 +5,6 @@ import {
   DateRangePickers,
   boundsFromIsoRange,
   formatRangeLabel,
-  shiftIsoDate,
   type DateRangeBounds,
 } from "../components/DateRangeFilter";
 import { MultiSelectFilter } from "../components/MultiSelectFilter";
@@ -13,8 +12,6 @@ import { isOperationalJob } from "../lib/operations";
 import { matchesTeamFilter, type TeamFilter } from "../lib/teams";
 import { useDerivizStore } from "../store/useDerivizStore";
 import type { OperationJob, OperationKind, OperationStatus } from "../types";
-
-const TODAY_ISO = "2026-05-17";
 
 const KIND_LABEL: Record<OperationKind, string> = {
   backup: "Backup",
@@ -48,6 +45,12 @@ const STATUS_STYLE: Record<
 };
 
 type StatusView = "active" | "completed" | "all";
+
+function statusViewFromQuery(): StatusView | null {
+  const raw = new URLSearchParams(window.location.search).get("ops");
+  if (raw === "completed" || raw === "all" || raw === "active") return raw;
+  return null;
+}
 
 function isoDateOnly(iso: string): string {
   return iso.slice(0, 10);
@@ -109,16 +112,18 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
   const dismissOperation = useDerivizStore((s) => s.dismissOperation);
   const cancelOrStopOperation = useDerivizStore((s) => s.cancelOrStopOperation);
 
-  const [historyFrom, setHistoryFrom] = useState(() => shiftIsoDate(TODAY_ISO, -30));
-  const [historyTo, setHistoryTo] = useState(TODAY_ISO);
-  const [statusView, setStatusView] = useState<StatusView>("active");
+  const [historyFrom, setHistoryFrom] = useState("");
+  const [historyTo, setHistoryTo] = useState("");
+  const [statusView, setStatusView] = useState<StatusView>(
+    () => statusViewFromQuery() ?? "active"
+  );
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
   const [kindFilters, setKindFilters] = useState<string[]>([]);
 
   const showHistoryDateRange = statusView !== "active";
 
   const dateRangeBounds = useMemo(
-    () => boundsFromIsoRange(historyFrom, historyTo),
+    () => (historyFrom && historyTo ? boundsFromIsoRange(historyFrom, historyTo) : null),
     [historyFrom, historyTo]
   );
   const dateRangeLabel = useMemo(() => formatRangeLabel(dateRangeBounds), [dateRangeBounds]);
@@ -236,15 +241,6 @@ export function Operations({ teamFilter }: { teamFilter: TeamFilter }) {
         />
         </div>
       </div>
-
-      {statusView === "active" && (
-        <p className="shrink-0 text-[11px] text-cf-muted">
-          Live queue and running backup/delete work — not limited by dates. Switch to{" "}
-          <strong className="font-medium text-cf-secondary">Completed</strong> or{" "}
-          <strong className="font-medium text-cf-secondary">All</strong> and pick a from/to range
-          for finished jobs.
-        </p>
-      )}
 
       <div
         className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[6px] bg-white"

@@ -1,0 +1,45 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/avatar' as lightAvatar;
+@use '../../../settings/themes/dark/avatar' as darkAvatar;
+@use '../../../settings/themes/test/avatar' as testAvatar;
+@use 'avatarMixin' as avatarMixin;
+
+@mixin avatar($theme) {
+  @if $theme == theme.$theme-light {
+    @include avatarStyles(lightAvatar.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include avatarStyles(darkAvatar.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include avatarStyles(testAvatar.$map, $theme);
+  }
+}
+
+@mixin avatarStyles($map, $theme) {
+  @include avatarMixin.avatarMixin(
+    $theme,
+    map.get($map, 'avatarBorderRadius'),
+    map.get($map, 'avatarBackgroundColor'),
+    map.get($map, 'avatarColor'),
+    map.get($map, 'avatarAfterBorderRadius'),
+    map.get($map, 'avatarAfterBorder'),
+    map.get($map, 'avatarEditHoverBackgroundColor'),
+    map.get($map, 'avatarLargeWidth'),
+    map.get($map, 'avatarLargeHeight'),
+    map.get($map, 'avatarLargeFontSize'),
+    map.get($map, 'avatarEditLargeFontSize'),
+    map.get($map, 'avatarMediumWidth'),
+    map.get($map, 'avatarMediumHeight'),
+    map.get($map, 'avatarMediumFontSize'),
+    map.get($map, 'avatarSmallWidth'),
+    map.get($map, 'avatarSmallHeight'),
+    map.get($map, 'avatarSmallFontSize'),
+    map.get($map, 'avatarXSmallWidth'),
+    map.get($map, 'avatarXSmallHeight'),
+    map.get($map, 'avatarXSmallFontSize')
+  );
+}

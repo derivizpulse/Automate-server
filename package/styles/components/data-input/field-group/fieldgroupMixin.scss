@@ -1,0 +1,106 @@
+///
+/// Careflow Form Group Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin fieldgroupMixin(
+  $theme,
+  $fieldgroupActionsColumnGap,
+  $fieldgroupActionsRight,
+  $fieldgroupActionsColor,
+  $fieldgroupAction1FieldPaddingRight,
+  $fieldgroupAction2FieldPaddingRight,
+  $fieldgroupLabelTop,
+  $fieldgroupLabelWidth,
+  $fieldgroupLabelHeight,
+  $fieldgroupLabelBackgroundColor,
+  $fieldgroupLabelLeftFieldPaddingLeft,
+  $fieldgroupLabelLeftLabelLeft,
+  $fieldgroupLabelLeftLabelBorderRadius,
+  $fieldgroupLabelRightFieldPaddingRight,
+  $fieldgroupLabelRightLabelRight,
+  $fieldgroupLabelRightLabelBorderRadius,
+) {
+  $field-group: component.$field-group;
+
+  .#{$field-group} {
+    position: relative;
+
+    .#{$field-group}__field {
+      position: relative;
+      z-index: 1;
+    }
+
+    .#{$field-group}__actions {
+      display: none;
+      align-items: center;
+      column-gap: $fieldgroupActionsColumnGap;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: $fieldgroupActionsRight;
+      z-index: 2;
+      color: $fieldgroupActionsColor;
+    }
+
+    &.#{$field-group}--actions {
+      .#{$field-group}__actions {
+        display: flex;
+        cursor: pointer;
+      }
+
+      &.#{$field-group}--actions-1 {
+        .cfc-field-group__field {
+          padding-right: $fieldgroupAction1FieldPaddingRight;
+        }
+      }
+
+      &.#{$field-group}--actions-2 {
+        .cfc-field-group__field {
+          padding-right: $fieldgroupAction2FieldPaddingRight;
+        }
+      }
+    }
+
+    .#{$field-group}__label {
+      position: absolute;
+      top: $fieldgroupLabelTop;
+      width: $fieldgroupLabelWidth;
+      height: $fieldgroupLabelHeight;
+      background-color: $fieldgroupLabelBackgroundColor;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    &.#{$field-group}--label {
+      &-left {
+        .#{$field-group}__field {
+          padding-left: $fieldgroupLabelLeftFieldPaddingLeft;
+        }
+
+        .#{$field-group}__label {
+          display: flex;
+          left: $fieldgroupLabelLeftLabelLeft;
+          border-radius: $fieldgroupLabelLeftLabelBorderRadius;
+        }
+      }
+
+      &-right {
+        .#{$field-group}__field {
+          padding-right: $fieldgroupLabelRightFieldPaddingRight;
+        }
+
+        .#{$field-group}__label {
+          display: flex;
+          right: $fieldgroupLabelRightLabelRight;
+          border-radius: $fieldgroupLabelRightLabelBorderRadius;
+        }
+      }
+    }
+  }
+}

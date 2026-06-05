@@ -1,0 +1,16 @@
+@use 'sass:map';
+@use 'maps/color' as color;
+@use '../../spacing' as spacing;
+@use '../../corner' as corner;
+
+$map: (
+  'sectionHeaderMinHeight': 2.4rem,
+  'sectionContentPadding': 0,
+  'sectionContentPaddingTop': map.get(spacing.$spacing, 12),
+  'sectionAccordionBorder': 0.1rem solid transparent,
+  'sectionAccordionBorderRadius': map.get(corner.$corner, 'default'),
+  'sectionAccordionHeaderPadding': map.get(spacing.$spacing, 4) map.get(spacing.$spacing, 4) map.get(spacing.$spacing, 4) 0,
+  'sectionAccordionContentPadding': map.get(spacing.$spacing, 12),
+  'sectionAccordionIsActiveBorderColor': map.get(color.$color, 'grayscale', 20),
+  'sectionAccordionIsActiveHeaderPaddingLeft': map.get(spacing.$spacing, 12),
+);

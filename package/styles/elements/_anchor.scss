@@ -1,0 +1,8 @@
+@mixin anchor() {
+  a,
+  a[href] {
+    text-decoration: none; // Remove underlines
+    color: inherit; // Inherit color from parent element
+    cursor: default;
+  }
+}

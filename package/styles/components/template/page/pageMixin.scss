@@ -1,0 +1,68 @@
+@use 'sass:map';
+@use '../../../settings/typography' as typography;
+@use '../../../settings/color' as color;
+@use '../../../settings/spacing' as spacing;
+@use '../../../settings/components' as component;
+@use '../../../settings/themes/light/mixins/block.mixin' as lblock;
+@use '../../../settings/themes/test/mixins/block.mixin' as tblock;
+@use '../../../settings/theme' as theme;
+
+@mixin pageMixin(
+  $theme,
+  $pagePanelMinHeight,
+  $pagePadding,
+  $pageBackgroundColor,
+  $pageBorderBottom,
+  $pageSidebarBorderRight,
+  $pageSidebarBackgroundColor,
+  $pageMainBackgroundColor
+) {
+  $page: component.$page;
+
+  .#{$page} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+
+    .#{$page}__panel {
+      min-height: $pagePanelMinHeight; // Including Border
+      padding: $pagePadding;
+      background-color: $pageBackgroundColor;
+      border-bottom: $pageBorderBottom;
+
+      @if $theme == theme.$theme-light {
+        @include lblock.panel(#{$page}__panel);
+      }
+
+      @if $theme == theme.$theme-test {
+        @include tblock.panel(#{$page}__panel);
+      }
+    }
+
+    .#{$page}__content {
+      @if $theme == theme.$theme-light {
+        @include lblock.content(#{$page}__content);
+      }
+
+      @if $theme == theme.$theme-test {
+        @include tblock.content(#{$page}__content);
+      }
+    }
+
+    .#{$page}__sidebar {
+      border-right: $pageBorderBottom;
+      background-color: $pageSidebarBackgroundColor;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .#{$page}__main {
+      flex: 1;
+      min-width: 0;
+      background-color: $pageMainBackgroundColor;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}

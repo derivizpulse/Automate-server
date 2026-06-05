@@ -14,8 +14,22 @@ import { DEFAULT_TEAM_FILTER, type TeamFilter } from "./lib/teams";
 import { useDerivizStore } from "./store/useDerivizStore";
 
 type AppNavTab = "Overview" | "Server Health" | "Operations";
-/** Order: server status first, then core workflows. All tabs wrap on small screens so nothing is hidden off-screen. */
+
 const TABS: AppNavTab[] = ["Server Health", "Overview", "Operations"];
+
+const TAB_SLUGS: Record<string, AppNavTab> = {
+  "server-health": "Server Health",
+  overview: "Overview",
+  operations: "Operations",
+};
+
+function tabFromQuery(): AppNavTab | null {
+  const raw = new URLSearchParams(window.location.search).get("tab");
+  if (!raw) return null;
+  const slug = raw.toLowerCase().replace(/\s+/g, "-");
+  if (slug in TAB_SLUGS) return TAB_SLUGS[slug];
+  return TABS.find((t) => t.toLowerCase() === raw.toLowerCase()) ?? null;
+}
 
 const SUITE_TITLES: Record<SuiteModuleId, string> = {
   "prac-list":   "Prac List",
@@ -51,7 +65,9 @@ function SuitePlaceholder({ moduleId }: { moduleId: SuiteModuleId }) {
 
 export default function App() {
   const [activeModule, setActiveModule] = useState<SuiteModuleId>("srv-clean");
-  const [activeTab, setActiveTab] = useState<AppNavTab>("Server Health");
+  const [activeTab, setActiveTab] = useState<AppNavTab>(
+    () => tabFromQuery() ?? "Server Health"
+  );
   const [overviewServerFilterRequest, setOverviewServerFilterRequest] = useState<{
     server: string;
     token: number;
@@ -59,6 +75,11 @@ export default function App() {
   const [teamFilter, setTeamFilter] = useState<TeamFilter>(DEFAULT_TEAM_FILTER);
 
   const showDeriviz = activeModule === "srv-clean";
+
+  useEffect(() => {
+    const fromQuery = tabFromQuery();
+    if (fromQuery) setActiveTab(fromQuery);
+  }, []);
 
   useEffect(() => {
     if (!showDeriviz) return;

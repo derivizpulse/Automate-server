@@ -1,0 +1,113 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use 'datepickerMixin' as datePickerMixin;
+@use 'doublecalendarpickerMixin' as doubleCalendarMixin;
+@use '../../../settings/themes/light/datepicker' as lightDatepicker;
+@use '../../../settings/themes/dark/datepicker' as darkDatepicker;
+@use '../../../settings/themes/test/datepicker' as testDatepicker;
+
+@mixin fieldDatepicker($theme) {
+  @if $theme == theme.$theme-light {
+    @include fieldDatepickerStyles(lightDatepicker.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include fieldDatepickerStyles(darkDatepicker.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include fieldDatepickerStyles(testDatepicker.$map, $theme);
+  }
+}
+
+@mixin fieldDatepickerStyles($map, $theme) {
+  @include datePickerMixin.fieldDatePickerMixin(
+    $theme,
+    map.get($map, 'fieldDatePickerWidth'),
+    map.get($map, 'fieldDatePickerCalendarBorder'),
+    map.get($map, 'fieldDatePickerCalendarBoxShadow'),
+    map.get($map, 'fieldDatePickerCalendarBorderRadius'),
+    map.get($map, 'fieldDatePickerCalendarBackground'),
+    map.get($map, 'fieldDatePickerHeaderColumnGap'),
+    map.get($map, 'fieldDatePickerHeaderBorderBottom'),
+    map.get($map, 'fieldDatePickerHeaderBorderRadius'),
+    map.get($map, 'fieldDatePickerHeaderPadding'),
+    map.get($map, 'fieldDatePickerSelectWrapperColumnGap'),
+    map.get($map, 'fieldDatePickerWeekBackground'),
+    map.get($map, 'fieldDatePickerWeekBorderBottom'),
+    map.get($map, 'fieldDatePickerWeekPadding'),
+    map.get($map, 'fieldDatePickerWeekColumnGap'),
+    map.get($map, 'fieldDatePickerWeekDayFontWeight'),
+    map.get($map, 'fieldDatePickerWeekDayFontSize'),
+    map.get($map, 'fieldDatePickerWeekDayLineHeight'),
+    map.get($map, 'fieldDatePickerWeekDayColor'),
+    map.get($map, 'fieldDatePickerDayFontWeight'),
+    map.get($map, 'fieldDatePickerDayFontSize'),
+    map.get($map, 'fieldDatePickerDayLineHeight'),
+    map.get($map, 'fieldDatePickerDayColor'),
+    map.get($map, 'fieldDatePickerDayHeight'),
+    map.get($map, 'fieldDatePickerDayWidth'),
+    map.get($map, 'fieldDatePickerDayTodayDateTextDecorationColor'),
+    map.get($map, 'fieldDatePickerDayTodayDateTextUnderlineOffset'),
+    map.get($map, 'fieldDatePickerDayTodayDateColor'),
+    map.get($map, 'fieldDatePickerDayDateRangeBackgroundColor'),
+    map.get($map, 'fieldDatePickerDayDateRangeStartBorderLeft'),
+    map.get($map, 'fieldDatePickerDayDateRangeStartBackgroundColor'),
+    map.get($map, 'fieldDatePickerDayDateRangeStartBorderRadius'),
+    map.get($map, 'fieldDatePickerDayDateRangeEndBorderRight'),
+    map.get($map, 'fieldDatePickerDayDateRangeEndBackgroundColor'),
+    map.get($map, 'fieldDatePickerDayDateRangeEndBorderRadius'),
+    map.get($map, 'fieldDatePickerDayHoverBackground'),
+    map.get($map, 'fieldDatePickerDayHoverColor'),
+    map.get($map, 'fieldDatePickerDaySelectedBackground'),
+    map.get($map, 'fieldDatePickerDaySelectedColor'),
+    map.get($map, 'fieldDatePickerDaySelectedBorderRadius'),
+    map.get($map, 'fieldDatePickerDayInactiveColor'),
+    map.get($map, 'fieldDatePickerDayDisabledBackground'),
+    map.get($map, 'fieldDatePickerDayDisabledColor'),
+    map.get($map, 'fieldDatePickerFooterBackgroundColor'),
+    map.get($map, 'fieldDatePickerFooterBorder'),
+    map.get($map, 'fieldDatePickerFooterBorderTop'),
+    map.get($map, 'fieldDatePickerFooterPadding'),
+    map.get($map, 'fieldDatePickerFooterFontWeight'),
+    map.get($map, 'fieldDatePickerFooterFontSize'),
+    map.get($map, 'fieldDatePickerFooterLineHeight'),
+    map.get($map, 'fieldDatePickerFooterColor'),
+    map.get($map, 'fieldDatePickerFooterBorderRadius'),
+    map.get($map, 'fieldDatePickerFooterBoxShadow'),
+    map.get($map, 'fieldDatePickerCalendarfooterBorderRadius')
+  );
+  @include doubleCalendarMixin.fieldDoubleCalendarPickerMixin(
+    $theme,
+    map.get($map, 'fieldDoubleCalendarPickerBackground'),
+    map.get($map, 'fieldDoubleCalendarPickerBorder'),
+    map.get($map, 'fieldDoubleCalendarPickerBoxShadow'),
+    map.get($map, 'fieldDoubleCalendarPickerBorderRadius'),
+    map.get($map, 'fieldDoubleCalendarPickerHeaderPadding'),
+    map.get($map, 'fieldDoubleCalendarPickerHeaderBorderBottom'),
+    map.get($map, 'fieldDoubleCalendarPickerCalendarAreaPadding'),
+    map.get($map, 'fieldDoubleCalendarPickerCalendarBorderRadius'),
+    map.get($map, 'fieldDoubleCalendarPickerCalendarLastChildBorderLeft'),
+    map.get($map, 'fieldDoubleCalendarPickerCalendarLastChildBorderRadius'),
+    map.get($map, 'fieldDoubleCalendarPickerCalendarWeekColumnGap'),
+    map.get($map, 'fieldDoubleCalendarPickerCalendarDayWidth'),
+    map.get($map, 'fieldDoubleCalendarPickerDatesMarginBottom'),
+    map.get($map, 'fieldDoubleCalendarPickerDatesColumnGap'),
+    map.get($map, 'fieldDoubleCalendarPickerDatesFontWeight'),
+    map.get($map, 'fieldDoubleCalendarPickerDatesFontSize'),
+    map.get($map, 'fieldDoubleCalendarPickerDatesLineHeight'),
+    map.get($map, 'fieldDoubleCalendarPickerDatesColor'),
+    map.get($map, 'fieldDoubleCalendarPickerDateFontWeight'),
+    map.get($map, 'fieldDoubleCalendarPickerDateFontSize'),
+    map.get($map, 'fieldDoubleCalendarPickerDateLineHeight'),
+    map.get($map, 'fieldDoubleCalendarPickerDateColor'),
+    map.get($map, 'fieldDoubleCalendarPickerDateMarginLeft'),
+    map.get($map, 'fieldDoubleCalendarPickerFooterBorderTop'),
+    map.get($map, 'fieldDoubleCalendarPickerFooterBorderRadius'),
+    map.get($map, 'fieldDoubleCalendarPickerFooterPadding'),
+    map.get($map, 'fieldDoubleCalendarPickerPlaceholderColor'),
+    map.get($map, 'fieldDoubleCalendarPickerPlaceholderFontSize'),
+    map.get($map, 'fieldDoubleCalendarPickerPlaceholderFontWeight'),
+    map.get($map, 'fieldDoubleCalendarPickerPlaceholderLineHeigh')
+  );
+}

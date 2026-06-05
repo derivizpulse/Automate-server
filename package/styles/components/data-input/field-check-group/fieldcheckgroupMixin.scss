@@ -1,0 +1,36 @@
+///
+/// Careflow Field Check Group Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin fieldCheckGroupMixin(
+  $theme,
+  $fieldCheckGroupPadding,
+  $fieldCheckGroupVerticalRowGap,
+  $fieldCheckGroupHorizontalRowGap,
+  $fieldCheckGroupHorizontalColumnGap
+) {
+  $field-check-group: component.$field-check-group;
+
+  .#{$field-check-group} {
+    display: flex;
+    flex-wrap: wrap;
+
+    &.#{$field-check-group}--vertical {
+      flex-direction: column;
+      row-gap: $fieldCheckGroupVerticalRowGap;
+
+      .#{$field-check-group} {
+        padding: $fieldCheckGroupPadding;
+      }
+    }
+
+    &.#{$field-check-group}--horizontal {
+      column-gap: $fieldCheckGroupHorizontalColumnGap;
+      row-gap: $fieldCheckGroupHorizontalRowGap;
+    }
+  }
+}

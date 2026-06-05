@@ -1,0 +1,287 @@
+///
+/// Careflow Data Table Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin dataTableMixin(
+  $theme,
+  $tableContainerRowGap,
+  $tableFontSize,
+  $tableLineHeight,
+  $tableLineFontWeight,
+  $tableColor,
+  $tableBorder,
+  $tableBorderRadius,
+  $tableThDefaultPadding,
+  $tableThPadding,
+  $tableThBackground,
+  $tableThFontSize,
+  $tableThLineHeight,
+  $tableThWeight,
+  $tableThColor,
+  $tableThNotLastChildBorderRight,
+  $tableTdPadding,
+  $tableTdNotLastChildBorderRight,
+  $tableHeadTrBorderBottom,
+  $tableTrColor,
+  $tableTrFontSize,
+  $tableTrLineHeight,
+  $tableBodyTrBorderBottom,
+  $tableBodyTrIsActiveBackgroundColor,
+  $tableBodyTrTdHowerBackgroundImage,
+  $tableFooterBorderTop,
+  $tableFooterBackgroundColor,
+  $tableEmptyMinHeight,
+  $tableEmptyRowGap,
+  $tableEmptyTextFontSize,
+  $tableEmptyTextLineHeight,
+  $tableEmptyTextFontWeight,
+  $tableEmptyTextColor,
+  $tableHeaderLabelFontSize,
+  $tableHeaderLabelLineHeight,
+  $tableHeaderLabelFontWeight,
+  $tableHeaderLabelColor,
+  $tablePaginationColumnGap,
+  $tablePaginationIconFontSize,
+  $tablePaginationIconColor,
+  $tablePaginationIconIsDisabledColor,
+  $tablePaginationTextColor,
+  $tablePaginationTextFontSize,
+  $tablePaginationTextLineHeight,
+  $tablePaginationTextFontWeight,
+  $tableHeaderCellRowGap,
+  $tableHeaderCellTopColumnGap,
+  $tableHeaderCellTopLeftColumnGap,
+  $tableHeaderCellTopRightColumnGap,
+  $tableHeaderCellBottomHeight
+) {
+  $table: component.$table;
+
+  .#{$table}-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: $tableContainerRowGap;
+  }
+  .#{$table} {
+    width: 100%;
+    font-size: $tableFontSize;
+    line-height: $tableLineHeight;
+    font-weight: $tableLineFontWeight;
+    color: $tableColor;
+    border: $tableBorder;
+    border-radius: $tableBorderRadius;
+    overflow: hidden;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+
+    // Remove later
+    &.#{$table}--default {
+      table th {
+        padding: $tableThDefaultPadding !important;
+      }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+
+      th,
+      td {
+        overflow-wrap: break-word;
+      }
+
+      th {
+        padding: $tableThPadding;
+        background: $tableThBackground;
+        vertical-align: top;
+        text-align: left;
+        font-size: $tableThFontSize;
+        line-height: $tableThLineHeight;
+        font-weight: $tableThWeight;
+        color: $tableThColor;
+
+        &:not(:last-child) {
+          border-right: $tableThNotLastChildBorderRight;
+        }
+      }
+
+      td {
+        padding: $tableTdPadding;
+        text-align: left;
+
+        &:not(:last-child) {
+          border-right: $tableTdNotLastChildBorderRight;
+        }
+      }
+
+      tr {
+        color: $tableTrColor;
+        font-size: $tableTrFontSize;
+        line-height: $tableTrLineHeight;
+      }
+    }
+
+    .#{$table}__head {
+      tr {
+        border-bottom: $tableHeadTrBorderBottom;
+      }
+    }
+
+    .#{$table}__body {
+      flex: 1;
+      min-height: 0;
+      margin-bottom: -0.2rem;
+
+      /* stylelint-disable-next-line selector-type-no-unknown */
+      cfc-scroller > ng-scrollbar {
+        padding-bottom: 0.1rem;
+      }
+
+      tr {
+        border-bottom: $tableBodyTrBorderBottom;
+
+        // Either is-active or custom color
+        &.is-active {
+          background-color: $tableBodyTrIsActiveBackgroundColor;
+        }
+
+        &:hover {
+          td {
+            background: $tableBodyTrTdHowerBackgroundImage;
+          }
+        }
+      }
+    }
+
+    .#{$table}__footer {
+      border-top: $tableFooterBorderTop;
+      position: relative;
+      z-index: 1;
+
+      tfoot {
+        background-color: $tableFooterBackgroundColor;
+      }
+    }
+
+    // Remove later
+    .#{$table}__empty {
+      min-height: $tableEmptyMinHeight;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      row-gap: $tableEmptyRowGap;
+
+      .#{$table}__empty-text {
+        font-size: $tableEmptyTextFontSize;
+        line-height: $tableEmptyTextLineHeight;
+        font-weight: $tableEmptyTextFontWeight;
+        color: $tableEmptyTextColor;
+      }
+    }
+
+    // Remove later
+    .#{$table}__header-label {
+      font-size: $tableHeaderLabelFontSize;
+      line-height: $tableHeaderLabelLineHeight;
+      font-weight: $tableHeaderLabelFontWeight;
+      color: $tableHeaderLabelColor;
+    }
+  }
+
+  // Remove later
+  .#{$table}__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: $tablePaginationColumnGap;
+
+    .#{$table}__pagination-icon {
+      cursor: pointer;
+
+      span {
+        font-size: $tablePaginationIconFontSize;
+        color: $tablePaginationIconColor;
+      }
+
+      &.is-disabled {
+        pointer-events: none;
+
+        span {
+          color: $tablePaginationIconIsDisabledColor;
+        }
+      }
+    }
+
+    .#{$table}__pagination-text {
+      color: $tablePaginationTextColor;
+      font-size: $tablePaginationTextFontSize;
+      line-height: $tablePaginationTextLineHeight;
+      font-weight: $tablePaginationTextFontWeight;
+    }
+  }
+
+  // Checkbox
+  .#{$table}-select-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  // Header Cell
+  .#{$table}-header-cell {
+    display: flex;
+    flex-direction: column;
+    row-gap: $tableHeaderCellRowGap;
+
+    .#{$table}-header-cell__top {
+      display: flex;
+      align-items: center;
+      column-gap: $tableHeaderCellTopColumnGap;
+
+      .#{$table}-header-cell__top-left {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        column-gap: $tableHeaderCellTopLeftColumnGap;
+      }
+
+      .#{$table}-header-cell__top-right {
+        display: flex;
+        align-items: center;
+        column-gap: $tableHeaderCellTopRightColumnGap;
+      }
+
+      &.#{$table}-header-cell__top--right-aligned {
+        flex-direction: row-reverse;
+
+        .#{$table}-header-cell__top-left {
+          justify-content: end;
+          flex-direction: row-reverse;
+        }
+      }
+    }
+
+    .#{$table}-header-cell__bottom {
+      height: $tableHeaderCellBottomHeight;
+    }
+  }
+
+  // Body Cell
+  .#{$table}-body-cell {
+    &.#{$table}-body-cell--left {
+      text-align: left;
+    }
+
+    &.#{$table}-body-cell--right {
+      text-align: right;
+    }
+  }
+}

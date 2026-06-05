@@ -1,0 +1,37 @@
+@use 'sass:map';
+@use '../../spacing' as spacing;
+@use 'maps/corner' as corner;
+
+$map: (
+  'skeletonLabelBeforeHeight': 1.6rem,
+  'skeletonFieldBeforeHeight': 2.4rem,
+  'skeletonTextareaBeforeMarginBottom': map.get(spacing.$spacing, 4),
+  'skeletonTextareaBeforeHeight': 1.6rem,
+  'skeletonTextareaBeforeWidth': 50%,
+  'skeletonTextareaAfterHeight': 1.6rem,
+  'skeletonTagColumnGap': map.get(spacing.$spacing, 8),
+  'skeletonTagBeforeBorderRadius': map.get(corner.$corner, 'full'),
+  'skeletonTagBeforeWidth': 4rem,
+  'skeletonTagBeforeHeight': 1.6rem,
+  'skeletonTagAfterBorderRadius': map.get(corner.$corner, 'full'),
+  'skeletonTagAfterWidth': 4rem,
+  'skeletonTagAfterHeight': 1.6rem,
+  'skeletonTagChildBorderRadius': map.get(corner.$corner, 'full'),
+  'skeletonTagChildWidth': 4rem,
+  'skeletonTagChildHeight': 1.6rem,
+  'skeletonAvatarBeforeWidth': 5.6rem,
+  'skeletonAvatarBeforeHeight': 5.6rem,
+  'skeletonAvatarBeforeBorderRadius': map.get(corner.$corner, 'full'),
+  'skeletonImageWidth': 32rem,
+  'skeletonImageHeight': 24rem,
+  'skeletonImageChildBackgroundImage': url('/assets/careflow/images/skeleton/image.svg'),
+  'skeletonChartLineWidth': 32rem,
+  'skeletonChartLineHeight': 24rem,
+  'skeletonChartLineChildBackgroundImage': url('/assets/careflow/images/skeleton/chart-line.svg'),
+  'skeletonChartDonutWidth': 32rem,
+  'skeletonChartDonutHeight': 24rem,
+  'skeletonChartDonutChildBackgroundImage': url('/assets/careflow/images/skeleton/chart-donut.svg'),
+  'skeletonChartDonutHalfWidth': 32rem,
+  'skeletonChartDonutHalfHeight': 24rem,
+  'skeletonChartDonutHalfChildBackgroundImage': url('/assets/careflow/images/skeleton/chart-donut-half.svg'),
+);

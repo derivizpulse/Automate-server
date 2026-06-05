@@ -1,0 +1,26 @@
+@use 'sass:map';
+@use 'maps/typography' as typography;
+@use 'maps/color' as color;
+@use 'maps/corner' as corner;
+@use '../../spacing' as spacing;
+
+$map: (
+  'tooltipPadding': 0.8rem,
+  'tooltipBorderRadius': 0.4rem,
+  'tooltipFontsize': map.get(typography.$typography, 'scale', 'base', 'size'),
+  'tooltipLineHeight': map.get(typography.$typography, 'scale', 'base', 'height'),
+  'tooltipFontWeight': map.get(typography.$typography, 'weight', 'regular'),
+  'tooltipColor': map.get(color.$color, 'font', 20),
+  'tooltipBackground': map.get(color.$color, 'background', 40),
+  'tooltipBoxShadow': 0 2px 4px 0 rgba(0, 0, 0, 15%),
+  'tooltipBorder': 0.1rem solid map.get(color.$color, 'background', 20),
+  'tooltipInvertBackground': map.get(color.$color, 'white'),
+  'tooltipInvertColor': map.get(color.$color, 'background', 5),
+  'tooltipInvertBoxShadow': 0 0.8rem 1.2rem 0 rgba(13, 22, 29, 12%),
+  'tooltipAngleBorderTransparent':0.5rem solid transparent,
+  'tooltipAngleBorderSolid':0.7rem solid map.get(color.$color, 'background', 5),
+  'tooltipAngleBackground':0.7rem solid map.get(color.$color, 'background', 40),
+  'invertedBorderColor': map.get(color.$color, 'font', 5),
+  'tooltipTopBottomAnglePosition': 1rem,
+  'tooltipLeftRightAnglePosition': 0.6rem,
+);

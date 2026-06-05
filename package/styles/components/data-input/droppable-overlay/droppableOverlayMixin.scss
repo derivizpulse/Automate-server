@@ -1,0 +1,42 @@
+///
+/// Careflow Droppable Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin droppableOverlayMixin(
+  $theme,
+  $droppableOverlayBorderRadius,
+  $droppableOverlayBorder,
+  $droppableOverlayBackgroundColor,
+  $droppableOverlayPadding,
+  $droppableOverlayColor,
+  $droppableOverlayFontSize,
+  $droppableOverlayLineHeight,
+  $droppableOverlayFontWeight,
+
+) {
+  $droppable: component.$droppable-overlay;
+  .#{$droppable} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: $droppableOverlayBorderRadius;
+    border: $droppableOverlayBorder;
+    background-color: $droppableOverlayBackgroundColor;
+    padding: $droppableOverlayPadding;
+    color: $droppableOverlayColor;
+    font-size: $droppableOverlayFontSize;
+    line-height: $droppableOverlayLineHeight;
+    font-weight: $droppableOverlayFontWeight;
+  }
+}

@@ -1,0 +1,46 @@
+@use 'sass:map';
+@use 'triggerButtonMixin' as triggerButtonMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/triggerButton' as lightTriggerButton;
+@use '../../../settings/themes/dark/triggerButton' as darkTriggerButton;
+@use '../../../settings/themes/test/triggerButton' as testTriggerButton;
+
+@mixin triggerButton($theme) {
+  @if $theme == theme.$theme-light {
+    @include triggerButtonStyles(lightTriggerButton.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include triggerButtonStyles(darkTriggerButton.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include triggerButtonStyles(testTriggerButton.$map, $theme);
+  }
+}
+
+@mixin triggerButtonStyles($map, $theme) {
+  @include triggerButtonMixin.triggerButtonMixin(
+    $theme,
+    map.get($map, 'triggerButtonMinWidth'),
+    map.get($map, 'triggerButtonHeight'),
+    map.get($map, 'triggerButtonBorderRadius'),
+    map.get($map, 'triggerButtonColumnGap'),
+    map.get($map, 'triggerButtonIconFontSize'),
+    map.get($map, 'triggerButtonIconColor'),
+    map.get($map, 'triggerButtonTextColor'),
+    map.get($map, 'triggerButtonTextFontSize'),
+    map.get($map, 'triggerButtonTextLineHeight'),
+    map.get($map, 'triggerButtonTextFontWeight'),
+    map.get($map, 'triggerButtonHoverBackgroundColor'),
+    map.get($map, 'triggerButtonFocusVisibleOutline'),
+    map.get($map, 'triggerButtonFocusVisibleOutlineOffset'),
+    map.get($map, 'triggerButtonIsDisabledIconColor'),
+    map.get($map, 'triggerButtonIsDisabledTextColor'),
+    map.get($map, 'triggerButtonBlackIconColor'),
+    map.get($map, 'triggerButtonBlackTextColor'),
+    map.get($map, 'triggerButtonBlackHoverBackgroundColor'),
+    map.get($map, 'triggerButtonBlackIsDisabledIconColor'),
+    map.get($map, 'triggerButtonBlackIsDisabledTextColor'),
+  );
+}

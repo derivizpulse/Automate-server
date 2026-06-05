@@ -1,0 +1,55 @@
+@mixin alignSelf($theme) {
+  @include alignSelfStyles;
+}
+
+@mixin alignSelfStyles {
+  .cfu-align-self {
+    &-auto {
+      align-self: auto;
+    }
+
+    &-normal {
+      align-self: normal;
+    }
+
+    &-center {
+      align-self: center;
+    }
+
+    &-start {
+      align-self: start;
+    }
+
+    &-end {
+      align-self: end;
+    }
+
+    &-self {
+      &-start {
+        align-self: self-start;
+      }
+
+      &-end {
+        align-self: self-end;
+      }
+    }
+
+    &-flex {
+      &-start {
+        align-self: flex-start;
+      }
+
+      &-end {
+        align-self: flex-end;
+      }
+    }
+
+    &-baseline {
+      align-self: baseline;
+    }
+
+    &-stretch {
+      align-self: stretch;
+    }
+  }
+}

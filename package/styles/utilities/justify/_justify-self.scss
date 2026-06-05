@@ -1,0 +1,63 @@
+@mixin justifySelf($theme) {
+  @include justifySelfStyles;
+}
+
+@mixin justifySelfStyles {
+  .cfu-justify-self {
+    &-auto {
+      justify-self: auto;
+    }
+
+    &-normal {
+      justify-self: normal;
+    }
+
+    &-stretch {
+      justify-self: stretch;
+    }
+
+    &-center {
+      justify-self: center;
+    }
+
+    &-start {
+      justify-self: start;
+    }
+
+    &-end {
+      justify-self: end;
+    }
+
+    &-flex {
+      &-start {
+        justify-self: flex-start;
+      }
+
+      &-end {
+        justify-self: flex-end;
+      }
+    }
+
+    &-self {
+      &-start {
+        justify-self: self-start;
+      }
+
+      &-end {
+        justify-self: self-end;
+      }
+    }
+
+    &-left {
+      justify-self: left;
+    }
+
+    &-right {
+      justify-self: right;
+    }
+
+    &-baseline {
+      justify-self: baseline;
+    }
+  }
+}

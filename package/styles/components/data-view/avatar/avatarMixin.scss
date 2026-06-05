@@ -1,0 +1,110 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin avatarMixin(
+  $theme,
+  $avatarBorderRadius,
+  $avatarBackgroundColor,
+  $avatarColor,
+  $avatarAfterBorderRadius,
+  $avatarAfterBorder,
+  $avatarEditHoverBackgroundColor,
+  $avatarLargeWidth,
+  $avatarLargeHeight,
+  $avatarLargeFontSize,
+  $avatarEditLargeFontSize,
+  $avatarMediumWidth,
+  $avatarMediumHeight,
+  $avatarMediumFontSize,
+  $avatarSmallWidth,
+  $avatarSmallHeight,
+  $avatarSmallFontSize,
+  $avatarXSmallWidth,
+  $avatarXSmallHeight,
+  $avatarXSmallFontSize
+
+) {
+  $avatar: component.$avatar;
+  .#{$avatar} {
+    position: relative;
+    border-radius: $avatarBorderRadius;
+    background: $avatarBackgroundColor;
+    color: $avatarColor;
+    overflow: hidden;
+
+    &::after {
+      content: '';
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: $avatarAfterBorderRadius;
+      border: $avatarAfterBorder;
+    }
+
+    .#{$avatar}__image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .#{$avatar}__icon {
+      display: flex !important;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .#{$avatar}__edit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      padding: 100%;
+      opacity: 0;
+    }
+
+    &:hover {
+      .#{$avatar}__edit {
+        opacity: 1;
+        background-color: $avatarEditHoverBackgroundColor;
+      }
+    }
+
+    // modifiers
+    &.#{$avatar}--large {
+      width: $avatarLargeWidth;
+      height: $avatarLargeHeight;
+      font-size: $avatarLargeFontSize;
+
+      .#{$avatar}__edit {
+        font-size: $avatarEditLargeFontSize;
+      }
+    }
+
+    &.#{$avatar}--medium {
+      width: $avatarMediumWidth;
+      height: $avatarMediumHeight;
+      font-size: $avatarMediumFontSize;
+    }
+
+    &.#{$avatar}--small {
+      width: $avatarSmallWidth;
+      height: $avatarSmallHeight;
+      font-size: $avatarSmallFontSize;
+    }
+
+    &.#{$avatar}--x-small {
+      width: $avatarXSmallWidth;
+      height: $avatarXSmallHeight;
+      font-size: $avatarXSmallFontSize;
+    }
+  }
+}

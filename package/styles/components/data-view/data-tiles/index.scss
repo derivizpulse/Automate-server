@@ -1,0 +1,50 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/dataTile' as lightDataTile;
+@use '../../../settings/themes/test/dataTile' as testDataTile;
+@use 'dataTileMixin' as dataTileMixin;
+
+@mixin dataTile($theme) {
+  @if $theme == theme.$theme-light {
+    @include dataTileStyles(lightDataTile.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include dataTileStyles(testDataTile.$map, $theme);
+  }
+}
+
+@mixin dataTileStyles($map, $theme) {
+  @include dataTileMixin.dataTileMixin(
+    $theme,
+    map.get($map, 'dataTileMinHeight'),
+    map.get($map, 'dataTileMinWidth'),
+    map.get($map, 'dataTileBorder'),
+    map.get($map, 'dataTileBorderRadius'),
+    map.get($map, 'dataTileColumnGap'),
+    map.get($map, 'dataTilePadding'),
+    map.get($map, 'dataTileDataMinWidth'),
+    map.get($map, 'dataTileDataRowGap'),
+    map.get($map, 'dataTileHeaderColumnGap'),
+    map.get($map, 'dataTileTitleFontWeight'),
+    map.get($map, 'dataTileTitleFontSize'),
+    map.get($map, 'dataTileTitleLineHeight'),
+    map.get($map, 'dataTileTitleColor'),
+    map.get($map, 'dataTileValueFontWeight'),
+    map.get($map, 'dataTileValueFontSize'),
+    map.get($map, 'dataTileValueLineHeight'),
+    map.get($map, 'dataTileValueColor'),
+    map.get($map, 'dataTileSubtextColumnGap'),
+    map.get($map, 'dataTileSubtextFontWeight'),
+    map.get($map, 'dataTileSubtextFontSize'),
+    map.get($map, 'dataTileSubtextLineHeight'),
+    map.get($map, 'dataTileSubtextColor'),
+    map.get($map, 'dataTileGroupBorder'),
+    map.get($map, 'dataTileGroupBorderRadius'),
+    map.get($map, 'dataTileGroupTileBorder'),
+    map.get($map, 'dataTileGroupTileBeforeWidth'),
+    map.get($map, 'dataTileGroupTileBeforeHeight'),
+    map.get($map, 'dataTileGroupTileBeforeBackgroundColor'),
+    map.get($map, 'dataTileGroupTileBeforeTop')
+  );
+}

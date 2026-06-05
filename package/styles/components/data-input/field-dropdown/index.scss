@@ -1,0 +1,147 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use 'selectMixin' as selectMixin;
+@use 'dropdownMixin' as dropdownMixin;
+@use 'dropdownMenuMixin' as dropdownMenuMixin;
+@use '../../../settings/themes/light/dropdown' as lightDropdown;
+@use '../../../settings/themes/dark/dropdown' as darkDropwon;
+@use '../../../settings/themes/test/dropdown' as testDropwon;
+
+@mixin fieldDropdown($theme) {
+  @if $theme == theme.$theme-light {
+    @include fieldDropdownStyles(lightDropdown.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include fieldDropdownStyles(darkDropwon.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include fieldDropdownStyles(testDropwon.$map, $theme);
+  }
+}
+
+@mixin fieldDropdownStyles($map, $theme) {
+  @include selectMixin.fieldSelectMixin(
+    $theme,
+    map.get($map, 'fieldSelectFontWeight'),
+    map.get($map, 'fieldSelectFocusOutline'),
+    map.get($map, 'fieldSelectDisabledFocusOutline'),
+    map.get($map, 'fieldSelectHeadHeight'),
+    map.get($map, 'fieldSelectHeadBorder'),
+    map.get($map, 'fieldSelectHeadBackgroundColor'),
+    map.get($map, 'fieldSelectHeadBorderRadius'),
+    map.get($map, 'fieldSelectHeadColumnGap'),
+    map.get($map, 'fieldSelectHeadPadding'),
+    map.get($map, 'fieldSelectHeadHoverBorder'),
+    map.get($map, 'fieldSelectHeadHoverBackgroundColor'),
+    map.get($map, 'fieldSelectHeadFocusBorder'),
+    map.get($map, 'fieldSelectHeadFocusOutline'),
+    map.get($map, 'fieldSelectHeadDisabledBackgroundColor'),
+    map.get($map, 'fieldSelectHeadDisabledBorderColor'),
+    map.get($map, 'fieldSelectHeadErrorBorderColor'),
+    map.get($map, 'fieldSelectHeadErrorOutlineColor'),
+    map.get($map, 'fieldSelectHeadContentColumnGap'),
+    map.get($map, 'fieldSelectHeadContentPlaceholderColor'),
+    map.get($map, 'fieldSelectHeadContentColor'),
+    map.get($map, 'fieldSelectHeadContentInactive'),
+    map.get($map, 'fieldSelectHeadContentDisabledColor'),
+    map.get($map, 'fieldSelectHeadContentInactiveDisabledColor'),
+    map.get($map, 'fieldSelectHeadIconsColumnGap'),
+    map.get($map, 'fieldSelectHeadIconsColor'),
+    map.get($map, 'fieldSelectDropdownWidth'),
+    map.get($map, 'fieldSelectDropdownMinWidth'),
+    map.get($map, 'fieldSelectDropdownBackgroundColor')
+  );
+  @include dropdownMixin.fieldDropdownMixin(
+    $theme,
+    map.get($map, 'fieldDropdownWidth'),
+    map.get($map, 'fieldDropdownBackgroundColor'),
+    map.get($map, 'fieldDropdownBorder'),
+    map.get($map, 'fieldDropdownBoxShadow'),
+    map.get($map, 'fieldDropdownBorderRadius'),
+    map.get($map, 'fieldDropdownHeaderPadding'),
+    map.get($map, 'fieldDropdownHeaderBorderBottom'),
+    map.get($map, 'fieldDropdownHeaderFocusOutline'),
+    map.get($map, 'fieldDropdownContentMaxHeight'),
+    map.get($map, 'fieldDropdownFooterPadding'),
+    map.get($map, 'fieldDropdownFooterBorderTop'),
+    map.get($map, 'fieldDropdownFooterLeftFontWeight'),
+    map.get($map, 'fieldDropdownFooterLeftFontSize'),
+    map.get($map, 'fieldDropdownFooterLeftLineHeight'),
+    map.get($map, 'fieldDropdownFooterLeftColor'),
+    map.get($map, 'fieldDropdownFooterMoreTextFontWeight'),
+    map.get($map, 'fieldDropdownFooterMoreTextFontSize'),
+    map.get($map, 'fieldDropdownFooterMoreTextLineHeight'),
+    map.get($map, 'fieldDropdownFooterMoreTextPadding'),
+    map.get($map, 'fieldDropdownFooterMoreTextColor'),
+    map.get($map, 'fieldDropdownListGroupHeadColumnGap'),
+    map.get($map, 'fieldDropdownListGroupHeadMarginBottom'),
+    map.get($map, 'fieldDropdownListGroupHeadFieldCheckTextFontSize'),
+    map.get($map, 'fieldDropdownListGroupHeadFieldCheckTextFontWeight'),
+    map.get($map, 'fieldDropdownListGroupHeadFieldCheckTextColor'),
+    map.get($map, 'fieldDropdownListGroupTitleFontSize'),
+    map.get($map, 'fieldDropdownListGroupTitleFontWeight'),
+    map.get($map, 'fieldDropdownListGroupTitleColor'),
+    map.get($map, 'fieldDropdownListGroupItemWrapperPadding'),
+    map.get($map, 'fieldDropdownListGroupItemWrapperMargin'),
+    map.get($map, 'fieldDropdownListGroupItemWrapperBorderBottom'),
+    map.get($map, 'fieldDropdownListGroupItemWrapperFieldDropdownMenuItemPaddingLeft'),
+    map.get($map, 'fieldDropdownFilterGap'),
+    map.get($map, 'fieldDropdownFilterFontSize'),
+    map.get($map, 'fieldDropdownFilterFontWeight'),
+    map.get($map, 'fieldDropdownFilterLineHeight'),
+    map.get($map, 'fieldDropdownFilterTextColor'),
+    map.get($map, 'fieldDropdownFilterHeadGap'),
+    map.get($map, 'fieldDropdownFilterHeadColor'),
+    map.get($map, 'fieldDropdownFilterHeadFocusOutline'),
+    map.get($map, 'fieldDropdownFilterMenuBorderRadius'),
+    map.get($map, 'fieldDropdownFilterMenuBorder'),
+    map.get($map, 'fieldDropdownFilterMenuFilter'),
+    map.get($map, 'fieldDropdownFilterMenuBackgroundColor'),
+    map.get($map, 'fieldDropdownFilterMenuItemPadding'),
+    map.get($map, 'fieldDropdownFilterMenuItemMargin'),
+    map.get($map, 'fieldDropdownFilterMenuItemHoverBackgroundColor'),
+    map.get($map, 'fieldDropdownFilterMenuItemFocusOutline')
+  );
+  @include dropdownMenuMixin.fieldDropdownMenuMixin(
+    $theme,
+    map.get($map, 'fieldDropdownMenuBackgroundColor'),
+    map.get($map, 'fieldDropdownMenuVirtualScrollHeight'),
+    map.get($map, 'fieldDropdownMenuItemMinHeight'),
+    map.get($map, 'fieldDropdownMenuItemPadding'),
+    map.get($map, 'fieldDropdownMenuItemColor'),
+    map.get($map, 'fieldDropdownMenuItemFocusOutline'),
+    map.get($map, 'fieldDropdownMenuItemFocusOutlineOffset'),
+    map.get($map, 'fieldDropdownMenuItemHoverBackground'),
+    map.get($map, 'fieldDropdownMenuItemSelectedBackground'),
+    map.get($map, 'fieldDropdownMenuItemInactiveBackgroundColor'),
+    map.get($map, 'fieldDropdownMenuItemInactiveColor'),
+    map.get($map, 'fieldDropdownMenuItemInactiveFocusOutline'),
+    map.get($map, 'fieldDropdownMenuItemInactiveFieldCheckTextColor'),
+    map.get($map, 'fieldDropdownMenuItemLabelFontSize'),
+    map.get($map, 'fieldDropdownMenuItemLabelLineHeight'),
+    map.get($map, 'fieldDropdownMenuEntryFieldGap'),
+    map.get($map, 'fieldDropdownMenuEntryFieldColor'),
+    map.get($map, 'fieldDropdownMenuEntryFieldBorderRadius'),
+    map.get($map, 'fieldDropdownMenuEntryFieldPadding'),
+    map.get($map, 'fieldDropdownMenuEntryFieldHoverBackgroundColor'),
+    map.get($map, 'fieldDropdownMenuEntryFieldSelectedBackgroundColor'),
+    map.get($map, 'fieldDropdownMenuEmptyMinHeight'),
+    map.get($map, 'fieldDropdownMenuEmptyColor'),
+    map.get($map, 'fieldDropdownMenuEmptyFontSize'),
+    map.get($map, 'fieldDropdownMenuEmptyLineHeight'),
+    map.get($map, 'fieldDropdownMenuEmptyOptionColor'),
+    map.get($map, 'fieldDropdownMenuEmptyOptionFontSize'),
+    map.get($map, 'fieldDropdownMenuEmptyOptionLineHeight'),
+    map.get($map, 'fieldDropdownMenuEmptyOptionPadding'),
+    map.get($map, 'fieldDropdownMenuEmptyOptionMaxHeight'),
+    map.get($map, 'fieldDropdownMenuCellGap'),
+    map.get($map, 'fieldDropdownMenuCellContentRowGap'),
+    map.get($map, 'fieldDropdownMenuCellHeadingGap'),
+    map.get($map, 'fieldDropdownMenuCellTitleFontSize'),
+    map.get($map, 'fieldDropdownMenuCellTitleLineHeight'),
+    map.get($map, 'fieldDropdownMenuCellTitleColor'),
+    map.get($map, 'fieldDropdownMenuCellTextColor')
+  );
+}

@@ -1,0 +1,28 @@
+@use 'sass:map';
+@use 'maps/corner' as cornerMap;
+@use 'maps/color' as colorMap;
+
+$map: (
+  '$popoverBackground': map.get(colorMap.$color, 'background', 100),
+  '$popoverBoxShadow': 0 0.4rem 0.4rem 0 rgba(#000, 0.25),
+  '$popoverBorder': 0.1rem solid map.get(colorMap.$color, 'background', 20),
+  '$popoverBorderRadius': map.get(cornerMap.$corner, 'default'),
+  '$popoverMaxHeight': calc(100dvh - 12rem),
+  '$popoverHeaderPadding': 1.4rem 1.2rem,
+  '$popoverHeaderBackground': linear-gradient(90deg, map.get(colorMap.$color, 'background', 40) 0%, map.get(colorMap.$color, 'background', 40) 100.17%),
+  '$popoverCloseWidth': 2.4rem,
+  '$popoverCloseHeight': 2.4rem,
+  '$popoverCloseColor': map.get(colorMap.$color, 'font', 20),
+  '$popoverCloseFontSize': 1.6rem,
+  '$popoverContentInnerPadding': 1.6rem,
+  '$popoverFooterPadding': 1.2rem 1.6rem,
+  '$popoverFooterBorderTop': 0.1rem solid map.get(colorMap.$color, 'background', 20),
+  '$popoverWidthXXSmall': 15rem,
+  '$popoverWidthXSmall': 20rem,
+  '$popoverWidthSmall': 30rem,
+  '$popoverWidthMedium': 40rem,
+  '$popoverWidthLarge': 60rem,
+  '$popoverWidthXLarge': 70rem,
+  '$popoverWidthXXLarge': 80rem,
+  '$popoverRegularBorder': 1px solid map.get(colorMap.$color, 'background', 60)
+);

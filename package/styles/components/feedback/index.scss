@@ -1,0 +1,20 @@
+@use 'sass:meta';
+@use 'alert' as alert;
+@use 'badge' as badge;
+@use 'empty-state' as emptyState;
+@use 'modal' as modal;
+@use 'modal-new' as modal-new;
+@use 'slideout' as slideout;
+@use 'slideout-new' as slideout-new;
+@use 'toast' as toast;
+
+@mixin feedback($theme) {
+  @include alert.alert($theme);
+  @include badge.badge($theme);
+  @include emptyState.emptyState($theme);
+  @include modal.modal($theme);
+  @include modal-new.modal($theme);
+  @include slideout.slideout($theme);
+  @include slideout-new.slideout($theme);
+  @include toast.toast($theme);
+}

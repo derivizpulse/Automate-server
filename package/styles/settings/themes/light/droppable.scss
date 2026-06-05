@@ -1,0 +1,28 @@
+@use 'sass:map';
+@use 'maps/color' as color;
+@use 'maps/corner' as corner;
+@use 'maps/typography' as typography;
+@use '../../spacing' as spacing;
+
+$map: (
+  'droppableRowGap': map.get(spacing.$spacing, 8),
+  'droppableBorderRadius': map.get(corner.$corner, 'default'),
+  'droppableBorder': 1px dashed map.get(color.$color, 'grayscale', 40),
+  'droppableBackgroundColor': map.get(color.$color, 'white'),
+  'droppablePadding': map.get(spacing.$spacing, 24),
+  'droppableIsActiveBorderColor': map.get(color.$color, 'accent', 'blue', 80),
+  'droppableIsActiveBackgroundColor': rgba(map.get(color.$color, 'accent', 'blue', 80), 0.1),
+  'droppableHelperRowGap': map.get(spacing.$spacing, 8),
+  'droppableHelperTextFontWeight': map.get(typography.$typography, 'weight', 'medium'),
+  'droppableHelperDividerColumnGap': map.get(spacing.$spacing, 8),
+  'droppableHelperDividerColor': map.get(color.$color, 'grayscale', 40),
+  'droppableHelperDividerbeforeWidth': 3.8rem,
+  'droppableHelperDividerbeforeHeight':0.1rem,
+  'droppableHelperDividerbeforeBackgroundColor': map.get(color.$color, 'grayscale', 40),
+  'droppableHelperActionsColumnGap': map.get(spacing.$spacing, 8),
+  'droppableHelperSubtextColor': map.get(color.$color, 'grayscale', 40),
+  'droppableHelperSubtextFontSize': map.get(typography.$typography, 'scale', 'sm', 'size'),
+  'droppableHelperSubtextLineHeight': map.get(typography.$typography, 'scale', 'sm', 'height'),
+  'droppableHelperActionTextFontWeight': map.get(typography.$typography, 'weight', 'medium'),
+  'droppableHelperActionTextColor': map.get(color.$color, 'accent', 'blue', 80),
+);

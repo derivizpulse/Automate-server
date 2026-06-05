@@ -1,0 +1,38 @@
+@use 'sass:map';
+@use '../../../../settings/theme' as theme;
+@use '../../../../settings/themes/light/link' as lightLink;
+@use '../../../../settings/themes/dark/link' as darkLink;
+@use '../../../../settings/themes/test/link' as testLink;
+@use 'linkMixin' as linkMixin;
+
+@mixin link($theme) {
+  @if $theme == theme.$theme-light {
+    @include linkStyles(lightLink.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include linkStyles(darkLink.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include linkStyles(testLink.$map, $theme);
+  }
+}
+
+@mixin linkStyles($map, $theme) {
+  @include linkMixin.linkMixin(
+    $theme,
+    map.get($map, 'linkBorderRadius'),
+    map.get($map, 'linkOutlineOffset'),
+    map.get($map, 'linkDefaultColor'),
+    map.get($map, 'linkDefaultHoverColor'),
+    map.get($map, 'linkDefaultActiveColor'),
+    map.get($map, 'linkDefaultFocusOutline'),
+    map.get($map, 'linkDefaultDisabledColor'),
+    map.get($map, 'linkDangerColor'),
+    map.get($map, 'linkDangerHoverColor'),
+    map.get($map, 'linkDangerActiveColor'),
+    map.get($map, 'linkDangerFocusOutline'),
+    map.get($map, 'linkDangerDisabledColor')
+  );
+}

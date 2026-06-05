@@ -1,0 +1,304 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin tooltipMixin(
+  $theme,
+  $tooltipPadding,
+  $tooltipBorderRadius,
+  $tooltipFontsize,
+  $tooltipLineHeight,
+  $tooltipFontWeight,
+  $tooltipColor,
+  $tooltipBackground,
+  $tooltipBoxShadow,
+  $tooltipBorder,
+  $tooltipInvertBackground,
+  $tooltipInvertColor,
+  $tooltipInvertBoxShadow,
+  $tooltipAngleBorderTransparent,
+  $tooltipAngleBorderSolid,
+  $tooltipAngleBackground,
+  $invertedBorderColor,
+  $tooltipTopBottomAnglePosition,
+  $tooltipLeftRightAnglePosition
+) {
+  $tooltip: component.$tooltip;
+
+  .#{$tooltip} {
+    position: relative;
+    padding: $tooltipPadding;
+    border-radius: $tooltipBorderRadius;
+    font-size: $tooltipFontsize;
+    line-height: $tooltipLineHeight;
+    font-weight: $tooltipFontWeight;
+    color: $tooltipColor;
+    background: $tooltipBackground;
+    box-shadow: $tooltipBoxShadow;
+    border: $tooltipBorder;
+    display: inline-block;
+    z-index: 10;
+    white-space: nowrap;
+
+    &::after {
+      content: '';
+      position: absolute;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+    }
+
+    &.#{$tooltip}--bottom {
+      &::before,
+      &::after {
+        bottom: calc(100% - 0.1rem);
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: $tooltipAngleBorderTransparent;
+        border-right: $tooltipAngleBorderTransparent;
+        border-bottom: $tooltipAngleBackground;
+      }
+
+      &::before {
+        bottom: 100%;
+        border-bottom: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--bottom-start {
+      &::before,
+      &::after {
+        bottom: calc(100% - 0.1rem);
+        left: $tooltipTopBottomAnglePosition;
+        border-left: $tooltipAngleBorderTransparent;
+        border-right: $tooltipAngleBorderTransparent;
+        border-bottom: $tooltipAngleBackground;
+      }
+
+      &::before {
+        bottom: 100%;
+        border-bottom: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--bottom-end {
+      &::before,
+      &::after {
+        bottom: calc(100% - 0.1rem);
+        right: $tooltipTopBottomAnglePosition;
+        border-left: $tooltipAngleBorderTransparent;
+        border-right: $tooltipAngleBorderTransparent;
+        border-bottom: $tooltipAngleBackground;
+      }
+
+      &::before {
+        bottom: 100%;
+        border-bottom: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--top {
+      &::before,
+      &::after {
+        top: calc(100% - 0.1rem);
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: $tooltipAngleBorderTransparent;
+        border-right: $tooltipAngleBorderTransparent;
+        border-top: $tooltipAngleBackground;
+      }
+
+      &::before {
+        top: 100%;
+        border-top: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--top-start {
+      &::before,
+      &::after {
+        top: calc(100% - 0.1rem);
+        left: $tooltipTopBottomAnglePosition;
+        border-left: $tooltipAngleBorderTransparent;
+        border-right: $tooltipAngleBorderTransparent;
+        border-top: $tooltipAngleBackground;
+      }
+
+      &::before {
+        top: 100%;
+        border-top: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--top-end {
+      &::before,
+      &::after {
+        top: calc(100% - 0.1rem);
+        right: $tooltipTopBottomAnglePosition;
+        left: auto;
+        border-left: $tooltipAngleBorderTransparent;
+        border-right: $tooltipAngleBorderTransparent;
+        border-top: $tooltipAngleBackground;
+      }
+
+      &::before {
+        top: 100%;
+        border-top: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--left {
+      &::before,
+      &::after {
+        left: calc(100% - 0.1rem);
+        transform: translateY(-50%);
+        top: 50%;
+        border-top: $tooltipAngleBorderTransparent;
+        border-bottom: $tooltipAngleBorderTransparent;
+        border-left: $tooltipAngleBackground;
+      }
+
+      &::before {
+        left: 100%;
+        border-left: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--left-start {
+      &::before,
+      &::after {
+        left: calc(100% - 0.1rem);
+        top: $tooltipLeftRightAnglePosition;
+        border-top: $tooltipAngleBorderTransparent;
+        border-bottom: $tooltipAngleBorderTransparent;
+        border-left: $tooltipAngleBackground;
+      }
+
+      &::before {
+        left: 100%;
+        border-left: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--left-end {
+      &::before,
+      &::after {
+        left: calc(100% - 0.1rem);
+        bottom: $tooltipLeftRightAnglePosition;
+        border-top: $tooltipAngleBorderTransparent;
+        border-bottom: $tooltipAngleBorderTransparent;
+        border-left: $tooltipAngleBackground;
+      }
+
+      &::before {
+        left: 100%;
+        border-left: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--right {
+      &::before,
+      &::after {
+        right: calc(100% - 0.1rem);
+        top: 50%;
+        transform: translateY(-50%);
+        border-top: $tooltipAngleBorderTransparent;
+        border-bottom: $tooltipAngleBorderTransparent;
+        border-right: $tooltipAngleBackground;
+      }
+
+      &::before {
+        right: 100%;
+        border-right: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--right-start {
+      &::before,
+      &::after {
+        top: $tooltipLeftRightAnglePosition;
+        right: calc(100% - 0.1rem);
+        border-top: $tooltipAngleBorderTransparent;
+        border-bottom: $tooltipAngleBorderTransparent;
+        border-right: $tooltipAngleBackground;
+      }
+
+      &::before {
+        right: 100%;
+        border-right: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.#{$tooltip}--right-end {
+      &::before,
+      &::after {
+        bottom: $tooltipLeftRightAnglePosition;
+        right: calc(100% - 0.1rem);
+        border-top: $tooltipAngleBorderTransparent;
+        border-bottom: $tooltipAngleBorderTransparent;
+        border-right: $tooltipAngleBackground;
+      }
+
+      &::before {
+        right: 100%;
+        border-right: $tooltipAngleBorderSolid;
+      }
+    }
+
+    &.is-invert {
+      background: $tooltipInvertBackground;
+      color: $tooltipInvertColor;
+      box-shadow: $tooltipInvertBoxShadow;
+      border-color: $invertedBorderColor;
+      &.#{$tooltip}--bottom,
+      &.#{$tooltip}--bottom-start,
+      &.#{$tooltip}--bottom-end {
+        &::after {
+          border-bottom-color: $tooltipInvertBackground;
+        }
+
+        &::before {
+          border-bottom-color: $invertedBorderColor;
+        }
+      }
+
+      &.#{$tooltip}--top,
+      &.#{$tooltip}--top-start,
+      &.#{$tooltip}--top-end {
+        &::after {
+          border-top-color: $tooltipInvertBackground;
+        }
+
+        &::before {
+          border-top-color: $invertedBorderColor;
+        }
+      }
+
+      &.#{$tooltip}--left,
+      &.#{$tooltip}--left-start,
+      &.#{$tooltip}--left-end {
+        &::after {
+          border-left-color: $tooltipInvertBackground;
+        }
+
+        &::before {
+          border-left-color: $invertedBorderColor;
+        }
+      }
+
+      &.#{$tooltip}--right,
+      &.#{$tooltip}--right-start,
+      &.#{$tooltip}--right-end {
+        &::after {
+          border-right-color: $tooltipInvertBackground;
+        }
+
+        &::before {
+          border-right-color: $invertedBorderColor;
+        }
+      }
+    }
+  }
+}

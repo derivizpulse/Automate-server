@@ -1,0 +1,10 @@
+@use 'sass:map';
+@use 'maps/color' as color;
+@use 'maps/typography' as typography;
+
+$map: (
+  'baseColor': map.get(color.$color, 'grayscale', 100),
+  'baseFontFamily': ('Roboto', sans-serif),
+  'baseFontSize': map.get(typography.$typography, 'scale', 'base', 'size'),
+  'baseLineHeight': map.get(typography.$typography, 'scale', 'base', 'height')
+);

@@ -1,0 +1,80 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin sidebarMixin(
+  $theme,
+  $sidebarWidth,
+  $sidebarBackgroundColor,
+  $sidebarBorderRight,
+  $sidebarIconMarginBottom,
+  $sidebarIconSpanFontSize,
+  $sidebarIconSpanColor,
+  $sidebarTextFontSize,
+  $sidebarTextLineHeight,
+  $sidebarTextFontWeight,
+  $sidebarTextColor,
+  $sidebarItemPadding,
+  $sidebarItemHoverBackground,
+  $sidebarItemFocusVisibleOutline,
+  $sidebarItemFocusVisibleOutlineOffset,
+  $sidebarItemSelectedBorderLeft,
+  $sidebarItemSelectedBackgroundColor,
+  $sidebarItemSelectedIconColor,
+  $sidebarItemSelectedTextColor
+) {
+  $sidebar: component.$sidebar;
+
+  .#{$sidebar} {
+    width: $sidebarWidth;
+    height: 100%;
+    background-color: $sidebarBackgroundColor;
+    border-right: $sidebarBorderRight;
+
+    .#{$sidebar}__icon {
+      margin-bottom: $sidebarIconMarginBottom;
+
+      span {
+        font-size: $sidebarIconSpanFontSize;
+        color: $sidebarIconSpanColor;
+      }
+    }
+
+    .#{$sidebar}__text {
+      font-size: $sidebarTextFontSize;
+      line-height: $sidebarTextLineHeight;
+      font-weight: $sidebarTextFontWeight;
+      color: $sidebarTextColor;
+    }
+
+    .#{$sidebar}__item {
+      cursor: pointer;
+      position: relative;
+      padding: $sidebarItemPadding;
+      text-align: center;
+      display: block;
+
+      &:hover {
+        background: $sidebarItemHoverBackground;
+      }
+
+      &:focus-visible {
+        outline: $sidebarItemFocusVisibleOutline;
+        outline-offset: $sidebarItemFocusVisibleOutlineOffset;
+      }
+
+      &.selected {
+        border-left: $sidebarItemSelectedBorderLeft;
+        background-color: $sidebarItemSelectedBackgroundColor;
+
+        .#{$sidebar}__icon span {
+          color: $sidebarItemSelectedIconColor;
+        }
+
+        .#{$sidebar}__text {
+          color: $sidebarItemSelectedTextColor;
+        }
+      }
+    }
+  }
+}

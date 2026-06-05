@@ -1,0 +1,32 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/formControl' as lightFormControl;
+@use '../../../settings/themes/dark/formControl' as darkFormControl;
+@use '../../../settings/themes/test/formControl' as testFormControl;
+@use 'formcontrolMixin' as formcontrolMixin;
+
+@mixin formControl($theme) {
+  @if $theme == theme.$theme-light {
+    @include formControlStyles(lightFormControl.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include formControlStyles(lightFormControl.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include formControlStyles(testFormControl.$map, $theme);
+  }
+}
+
+@mixin formControlStyles($map, $theme) {
+  @include formcontrolMixin.formcontrolMixin(
+    $theme,
+    map.get($map, 'formcontrolRowGap'),
+    map.get($map, 'formcontrolFieldColumnGap'),
+    map.get($map, 'formcontrolMessageFontSize'),
+    map.get($map, 'formcontrolMessageLineHeight'),
+    map.get($map, 'formcontrolMessageColor'),
+    map.get($map, 'formcontrolMessageHaserrorColor')
+  );
+}

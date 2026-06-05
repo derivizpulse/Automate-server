@@ -1,0 +1,54 @@
+@use 'sass:map';
+@use 'toggleSwitchMixin' as toggleSwitchMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/toggleSwitch' as lightToggleSwitch;
+@use '../../../settings/themes/dark/toggleSwitch' as darkToggleSwitch;
+@use '../../../settings/themes/test/toggleSwitch' as testToggleSwitch;
+
+@mixin toggleSwitch($theme) {
+  @if $theme == theme.$theme-light {
+    @include toggleSwitchStyles(lightToggleSwitch.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include toggleSwitchStyles(darkToggleSwitch.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include toggleSwitchStyles(testToggleSwitch.$map, $theme);
+  }
+}
+
+@mixin toggleSwitchStyles($map, $theme) {
+  @include toggleSwitchMixin.toggleSwitchMixin(
+    $theme,
+    map.get($map, 'toggleSwitchWidth'),
+    map.get($map, 'toggleSwitchHeight'),
+    map.get($map, 'toggleSwitchSliderHeight'),
+    map.get($map, 'toggleSwitchSliderBackgroundColor'),
+    map.get($map, 'toggleSwitchSliderBorder'),
+    map.get($map, 'toggleSwitchSliderBorderRadius'),
+    map.get($map, 'toggleSwitchSliderBeforeHeight'),
+    map.get($map, 'toggleSwitchSliderBeforeWidth'),
+    map.get($map, 'toggleSwitchSliderBeforeLeft'),
+    map.get($map, 'toggleSwitchSliderBeforeBackgroundColor'),
+    map.get($map, 'toggleSwitchSliderBeforeBorderRadius'),
+    map.get($map, 'toggleSwitchSliderBeforeBackgroundSize'),
+    map.get($map, 'toggleSwitchSliderInputCheckedBackgroundColor'),
+    map.get($map, 'toggleSwitchSliderInputCheckedBorderColor'),
+    map.get($map, 'toggleSwitchSliderInputCheckedBeforeBackgroundColor'),
+    map.get($map, 'toggleSwitchSliderInputCheckedBeforeBackgroundImage'),
+    map.get($map, 'toggleSwitchSliderInputCheckedBeforeLeft'),
+    map.get($map, 'toggleSwitchSliderInputFocusVisibleOutline'),
+    map.get($map, 'toggleSwitchSliderInputFocusVisibleOutlineOffset'),
+    map.get($map, 'toggleSwitchSliderInputNotCheckedHoverBorderColor'),
+    map.get($map, 'toggleSwitchSliderInputCheckedHoverBackgroundColor'),
+    map.get($map, 'toggleSwitchSliderInputDisabledBorderColor'),
+    map.get($map, 'toggleSwitchSliderInputDisabledBackgroundColor'),
+    map.get($map, 'toggleSwitchSliderInputDisabledBeforeBackgroundColor'),
+    map.get($map, 'toggleSwitchSliderInputCheckedDisabledBackgroundColor'),
+    map.get($map, 'toggleSwitchSliderInputCheckedDisabledBorder'),
+    map.get($map, 'toggleSwitchSliderInputCheckedDisabledBeforeBackgroundColor'),
+    map.get($map, 'toggleSwitchSliderInputCheckedDisabledBeforeBackgroundImage')
+  );
+}

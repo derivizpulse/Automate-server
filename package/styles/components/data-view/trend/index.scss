@@ -1,0 +1,57 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/trend' as lightTrend;
+@use '../../../settings/themes/test/trend' as testTrend;
+
+@mixin trend($theme) {
+  @if $theme == theme.$theme-light {
+    @include trendStyles(lightTrend.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include trendStyles(testTrend.$map, $theme);
+  }
+}
+
+@mixin trendStyles($map, $theme) {
+  $trend: component.$trend;
+
+  .#{$trend} {
+    display: flex;
+    align-items: center;
+    column-gap: map.get($map, 'titleColumnGap');
+
+    &::before {
+      content: '';
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-color: transparent;
+      border-left-width: map.get($map, 'trendBeforeBorderLeftWidth');
+      border-right-width: map.get($map, 'trendBeforeBorderRightWidth');
+    }
+  }
+
+  // Positive Trend
+  .is-positive {
+    color: map.get($map, 'trendIsPositiveColor');
+
+    &::before {
+      transform: map.get($map, 'trendIsPositiveBeforeTransform');
+      border-bottom-width: map.get($map, 'trendIsPositiveBeforeBorderBottomWidth');
+      border-bottom-color: currentcolor;
+    }
+  }
+
+  // Negative Trend
+  .is-negative {
+    color: map.get($map, 'trendIsNegativeColor');
+
+    &::before {
+      transform: map.get($map, 'trendIsNegativeBeforeTransform');
+      border-top-width: map.get($map, 'trendIsNegativeBeforeBorderTopWidth');
+      border-top-color: currentcolor;
+    }
+  }
+}

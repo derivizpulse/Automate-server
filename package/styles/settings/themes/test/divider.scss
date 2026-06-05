@@ -1,0 +1,14 @@
+@use 'sass:map';
+@use 'maps/color' as color;
+@use 'maps/corner' as corner;
+@use 'maps/typography' as typography;
+@use '../../spacing' as spacing;
+
+$map: (
+  'dividerHeight': 0.1rem,
+  'dividerPrimaryBackgroundColor': map.get(color.$color, 'grayscale', 20),
+  'dividerSecondaryBackgroundColor': map.get(color.$color, 'grayscale', 10),
+  'dividerDarkPrimaryBackgroundColor': map.get(color.$color, 'grayscale', 40),
+  'dividerDarkSecondaryBackgroundColor': map.get(color.$color, 'grayscale', 60),
+  'dividerVerticalWidth':0.1rem,
+);

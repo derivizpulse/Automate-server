@@ -1,0 +1,27 @@
+@mixin position($theme) {
+  @include positionStyles;
+}
+
+@mixin positionStyles {
+  .cfu-position {
+    &-static {
+      position: static;
+    }
+
+    &-relative {
+      position: relative;
+    }
+
+    &-fixed {
+      position: fixed;
+    }
+
+    &-absolute {
+      position: absolute;
+    }
+
+    &-sticky {
+      position: sticky;
+    }
+  }
+}

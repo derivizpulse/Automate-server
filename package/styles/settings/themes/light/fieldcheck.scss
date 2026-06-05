@@ -1,0 +1,53 @@
+@use 'sass:map';
+@use 'sass:color';
+@use 'maps/typography' as typographyMap;
+@use 'maps/color' as colorMap;
+@use 'maps/svg-image' as svg;
+
+$map: (
+  'fieldCheckGap': 0.8rem,
+  'fieldCheckInputHoverBorder': 0.1rem solid map.get(colorMap.$color, 'grayscale', 60),
+  'fieldCheckInputHoverBackgroundColor': map.get(colorMap.$color, 'white'),
+  'fieldCheckFocusVisibleOutline': 0.2rem solid  map.get(colorMap.$color, 'accent', 'blue', 80),
+  'fieldCheckFocusVisibleOutlineOffset': 0.1rem,
+  'fieldCheckTextFontWeight': map.get(typographyMap.$typography, 'weight', 'regular'),
+  'fieldCheckTextFontSize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'fieldCheckTextLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'fieldCheckTextColor': map.get(colorMap.$color, 'grayscale', 100),
+  'fieldCheckDescriptionColor': map.get(colorMap.$color, 'grayscale', 60),
+  'fieldCheckDescriptionMargin': 0.4rem 0 0,
+  'fieldCheckboxWidth': 1.6rem,
+  'fieldCheckboxHeight': 1.6rem,
+  'fieldCheckboxBorder': 0.1rem solid map.get(colorMap.$color, 'grayscale', 40),
+  'fieldCheckboxBorderRadius': 0.2rem,
+  'fieldCheckboxBackground': map.get(colorMap.$color, 'white'),
+  'fieldCheckboxBeforeWidth': 1.2rem,
+  'fieldCheckboxBeforeHeight': 1.2rem,
+  'fieldCheckboxBeforeBackgroundImage': url("#{map.get(svg.$svg, 'tick','white')}"),
+  'fieldCheckboxStatesDisabledBorderColor': map.get(colorMap.$color, 'grayscale', 20),
+  'fieldCheckboxStatesDisabledBackgroundColor': map.get(colorMap.$color, 'grayscale', 10),
+  'fieldCheckboxStatesIndeterminateBorderColor': map.get(colorMap.$color, 'interactive', 80),
+  'fieldCheckboxStatesIndeterminateBackgroundColor': map.get(colorMap.$color, 'interactive', 80),
+  'fieldCheckboxStatesIndeterminateBeforeBackgroundImage': url("#{map.get(svg.$svg, 'minus','white')}"),
+  'fieldCheckboxStatesCheckedBorderColor': map.get(colorMap.$color, 'interactive', 80),
+  'fieldCheckboxStatesCheckedBackgroundColor': map.get(colorMap.$color, 'interactive', 80),
+  'fieldCheckboxStatesDisabledIndeterminateBeforeBackgroundImage': url("#{map.get(svg.$svg, 'minus','white')}"),
+  'fieldCheckboxStatesDisabledCheckedBeforeBackgroundImage': url("#{map.get(svg.$svg, 'tick','white')}"),
+  'fieldCheckboxStatesHoverBorderColor': color.adjust(map.get(colorMap.$color, 'interactive', 80), $lightness: 3%),
+  'fieldCheckboxStatesHoverBackgroundColor': color.adjust(map.get(colorMap.$color, 'interactive', 80), $lightness: 3%),
+  'fieldRadioWidth': 1.6rem,
+  'fieldRadioHeight': 1.6rem,
+  'fieldRadioBackgroundColor': map.get(colorMap.$color, 'white'),
+  'fieldRadioBorder': 0.1rem solid map.get(colorMap.$color, 'grayscale', 40),
+  'fieldRadioBeforeWidth': 0.8rem,
+  'fieldRadioBeforeHeight': 0.8rem,
+  'fieldRadioBeforeBackgroundColor': map.get(colorMap.$color, 'interactive', 80),
+  'fieldRadioStatesDisabledBorder': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  'fieldRadioStatesDisabledBackground': map.get(colorMap.$color, 'grayscale', 10),
+  'fieldRadioStatesCheckedBorderColor': map.get(colorMap.$color, 'interactive', 80),
+  'fieldRadioStatesCheckedBorderWidth': 0.2rem,
+  'fieldRadioStatesCheckedHoverBorderColor': color.adjust(map.get(colorMap.$color, 'interactive', 80), $lightness: 3%),
+  'fieldRadioStatesCheckedHoverBeforeBackgroundColor': color.adjust(map.get(colorMap.$color, 'interactive', 80), $lightness: 3%),
+  'fieldCheckDisabledColor': map.get(colorMap.$color, 'grayscale', 60),
+  'fieldCheckDisabledOpacity': 0.4
+);

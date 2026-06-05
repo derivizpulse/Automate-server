@@ -1,0 +1,150 @@
+///
+/// Careflow Alert Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin alertMixin(
+  $theme,
+  $alertPadding,
+  $alertPaddingLeft,
+  $alertLeftPadding,
+  $alertColumnGap,
+  $alertRowGap,
+  $alertBorderRadius,
+  $alertBeforeWidth,
+  $alertInfoColor,
+  $alertInfoBoxShadow,
+  $alertInfoBackgroundColor,
+  $alertInfoBeforeBackgroundColor,
+  $alertSuccessColor,
+  $alertSuccessBoxShadow,
+  $alertSuccessBackgroundColor,
+  $alertSuccessBeforeBackgroundColor,
+  $alertCautionColor,
+  $alertCautionBoxShadow,
+  $alertCautionBackgroundColor,
+  $alertCautionBeforeBackgroundColor,
+  $alertWarningColor,
+  $alertWarningBoxShadow,
+  $alertWarningBackgroundColor,
+  $alertWarningBeforeBackgroundColor,
+  $alertLeftColumnGap,
+  $alertLeftIconFontSize,
+  $alertLeftContentRowGap,
+  $alertLeftContentTitleFontSize,
+  $alertLeftContentTitleLineHeight,
+  $alertLeftContentTitleFontWeight,
+  $alertLeftContentTextFontSize,
+  $alertLeftContentTextFontWeight,
+  $alertLeftContentTextLineHeight,
+  $alertLeftContentTextColor,
+  $alertRightColumnGap,
+  $alertRightpaddingLeft,
+  $alertIconMarginTop
+
+) {
+  $alert: component.$alert;
+
+  .#{$alert} {
+    display: flex;
+    padding: $alertPadding;
+    padding-left: $alertPaddingLeft;
+    column-gap: $alertColumnGap;
+    row-gap: $alertRowGap;
+    border-radius: $alertBorderRadius;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      display: block;
+      width: $alertBeforeWidth;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+    }
+    .#{$alert}__icon {
+      margin-top: $alertIconMarginTop;
+    }
+    &.#{$alert}--info {
+      color: $alertInfoColor;
+      box-shadow: $alertInfoBoxShadow;
+      background-color: $alertInfoBackgroundColor;
+
+      &::before {
+        background-color: $alertInfoBeforeBackgroundColor;
+      }
+    }
+
+    &.#{$alert}--success {
+      color: $alertSuccessColor;
+      box-shadow: $alertSuccessBoxShadow;
+      background-color: $alertSuccessBackgroundColor;
+
+      &::before {
+        background-color: $alertSuccessBeforeBackgroundColor;
+      }
+    }
+
+    &.#{$alert}--caution {
+      color: $alertCautionColor;
+      box-shadow: $alertCautionBoxShadow;
+      background-color: $alertCautionBackgroundColor;
+
+      &::before {
+        background-color: $alertCautionBeforeBackgroundColor;
+      }
+    }
+
+    &.#{$alert}--warning {
+      color: $alertWarningColor;
+      box-shadow: $alertWarningBoxShadow;
+      background-color: $alertWarningBackgroundColor;
+
+      &::before {
+        background-color: $alertWarningBeforeBackgroundColor;
+      }
+    }
+
+    .#{$alert}__left {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: flex-start;
+      column-gap: $alertLeftColumnGap;
+      padding: $alertLeftPadding;
+
+      .#{$alert}__icon {
+        font-size: $alertLeftIconFontSize;
+      }
+
+      .#{$alert}__content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        row-gap: $alertLeftContentRowGap;
+
+        .#{$alert}__title {
+          font-weight: $alertLeftContentTitleFontWeight;
+          font-size: $alertLeftContentTitleFontSize;
+          line-height: $alertLeftContentTitleLineHeight;
+        }
+
+        .#{$alert}__text {
+          font-weight: $alertLeftContentTextFontWeight;
+          font-size: $alertLeftContentTextFontSize;
+          line-height: $alertLeftContentTextLineHeight;
+          color: $alertLeftContentTextColor;
+        }
+      }
+    }
+    .#{$alert}__action {
+      padding: 0.4rem 0;
+    }
+  }
+}

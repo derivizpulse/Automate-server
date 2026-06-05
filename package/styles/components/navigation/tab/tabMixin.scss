@@ -1,0 +1,260 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin tabMixin(
+  $theme,
+  $tabWrapperBorderBottom,
+  $tabWrapperPadding,
+  $tabHeight,
+  $tabColumnGap,
+  $tabItemFontSize,
+  $tabItemFontWeight,
+  $tabItemLineHeight,
+  $tabItemColor,
+  $tabItemColumnGap,
+
+  // Primary
+  $tabPrimaryItemBorderRadius,
+  $tabPrimaryItemPadding,
+  $tabPrimaryItemMargin,
+  $tabPrimaryItemHoverBackground,
+  $tabPrimaryItemFocusVisibleOutline,
+  $tabPrimaryItemIsActiveBackground,
+  $tabPrimaryItemIsActiveColor,
+
+  // Secondary
+  $tabSecondaryItemPadding,
+  $tabSecondaryItemMargin,
+  $tabSecondaryItemBeforeHeight,
+  $tabSecondaryItemHoverBackground,
+  $tabSecondaryItemFocusVisibleOutline,
+  $tabSecondaryItemFocusVisibleOutlineOffset,
+  $tabSecondaryItemIsActiveColor,
+  $tabSecondaryItemIsActiveBeforeBackground,
+
+  // Slideout
+  $tabSlideoutItemPadding,
+  $tabSlideoutItemMargin,
+  $tabSlideoutItemColor,
+  $tabSlideoutItemBeforeHeight,
+  $tabSlideoutItemHoverBackground,
+  $tabSlideoutItemFocusVisibleOutline,
+  $tabSlideoutItemFocusVisibleOutlineOffset,
+  $tabSlideoutItemIsActiveColor,
+  $tabSlideoutItemIsActiveBackground,
+
+  // Tertiary
+  $tabTertiaryItemBorderRadius,
+  $tabTertiaryItemPadding,
+  $tabTertiaryItemMargin,
+  $tabTertiaryItemBeforeHeight,
+  $tabTertiaryItemHoverBackground,
+  $tabTertiaryItemFocusVisibleOutline,
+  $tabTertiaryItemFocusVisibleOutlineOffset,
+  $tabTertiaryItemIsActiveColor,
+  $tabTertiaryItemIsActiveBeforeBackground,
+  $tabTertiaryItemIsActiveBackground,
+
+) {
+  $tab: component.$tab;
+
+  .#{$tab}-wrapper {
+    border-bottom: $tabWrapperBorderBottom;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $tabWrapperPadding;
+  }
+
+  .#{$tab} {
+    height: $tabHeight;
+    display: flex;
+    column-gap: $tabColumnGap;
+    list-style: none;
+
+    .#{$tab}__item {
+      position: relative;
+      font-size: $tabItemFontSize;
+      font-weight: $tabItemFontWeight;
+      line-height: $tabItemLineHeight;
+      color: $tabItemColor;
+      display: flex;
+      align-items: center;
+      column-gap: $tabItemColumnGap;
+      cursor: pointer;
+    }
+
+    // Primary
+    &.#{$tab}--primary {
+      .#{$tab}__item {
+        border-radius: $tabPrimaryItemBorderRadius;
+        padding: $tabPrimaryItemPadding;
+        margin: $tabPrimaryItemMargin;
+
+        &:hover {
+          background: $tabPrimaryItemHoverBackground;
+        }
+
+        &:focus-visible {
+          outline: $tabPrimaryItemFocusVisibleOutline;
+        }
+
+        &.is-active {
+          background: $tabPrimaryItemIsActiveBackground;
+          color: $tabPrimaryItemIsActiveColor;
+          cursor: default;
+        }
+
+        &.is-disable {
+          opacity: 0.4;
+          pointer-events: none;
+        }
+      }
+    }
+
+    // Secondary
+    &.#{$tab}--secondary {
+      .#{$tab}__item {
+        padding: $tabSecondaryItemPadding;
+        margin: $tabSecondaryItemMargin;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 0%;
+          height: $tabSecondaryItemBeforeHeight;
+        }
+
+        &:hover:not(.is-active) {
+          background: $tabSecondaryItemHoverBackground;
+        }
+
+        &:focus-visible {
+          outline: $tabSecondaryItemFocusVisibleOutline;
+          outline-offset: $tabSecondaryItemFocusVisibleOutlineOffset;
+        }
+
+        &.is-active {
+          color: $tabSecondaryItemIsActiveColor;
+          cursor: default;
+
+          &::before {
+            width: 100%;
+            background: $tabSecondaryItemIsActiveBeforeBackground;
+          }
+        }
+
+        &.is-disable {
+          opacity: 0.4;
+          pointer-events: none;
+        }
+      }
+    }
+
+    // Slideout
+    &.#{$tab}--slideout {
+      .#{$tab}__item {
+        padding: $tabSlideoutItemPadding;
+        margin: $tabSlideoutItemMargin;
+        color: $tabSlideoutItemColor;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 0%;
+          height: $tabSlideoutItemBeforeHeight;
+        }
+
+        &:hover:not(.isActive) {
+          background: $tabSlideoutItemHoverBackground;
+        }
+
+        &:focus-visible {
+          outline: $tabSlideoutItemFocusVisibleOutline;
+          outline-offset: $tabSlideoutItemFocusVisibleOutlineOffset;
+        }
+
+        &.isActive {
+          color: $tabSlideoutItemIsActiveColor;
+
+          &::before {
+            background: $tabSlideoutItemIsActiveBackground;
+            width: 100%;
+          }
+        }
+
+        &.is-disable {
+          opacity: 0.4;
+          pointer-events: none;
+        }
+      }
+    }
+
+    // Tertiary
+    &.#{$tab}--tertiary {
+      .#{$tab}__item {
+        border-radius: $tabTertiaryItemBorderRadius;
+        padding: $tabTertiaryItemPadding;
+        margin: $tabTertiaryItemMargin;
+        border-left: 0.1rem solid transparent;
+        border-right: 0.1rem solid transparent;
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 0%;
+          height: $tabTertiaryItemBeforeHeight;
+          border-radius: 4px 4px 0 0;
+        }
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -1px;
+          width: 0;
+          height: 1px;
+          background: $tabTertiaryItemIsActiveBackground;
+        }
+
+        &:hover:not(.is-active) {
+          background: $tabTertiaryItemHoverBackground;
+        }
+
+        &:focus-visible {
+          outline: $tabTertiaryItemFocusVisibleOutline;
+          outline-offset: $tabTertiaryItemFocusVisibleOutlineOffset;
+        }
+
+        &.is-active {
+          color: $tabTertiaryItemIsActiveColor;
+          cursor: default;
+          border-left: $tabWrapperBorderBottom;
+          border-right: $tabWrapperBorderBottom;
+          background-color: $tabTertiaryItemIsActiveBackground;
+
+          &::before {
+            width: 100%;
+            background: $tabTertiaryItemIsActiveBeforeBackground;
+          }
+
+          &::after {
+            width: 100%;
+          }
+        }
+
+        &.is-disable {
+          opacity: 0.4;
+          pointer-events: none;
+        }
+      }
+    }
+  }
+}

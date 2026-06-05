@@ -1,0 +1,42 @@
+@use 'settings/layer' as layer;
+@use 'settings/themes/dark/mixins/interFont.mixin.scss' as interMixin;
+@use 'settings/theme' as theme;
+@use 'generic' as generic;
+@use 'elements' as elements;
+@use 'libraries' as libraries;
+@use 'components' as components;
+@use 'utilities' as utilities;
+
+// Layer Hierarchy
+@include layer.layer;
+
+// Include Inter Font
+@include interMixin.fontMixin;
+
+@layer careflow.generic {
+  .cfs-#{theme.$theme-dark} {
+    @include generic.generic;
+  }
+}
+
+@layer careflow.elements {
+  .cfs-#{theme.$theme-dark} {
+    @include elements.elements(theme.$theme-dark);
+  }
+}
+
+@layer careflow.libraries {
+  @include libraries.libraries;
+}
+
+@layer careflow.components {
+  .cfs-#{theme.$theme-dark} {
+    @include components.components(theme.$theme-dark);
+  }
+}
+
+@layer careflow.utilities {
+  .cfs-#{theme.$theme-dark} {
+    @include utilities.utilities(theme.$theme-dark);
+  }
+}

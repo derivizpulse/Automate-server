@@ -1,0 +1,218 @@
+///
+/// Careflow Skeleton Mixin
+///
+
+@use 'sass:map';
+@use '../../../tools/mixins/skeleton.mixin' as skeleton;
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin skeletonMixin(
+  $theme,
+  $skeletonLabelBeforeHeight,
+  $skeletonFieldBeforeHeight,
+  $skeletonTextareaBeforeMarginBottom,
+  $skeletonTextareaBeforeHeight,
+  $skeletonTextareaBeforeWidth,
+  $skeletonTextareaAfterHeight,
+  $skeletonTagColumnGap,
+  $skeletonTagBeforeBorderRadius,
+  $skeletonTagBeforeWidth,
+  $skeletonTagBeforeHeight,
+  $skeletonTagAfterBorderRadius,
+  $skeletonTagAfterWidth,
+  $skeletonTagAfterHeight,
+  $skeletonTagChildBorderRadius,
+  $skeletonTagChildWidth,
+  $skeletonTagChildHeight,
+  $skeletonAvatarBeforeWidth,
+  $skeletonAvatarBeforeHeight,
+  $skeletonAvatarBeforeBorderRadius,
+  $skeletonImageWidth,
+  $skeletonImageHeight,
+  $skeletonImageChildBackgroundImage,
+  $skeletonChartLineWidth,
+  $skeletonChartLineHeight,
+  $skeletonChartLineChildBackgroundImage,
+  $skeletonChartDonutWidth,
+  $skeletonChartDonutHeight,
+  $skeletonChartDonutChildBackgroundImage,
+  $skeletonChartDonutHalfWidth,
+  $skeletonChartDonutHalfHeight,
+  $skeletonChartDonutHalfChildBackgroundImage
+) {
+  $skeleton: component.$skeleton;
+
+  .#{$skeleton} {
+    display: block;
+    width: 100%;
+    position: relative;
+
+    &::before {
+      @include skeleton.skeleton;
+    }
+
+    .#{$skeleton}__child {
+      display: none;
+    }
+
+    // Modifiers
+    &.#{$skeleton}--label {
+      &::before {
+        height: $skeletonLabelBeforeHeight;
+      }
+    }
+
+    &.#{$skeleton}--field {
+      &::before {
+        height: $skeletonFieldBeforeHeight;
+      }
+    }
+
+    &.#{$skeleton}--textarea {
+      &::before {
+        margin-bottom: $skeletonTextareaBeforeMarginBottom;
+        height: $skeletonTextareaBeforeHeight;
+      }
+
+      &::after {
+        @include skeleton.skeleton;
+
+        width: $skeletonTextareaBeforeWidth;
+        height: $skeletonTextareaAfterHeight;
+      }
+    }
+
+    &.#{$skeleton}--tag {
+      display: flex;
+      column-gap: $skeletonTagColumnGap;
+
+      &::before {
+        border-radius: $skeletonTagBeforeBorderRadius;
+        width: $skeletonTagBeforeWidth;
+        height: $skeletonTagBeforeHeight;
+      }
+
+      &::after {
+        @include skeleton.skeleton;
+
+        border-radius: $skeletonTagAfterBorderRadius;
+        width: $skeletonTagAfterWidth;
+        height: $skeletonTagAfterHeight;
+      }
+
+      .#{$skeleton}__child {
+        @include skeleton.skeleton;
+
+        border-radius: $skeletonTagChildBorderRadius;
+        display: block;
+        width: $skeletonTagChildWidth;
+        height: $skeletonTagChildHeight;
+      }
+    }
+
+    &.#{$skeleton}--avatar {
+      &::before {
+        width: $skeletonAvatarBeforeWidth;
+        height: $skeletonAvatarBeforeHeight;
+        border-radius: $skeletonAvatarBeforeBorderRadius;
+      }
+    }
+
+    &.#{$skeleton}--image {
+      width: $skeletonImageWidth;
+      height: $skeletonImageHeight;
+      position: relative;
+
+      &::before {
+        width: 100%;
+        height: 100%;
+      }
+
+      .#{$skeleton}__child {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: $skeletonImageChildBackgroundImage;
+      }
+    }
+
+    &.#{$skeleton}--chart-line {
+      width: $skeletonChartLineWidth;
+      height: $skeletonChartLineHeight;
+      position: relative;
+
+      &::before {
+        width: 100%;
+        height: 100%;
+      }
+
+      .#{$skeleton}__child {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: $skeletonChartLineChildBackgroundImage;
+      }
+    }
+
+    &.#{$skeleton}--chart-donut {
+      width: $skeletonChartDonutWidth;
+      height: $skeletonChartDonutHeight;
+      position: relative;
+
+      &::before {
+        width: 100%;
+        height: 100%;
+      }
+
+      .#{$skeleton}__child {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: $skeletonChartDonutChildBackgroundImage;
+      }
+    }
+
+    &.#{$skeleton}--chart-donut-half {
+      width: $skeletonChartDonutHalfWidth;
+      height: $skeletonChartDonutHalfHeight;
+      position: relative;
+
+      &::before {
+        width: 100%;
+        height: 100%;
+      }
+
+      .#{$skeleton}__child {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-image: $skeletonChartDonutHalfChildBackgroundImage;
+      }
+    }
+  }
+}

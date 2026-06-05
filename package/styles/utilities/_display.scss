@@ -1,0 +1,99 @@
+@mixin display($theme) {
+  @include displayStyles;
+}
+
+@mixin displayStyles {
+  .cfu-display {
+    &-inline {
+      display: inline;
+
+      &-block {
+        display: inline-block;
+      }
+
+      &-flex {
+        display: inline-flex;
+      }
+
+      &-grid {
+        display: inline-grid;
+      }
+
+      &-table {
+        display: inline-table;
+      }
+    }
+
+    &-block {
+      display: block;
+    }
+
+    &-contents {
+      display: contents;
+    }
+
+    &-flex {
+      display: flex;
+    }
+
+    &-grid {
+      display: grid;
+    }
+
+    &-list-item {
+      display: list-item;
+    }
+
+    &-run-in {
+      display: run-in;
+    }
+
+    &-table {
+      display: table;
+
+      &-caption {
+        display: table-caption;
+      }
+
+      &-column-group {
+        display: table-column-group;
+      }
+
+      &-header-group {
+        display: table-header-group;
+      }
+
+      &-footer-group {
+        display: table-footer-group;
+      }
+
+      &-row-group {
+        display: table-row-group;
+      }
+
+      &-cell {
+        display: table-cell;
+      }
+
+      &-column {
+        display: table-column;
+      }
+
+      &-row {
+        display: table-row;
+      }
+    }
+
+    &-none {
+      display: none;
+    }
+
+    &-initial {
+      display: initial;
+    }
+
+    &-inherit {
+      display: inherit;
+    }
+  }
+}

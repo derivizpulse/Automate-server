@@ -1,0 +1,149 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin timePickerMixin(
+  $theme,
+  $timePickerBackground,
+  $timePickerWidth,
+  $timePickerBorder,
+  $timePickerBoxShadow,
+  $timePickerBorderRadius,
+  $timePickerContentColumnGap,
+  $timePickerContentPadding,
+  $timePickerHoursRowGap,
+  $timePickerHoursFocusVisibleOutline,
+  $timePickerHoursCellIsSelectedFontWeight,
+  $timePickerHoursCellIsSelectedBackground,
+  $timePickerHoursCellIsSelectedBorderRadius,
+  $timePickerMinutesRowGap,
+  $timePickerMinutesFocusVisibleOutline,
+  $timePickerMinutesCellIsSelectedFontWeight,
+  $timePickerMinutesCellIsSelectedBackground,
+  $timePickerMinutesCellIsSelectedBorderRadius,
+  $timePickerDayNotationRowGap,
+  $timePickerDayNotationFocusVisibleOutline,
+  $timePickerDayNotationCellIsSelectedFontWeight,
+  $timePickerDayNotationCellIsSelectedBackground,
+  $timePickerDayNotationCellIsSelectedBorderRadius,
+  $timePickerCellPadding,
+  $timePickerCellFontWeight,
+  $timePickerCellFontSize,
+  $timePickerCellLineHeight,
+  $timePickerCellColor,
+  $timePickerCellHoverBackground,
+  $timePickerCellHoverBorderRadius,
+  $timePickerFooterBackgroundColor,
+  $timePickerFooterBorderTop,
+  $timePickerFooterBorderRadius,
+  $timePickerFooterPadding,
+  $timePickerFooterColumnGap,
+
+) {
+  $timepicker: component.$timepicker;
+
+  .#{$timepicker} {
+    display: block;
+    background: $timePickerBackground;
+    width: $timePickerWidth;
+    border: $timePickerBorder;
+    box-shadow: $timePickerBoxShadow;
+    border-radius: $timePickerBorderRadius;
+
+    .#{$timepicker}__content {
+      display: flex;
+      align-items: center;
+      column-gap: $timePickerContentColumnGap;
+      padding: $timePickerContentPadding;
+    }
+
+    .#{$timepicker}__hours {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      row-gap: $timePickerHoursRowGap;
+
+      &:focus-visible {
+        outline: $timePickerHoursFocusVisibleOutline;
+      }
+
+      .#{$timepicker}-cell.is-selected {
+        font-weight: $timePickerHoursCellIsSelectedFontWeight;
+        background: $timePickerHoursCellIsSelectedBackground;
+        border-radius: $timePickerHoursCellIsSelectedBorderRadius;
+      }
+    }
+
+    .#{$timepicker}__minutes {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      row-gap: $timePickerMinutesRowGap;
+
+      &:focus-visible {
+        outline: $timePickerMinutesFocusVisibleOutline;
+      }
+
+      .#{$timepicker}-cell.is-selected {
+        font-weight: $timePickerMinutesCellIsSelectedFontWeight;
+        background: $timePickerMinutesCellIsSelectedBackground;
+        border-radius: $timePickerMinutesCellIsSelectedBorderRadius;
+      }
+    }
+
+    .#{$timepicker}__day-notation {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      row-gap: $timePickerDayNotationRowGap;
+
+      &:focus-visible {
+        outline: $timePickerDayNotationFocusVisibleOutline;
+      }
+
+      .#{$timepicker}-cell.is-selected {
+        font-weight: $timePickerDayNotationCellIsSelectedFontWeight;
+        background: $timePickerDayNotationCellIsSelectedBackground;
+        border-radius: $timePickerDayNotationCellIsSelectedBorderRadius;
+      }
+      .#{$timepicker}-cell.is-disabled {
+        &:hover {
+          background: transparent;
+        }
+      }
+    }
+
+    .#{$timepicker}-cell {
+      width: 100%;
+      width: fill-available;
+      padding: $timePickerCellPadding;
+      text-align: center;
+      font-weight: $timePickerCellFontWeight;
+      font-size: $timePickerCellFontSize;
+      line-height: $timePickerCellLineHeight;
+      color: $timePickerCellColor;
+
+      &:hover {
+        background: $timePickerCellHoverBackground;
+        border-radius: $timePickerCellHoverBorderRadius;
+      }
+    }
+
+    .#{$timepicker}__footer {
+      background-color: $timePickerFooterBackgroundColor;
+      border-top: $timePickerFooterBorderTop;
+      border-radius: $timePickerFooterBorderRadius;
+      padding: $timePickerFooterPadding;
+      display: flex;
+      justify-content: end;
+      align-items: center;
+      column-gap: $timePickerFooterColumnGap;
+    }
+  }
+}

@@ -1,0 +1,76 @@
+@use 'sass:map';
+@use '../../../../settings/spacing' as spacing;
+
+// Panel Mixin
+@mixin panel($panel-name) {
+  // Flex
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: map.get(spacing.$spacing, 48);
+
+  .#{$panel-name}-left,
+  .#{$panel-name}-right {
+    display: flex;
+    align-items: center;
+    column-gap: map.get(spacing.$spacing, 12);
+  }
+  .#{$panel-name}-left {
+    min-width: 0;
+  }
+}
+
+// Content Mixin
+@mixin content($content-name) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+
+  // Border not allowed for the sake of accordion
+
+  .#{$content-name}-inner {
+    padding: map.get(spacing.$spacing, 16);
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+// Block Mixin
+@mixin block($block-name) {
+  display: flex;
+  flex-direction: column;
+
+  .#{$block-name}__header {
+    @include panel(#{$block-name}__header);
+  }
+
+  .#{$block-name}__panel {
+    @include panel(#{$block-name}__panel);
+  }
+
+  .#{$block-name}__content {
+    @include content(#{$block-name}__content);
+  }
+
+  .#{$block-name}__footer {
+    @include panel(#{$block-name}__footer);
+  }
+}
+
+@mixin block-accordion($block-name) {
+  > .#{$block-name}__content {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.2s linear;
+  }
+
+  > .#{$block-name}__header .cfc-trigger__icon {
+    transition: transform 0.2s linear;
+  }
+
+  // Rotate Icon
+  &.is-active > .#{$block-name}__header .cfc-trigger__icon {
+    transform: rotate(-180deg);
+  }
+}

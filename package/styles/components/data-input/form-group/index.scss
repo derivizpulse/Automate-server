@@ -1,0 +1,42 @@
+@use 'sass:map';
+@use 'formgroupMixin' as formgroupMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/formGroup' as lightFormGroup;
+@use '../../../settings/themes/dark/formGroup' as darkFormGroup;
+@use '../../../settings/themes/test/formGroup' as testFormGroup;
+
+@mixin formGroup($theme) {
+  @if $theme == theme.$theme-light {
+    @include formGroupStyles(lightFormGroup.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include formGroupStyles(darkFormGroup.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include formGroupStyles(testFormGroup.$map, $theme);
+  }
+}
+
+@mixin formGroupStyles($map, $theme) {
+  @include formgroupMixin.formgroupMixin(
+    $theme,
+    map.get($map, 'formgroupPadding'),
+    map.get($map, 'formgroupLabelWidth'),
+    map.get($map, 'formgroupLabelPaddingRight'),
+    map.get($map, 'formgroupLabelColor'),
+    map.get($map, 'formgroupLabelBeforeTop'),
+    map.get($map, 'formgroupLabelBeforeRight'),
+    map.get($map, 'formgroupLabelXsmallWidth'),
+    map.get($map, 'formgroupLabelSmallWidth'),
+    map.get($map, 'formgroupLabelMediumWidth'),
+    map.get($map, 'formgroupLabelLargeWidth'),
+    map.get($map, 'formgroupLabelXlargeWidth'),
+    map.get($map, 'formgroupIsmandatoryLabelAfterMarginLeft'),
+    map.get($map, 'formgroupIsmandatoryLabelAfterColor'),
+    map.get($map, 'formgroupValueMinWidth'),
+    map.get($map, 'formgroupHorizontalColumnGap'),
+    map.get($map, 'formgroupVerticalRowGap')
+  );
+}

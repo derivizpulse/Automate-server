@@ -88,4 +88,31 @@ export const initialDatabases: DatabaseRow[] = [
   row("db-27", "ArchiveWarehouse_C1",           "Titan-1",   "Aquila",    1250,  "None", "None", "Active", null, null, null, false),
   row("db-28", "StandardClinic_C2",             "Skylark-1", "Raven",     275,   "None", "None", "Active", null, null, null, false),
   row("db-29", "DevScratch_C3",                 "Sandbox-1", "Build VM",  2.5,   "None", "None", "Active", null, null, null, false),
+
+  // ── Additional demo rows (Overview / filters) ──
+  row("db-30", "PioneerDental_C6",              "Titan-1",   "Aquila",    45,    "None",            "None",      "Active",             null,   null,   null, false),
+  row("db-31", "HorizonSmiles_C1",              "Skylark-1", "Raven",     112,   "None",            "None",      "Active",             d(-2),  null,   null, false),
+  row("db-32", "ValleyViewDental_C4",           "Sandbox-1", "Build VM",  4.8,   "Delete",          "Trigger 1", "SB Completed",       d(-3),  d(2),   5,  true),
+  row("db-33", "CoastalFamily_C2_LIVE",         "Phoenix-1", "Aquila",    890,   "Backup & Delete", "Trigger 2", "LIVE Completed",     d(-1),  d(29),  30, false, true),
+  row("db-34", "NationalOrtho_C7",            "Lyra-1",    "Aquila",    180,   "Scheduled Delete","Trigger 2", "ITL Completed",      d(0),   d(7),   7,  false),
+  row("db-35", "BrightPath_ACC1201",          "Aquila-1",  "Aquila",    2560,  "None",            "None",      "Active",             null,   null,   null, false),
+  row("db-36", "SunriseDental_C5",            "Raven-2",   "Raven",     2.1,   "None",            "None",      "Active",             null,   null,   null, false),
+  row("db-37", "GreenValley_C3_ITL",          "Atlas-1",   "ITL",       33,    "Scheduled Delete","Trigger 1", "ITL Completed",      d(-1),  d(6),   7,  false),
+  row("db-38", "PeakPerformance_C1_LIVE",     "Nova-1",    "Aquila",    420,   "Backup",          "None",      "LIVE Completed",     d(0),   null,   null, false, true),
+  row("db-39", "HarborPoint_C2_SB",           "Orion-1",   "SB",        36,    "Scheduled Delete","Trigger 1", "SB Completed",       d(0),   d(5),   5,  false),
+  row("db-40", "RidgelineDental_C1",          "Aquila-2",  "Build VM",  9.6,   "Delete",          "Trigger 1", "ITL Completed",      d(-4),  d(1),   5,  true),
+
+  // ── Deliverable status showcase (Conv. status column) ──
+  row("db-41", "ActiveMonitoring_C1",         "Aquila-1",  "Aquila",    18,    "None",            "None",      "Active",             null,   null,   null, false),
+  row("db-42", "ActiveMonitoring_C2",         "Titan-1",   "Raven",     94,    "None",            "None",      "Active",             d(-1),  null,   null, false),
+  row("db-43", "SilverLake_C1_SB",            "Orion-1",   "SB",        52,    "Scheduled Delete","Trigger 1", "SB Completed",       d(0),   d(5),   5,  false),
+  row("db-44", "SilverLake_C1_SB_2",          "Nova-1",    "SB",        31,    "None",            "None",      "SB Completed",       d(-3),  null,   null, false),
+  row("db-45", "Clearwater_C2_ITL",           "Atlas-1",   "ITL",       47,    "Scheduled Delete","Trigger 1", "ITL Completed",      d(0),   d(7),   7,  false),
+  row("db-46", "Clearwater_C2_ITL_2",         "Lyra-1",    "ITL",       62,    "Delete",          "Trigger 1", "ITL Completed",      d(-2),  d(5),   5,  false),
+  row("db-47", "WestsideFamily_C3_LIVE",      "Aquila-2",  "Aquila",    128,   "Backup & Delete", "Trigger 2", "LIVE Completed",     d(0),   d(30),  30, false, true),
+  row("db-48", "WestsideFamily_C3_LIVE_2",    "Raven-3",   "Aquila",    340,   "Backup & Delete", "Trigger 2", "LIVE Completed",     d(-5),  d(25),  30, false, true),
+  row("db-49", "MapleGrove_C4_LIVE",          "Phoenix-1", "Aquila",    78,    "None",            "None",      "LIVE Completed",     d(-10), null,   null, false),
+  row("db-50", "Oakwood_C5",                  "Skylark-1", "Build VM",  11,    "Scheduled Delete","Trigger 1", "SB Completed",       d(0),   d(5),   5,  true),
+  row("db-51", "Riverbend_C6_ITL",            "Sandbox-1", "ITL",       15,    "None",            "None",      "ITL Completed",      null,   null,   null, false),
+  row("db-52", "CedarPoint_C7_LIVE",          "Orion-1",   "Aquila",    520,   "Backup",          "None",      "LIVE Completed",     d(-2),  null,   null, false, true),
 ];

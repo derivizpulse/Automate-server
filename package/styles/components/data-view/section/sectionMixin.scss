@@ -1,0 +1,80 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/mixins/block.mixin' as lblock;
+@use '../../../settings/themes/dark/mixins/block.mixin' as dblock;
+@use '../../../settings/themes/test/mixins/block.mixin' as tblock;
+
+@mixin sectionMixin(
+  $theme,
+  $sectionHeaderMinHeight,
+  $sectionContentPadding,
+  $sectionContentPaddingTop,
+  $sectionAccordionBorder,
+  $sectionAccordionBorderRadius,
+  $sectionAccordionHeaderPadding,
+  $sectionAccordionContentPadding,
+  $sectionAccordionIsActiveBorderColor,
+  $sectionAccordionIsActiveHeaderPaddingLeft,
+) {
+  $section: component.$section;
+  .#{$section} {
+    @if $theme == theme.$theme-light {
+      @include lblock.block($section);
+    }
+
+    @if $theme == theme.$theme-dark {
+      @include dblock.block($section);
+    }
+
+    @if $theme == theme.$theme-test {
+      @include tblock.block($section);
+    }
+    .#{$section}__header {
+      min-height: $sectionHeaderMinHeight;
+    }
+
+    .#{$section}__content .#{$section}__content-inner {
+      // Override Content Inner Styles
+      padding: $sectionContentPadding;
+      padding-top: $sectionContentPaddingTop;
+    }
+
+    // Accordion
+    &.#{$section}--accordion {
+      border: $sectionAccordionBorder;
+      border-radius: $sectionAccordionBorderRadius;
+
+      @if $theme == theme.$theme-light {
+        @include lblock.block-accordion($section);
+      }
+
+      @if $theme == theme.$theme-dark {
+        @include dblock.block-accordion($section);
+      }
+
+      @if $theme == theme.$theme-test {
+        @include tblock.block-accordion($section);
+      }
+
+      > .#{$section}__header {
+        padding: $sectionAccordionHeaderPadding;
+        transition: padding 0.1s linear;
+      }
+
+      > .#{$section}__content {
+        .#{$section}__content-inner {
+          padding: $sectionAccordionContentPadding;
+        }
+      }
+
+      &.is-active {
+        border-color: $sectionAccordionIsActiveBorderColor;
+
+        > .#{$section}__header {
+          padding-left: $sectionAccordionIsActiveHeaderPaddingLeft;
+        }
+      }
+    }
+  }
+}

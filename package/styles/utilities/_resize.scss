@@ -1,0 +1,23 @@
+@mixin resize($theme) {
+  @include resizeStyles;
+}
+
+@mixin resizeStyles {
+  .cfu-resize {
+    &-none {
+      resize: none;
+    }
+
+    &-both {
+      resize: both;
+    }
+
+    &-horizontal {
+      resize: horizontal;
+    }
+
+    &-vertical {
+      resize: vertical;
+    }
+  }
+}

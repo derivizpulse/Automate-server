@@ -1,0 +1,47 @@
+@use 'sass:map';
+@use 'skeletonMixin' as skeletonMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/skeleton' as lightSkeleton;
+
+@mixin skeleton($theme) {
+  @if $theme == theme.$theme-light {
+    @include skeletonStyles(lightSkeleton.$map, $theme);
+  }
+}
+
+@mixin skeletonStyles($map, $theme) {
+  @include skeletonMixin.skeletonMixin(
+    $theme,
+    map.get($map, 'skeletonLabelBeforeHeight'),
+    map.get($map, 'skeletonFieldBeforeHeight'),
+    map.get($map, 'skeletonTextareaBeforeMarginBottom'),
+    map.get($map, 'skeletonTextareaBeforeHeight'),
+    map.get($map, 'skeletonTextareaBeforeWidth'),
+    map.get($map, 'skeletonTextareaAfterHeight'),
+    map.get($map, 'skeletonTagColumnGap'),
+    map.get($map, 'skeletonTagBeforeBorderRadius'),
+    map.get($map, 'skeletonTagBeforeWidth'),
+    map.get($map, 'skeletonTagBeforeHeight'),
+    map.get($map, 'skeletonTagAfterBorderRadius'),
+    map.get($map, 'skeletonTagAfterWidth'),
+    map.get($map, 'skeletonTagAfterHeight'),
+    map.get($map, 'skeletonTagChildBorderRadius'),
+    map.get($map, 'skeletonTagChildWidth'),
+    map.get($map, 'skeletonTagChildHeight'),
+    map.get($map, 'skeletonAvatarBeforeWidth'),
+    map.get($map, 'skeletonAvatarBeforeHeight'),
+    map.get($map, 'skeletonAvatarBeforeBorderRadius'),
+    map.get($map, 'skeletonImageWidth'),
+    map.get($map, 'skeletonImageHeight'),
+    map.get($map, 'skeletonImageChildBackgroundImage'),
+    map.get($map, 'skeletonChartLineWidth'),
+    map.get($map, 'skeletonChartLineHeight'),
+    map.get($map, 'skeletonChartLineChildBackgroundImage'),
+    map.get($map, 'skeletonChartDonutWidth'),
+    map.get($map, 'skeletonChartDonutHeight'),
+    map.get($map, 'skeletonChartDonutChildBackgroundImage'),
+    map.get($map, 'skeletonChartDonutHalfWidth'),
+    map.get($map, 'skeletonChartDonutHalfHeight'),
+    map.get($map, 'skeletonChartDonutHalfChildBackgroundImage')
+  );
+}

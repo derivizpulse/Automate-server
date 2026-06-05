@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use 'maps/typography' as typography;
+@use 'maps/corner' as corner;
+@use 'maps/color' as color;
+@use '../../spacing' as spacing;
+
+$map: (
+  'cardBorder': 0.1rem solid map.get(color.$color, 'grayscale', 20),
+  'cardBackgroundColor': map.get(color.$color, 'white'),
+  'cardBorderRadius': map.get(corner.$corner, 'default'),
+  'cardHeaderMinHeight': 4.1rem,
+  'cardHeaderBackgroundColor': map.get(color.$color, 'grayscale', 5),
+  'cardHeaderPadding': 0 map.get(spacing.$spacing, 12),
+  'cardHeaderBorderBottom': 0.1rem solid map.get(color.$color, 'grayscale', 20),
+  'cardPanelMinHeight': 4.1rem,
+  'cardPanelPadding': 0 map.get(spacing.$spacing, 12),
+  'cardPanelBorderBottom': 0.1rem solid map.get(color.$color, 'grayscale', 20),
+  'cardFooterMinHeight': 4.1rem,
+  'cardFooterBorderTop': 0.1rem solid map.get(color.$color, 'grayscale', 20),
+  'cardFooterPadding': 0 map.get(spacing.$spacing, 12),
+  'cardAccordionHeaderHeight': 4rem,
+  'cardAccordionHeaderBorderBottom': 0.1rem solid transparent,
+  'cardAccordionIsActiveHeaderBorderBottomColor': map.get(color.$color, 'grayscale', 20),
+);

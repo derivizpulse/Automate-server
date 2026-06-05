@@ -1,0 +1,39 @@
+@use 'align' as align;
+@use 'color' as color;
+@use 'flex' as flex;
+@use 'justify' as justify;
+@use 'spacing' as spacing;
+@use 'border' as border;
+@use 'corner' as corner;
+@use 'cursor' as cursor;
+@use 'display' as display;
+@use 'height' as height;
+@use 'hidden' as hidden;
+@use 'order' as order;
+@use 'position' as position;
+@use 'resize' as resize;
+@use 'scroll' as scroll;
+@use 'typography' as typography;
+@use 'vertical-align' as verticalAlign;
+@use 'width' as width;
+
+@mixin utilities($theme) {
+  @include align.align($theme);
+  @include color.color($theme);
+  @include flex.flex($theme);
+  @include justify.justify($theme);
+  @include spacing.spacing($theme);
+  @include border.border($theme);
+  @include corner.corner($theme);
+  @include cursor.cursor($theme);
+  @include display.display($theme);
+  @include height.height($theme);
+  @include hidden.hidden($theme);
+  @include order.order($theme);
+  @include position.position($theme);
+  @include resize.resize($theme);
+  @include scroll.scroll($theme);
+  @include typography.typography($theme);
+  @include verticalAlign.verticalAlign($theme);
+  @include width.width($theme);
+}

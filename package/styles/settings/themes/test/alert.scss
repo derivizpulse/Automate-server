@@ -1,0 +1,44 @@
+@use 'sass:map';
+@use 'maps/typography' as typographyMap;
+@use 'maps/corner' as cornerMap;
+@use 'maps/color' as colorMap;
+@use '../../spacing' as spacing;
+
+$map: (
+  'alertPadding': map.get(spacing.$spacing, 8),
+  'alertPaddingLeft': map.get(spacing.$spacing, 12),
+  'alertIconMarginTop':0,
+  'alertColumnGap': map.get(spacing.$spacing, 8),
+  'alertRowGap': map.get(spacing.$spacing, 0),
+  'alertBorderRadius': map.get(cornerMap.$corner, 'default'),
+  'alertBeforeWidth': 0.4rem,
+  'alertInfoColor':  map.get(colorMap.$color, 'accent', 'blue', 100),
+  'alertInfoBoxShadow':   0 0 0 0.1rem map.get(colorMap.$color, 'accent', 'blue', 10) inset,
+  'alertInfoBackgroundColor':  map.get(colorMap.$color, 'accent', 'blue', 5),
+  'alertInfoBeforeBackgroundColor':  map.get(colorMap.$color, 'accent', 'blue', 100),
+  'alertSuccessColor': map.get(colorMap.$color, 'indicator', 'green', 100),
+  'alertSuccessBoxShadow': 0 0 0 0.1rem map.get(colorMap.$color, 'indicator', 'green', 10) inset,
+  'alertSuccessBackgroundColor': map.get(colorMap.$color, 'indicator', 'green', 5),
+  'alertSuccessBeforeBackgroundColor': map.get(colorMap.$color, 'indicator', 'green', 100),
+  'alertCautionColor': map.get(colorMap.$color, 'indicator', 'orange', 100),
+  'alertCautionBoxShadow': 0 0 0 0.1rem map.get(colorMap.$color, 'indicator', 'orange', 10) inset,
+  'alertCautionBackgroundColor': map.get(colorMap.$color, 'indicator', 'orange', 5),
+  'alertCautionBeforeBackgroundColor': map.get(colorMap.$color, 'indicator', 'orange', 100),
+  'alertWarningColor': map.get(colorMap.$color, 'indicator', 'red', 100),
+  'alertWarningBoxShadow': 0 0 0 0.1rem map.get(colorMap.$color, 'indicator', 'red', 10) inset,
+  'alertWarningBackgroundColor': map.get(colorMap.$color, 'indicator', 'red', 5),
+  'alertWarningBeforeBackgroundColor': map.get(colorMap.$color, 'indicator', 'red', 100),
+  'alertLeftColumnGap': map.get(spacing.$spacing, 8),
+  'alertLeftIconFontSize': 1.6rem,
+  'alertLeftContentRowGap':0.4rem,
+  'alertLeftIconlineHeight':1,
+  'alertLeftContentTitleFontSize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'alertLeftContentTitleLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'alertLeftContentTitleFontWeight': map.get(typographyMap.$typography, 'weight', 'bold'),
+  'alertLeftContentTextFontSize':map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'alertLeftContentTextFontWeight':map.get(typographyMap.$typography, 'weight', 'regular'),
+  'alertLeftContentTextLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'alertLeftContentTextColor': map.get(colorMap.$color, 'grayscale', 100),
+  'alertRightColumnGap': map.get(spacing.$spacing, 8),
+  'alertRightpadding': map.get(spacing.$spacing, 0)
+);

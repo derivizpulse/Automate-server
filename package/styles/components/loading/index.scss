@@ -1,0 +1,7 @@
+@use 'skeleton' as skeleton;
+@use 'spinner' as spinner;
+
+@mixin loading($theme) {
+  @include skeleton.skeleton($theme);
+  @include spinner.spinner($theme);
+}

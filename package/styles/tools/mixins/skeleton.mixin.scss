@@ -1,0 +1,29 @@
+@use 'sass:map';
+@use '../../settings/corner' as corner;
+@use '../../settings/color' as color;
+
+@keyframes skeleton-animation {
+  from {
+    background-position: -700% 0;
+  }
+
+  to {
+    background-position: 800% 0;
+  }
+}
+
+@mixin skeleton {
+  content: '';
+  display: block;
+  height: 4.8rem;
+  border-radius: map.get(corner.$corner, 'default');
+  background-color: map.get(color.$color, 'grayscale', 10);
+  background-repeat: no-repeat;
+  background-size: 90%;
+  background-position: -300% 0;
+  background-image: linear-gradient(90deg, rgba(#fff, 0%), rgba(#fff, 100%), rgba(#fff, 0%));
+  animation-name: skeleton-animation;
+  animation-duration: 800ms;
+  animation-timing-function: ease;
+  animation-iteration-count: infinite;
+}

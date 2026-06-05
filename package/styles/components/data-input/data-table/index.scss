@@ -1,0 +1,75 @@
+@use 'sass:map';
+@use 'dataTableMixin' as dataTableMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/datatable' as lightDataTable;
+@use '../../../settings/themes/dark/datatable' as darkDataTable;
+@use '../../../settings/themes/test/datatable' as testDataTable;
+
+@mixin dataTable($theme) {
+  @if $theme == theme.$theme-light {
+    @include dataTableStyles(lightDataTable.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include dataTableStyles(darkDataTable.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include dataTableStyles(testDataTable.$map, $theme);
+  }
+}
+
+@mixin dataTableStyles($map, $theme) {
+  @include dataTableMixin.dataTableMixin(
+    $theme,
+    map.get($map, 'tableContainerRowGap'),
+    map.get($map, 'tableFontSize'),
+    map.get($map, 'tableLineHeight'),
+    map.get($map, 'tableLineFontWeight'),
+    map.get($map, 'tableColor'),
+    map.get($map, 'tableBorder'),
+    map.get($map, 'tableBorderRadius'),
+    map.get($map, 'tableThDefaultPadding'),
+    map.get($map, 'tableThPadding'),
+    map.get($map, 'tableThBackground'),
+    map.get($map, 'tableThFontSize'),
+    map.get($map, 'tableThLineHeight'),
+    map.get($map, 'tableThWeight'),
+    map.get($map, 'tableThColor'),
+    map.get($map, 'tableThNotLastChildBorderRight'),
+    map.get($map, 'tableTdPadding'),
+    map.get($map, 'tableTdNotLastChildBorderRight'),
+    map.get($map, 'tableHeadTrBorderBottom'),
+    map.get($map, 'tableTrColor'),
+    map.get($map, 'tableTrFontSize'),
+    map.get($map, 'tableTrLineHeight'),
+    map.get($map, 'tableBodyTrBorderBottom'),
+    map.get($map, 'tableBodyTrIsActiveBackgroundColor'),
+    map.get($map, 'tableBodyTrTdHowerBackgroundImage'),
+    map.get($map, 'tableFooterBorderTop'),
+    map.get($map, 'tableFooterBackgroundColor'),
+    map.get($map, 'tableEmptyMinHeight'),
+    map.get($map, 'tableEmptyRowGap'),
+    map.get($map, 'tableEmptyTextFontSize'),
+    map.get($map, 'tableEmptyTextLineHeight'),
+    map.get($map, 'tableEmptyTextFontWeight'),
+    map.get($map, 'tableEmptyTextColor'),
+    map.get($map, 'tableHeaderLabelFontSize'),
+    map.get($map, 'tableHeaderLabelLineHeight'),
+    map.get($map, 'tableHeaderLabelFontWeight'),
+    map.get($map, 'tableHeaderLabelColor'),
+    map.get($map, 'tablePaginationColumnGap'),
+    map.get($map, 'tablePaginationIconFontSize'),
+    map.get($map, 'tablePaginationIconColor'),
+    map.get($map, 'tablePaginationIconIsDisabledColor'),
+    map.get($map, 'tablePaginationTextColor'),
+    map.get($map, 'tablePaginationTextFontSize'),
+    map.get($map, 'tablePaginationTextLineHeight'),
+    map.get($map, 'tablePaginationTextFontWeight'),
+    map.get($map, 'tableHeaderCellRowGap'),
+    map.get($map, 'tableHeaderCellTopColumnGap'),
+    map.get($map, 'tableHeaderCellTopLeftColumnGap'),
+    map.get($map, 'tableHeaderCellTopRightColumnGap'),
+    map.get($map, 'tableHeaderCellBottomHeight')
+  );
+}

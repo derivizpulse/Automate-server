@@ -1,0 +1,47 @@
+@use 'sass:map';
+@use 'modalMixin' as modalMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/modal' as lightModal;
+@use '../../../settings/themes/dark/modal' as darkModal;
+@use '../../../settings/themes/test/modal' as testModal;
+
+@mixin modal($theme) {
+  @if $theme == theme.$theme-light {
+    @include modalStyles(lightModal.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include modalStyles(darkModal.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include modalStyles(testModal.$map, $theme);
+  }
+}
+
+@mixin modalStyles($map, $theme) {
+  @include modalMixin.modalMixin(
+    $theme,
+    map.get($map, '$modalBackground'),
+    map.get($map, '$modalPadding'),
+    map.get($map, '$modalContainerBorder'),
+    map.get($map, '$modalContainerBackgroundColor'),
+    map.get($map, '$modalContainerBoxShadow'),
+    map.get($map, '$modalContainerBorderRadius'),
+    map.get($map, '$modalHeaderHeight'),
+    map.get($map, '$modalHeaderPadding'),
+    map.get($map, '$modalHeaderBackgroundColor'),
+    map.get($map, '$modalHeaderBorderBottom'),
+    map.get($map, '$modalCloseWidth'),
+    map.get($map, '$modalCloseHeight'),
+    map.get($map, '$modalCloseColor'),
+    map.get($map, '$modalContentInnerPadding'),
+    map.get($map, '$modalFooterBackgroundColor'),
+    map.get($map, '$modalFooterPadding'),
+    map.get($map, '$modalFooterBorderTop'),
+    map.get($map, '$modalSmallContainerWidth'),
+    map.get($map, '$modalMediumContainerWidth'),
+    map.get($map, '$modalLargeContainerWidth'),
+    map.get($map, '$modalXLargeContainerWidth')
+  );
+}

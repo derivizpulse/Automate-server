@@ -1,0 +1,56 @@
+@use 'sass:map';
+@use 'segmentedbuttonMixin' as segmentedbuttonMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/segmentedButton' as lightSegmentedButton;
+@use '../../../settings/themes/dark/segmentedButton' as darkSegmentedButton;
+@use '../../../settings/themes/test/segmentedButton' as testSegmentedButton;
+
+@mixin segmentedButton($theme) {
+  @if $theme == theme.$theme-light {
+    @include segmentedButtonStyles(lightSegmentedButton.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include segmentedButtonStyles(darkSegmentedButton.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include segmentedButtonStyles(testSegmentedButton.$map, $theme);
+  }
+}
+
+@mixin segmentedButtonStyles($map, $theme) {
+  @include segmentedbuttonMixin.segmentedbuttonMixin(
+    $theme,
+    map.get($map, '$segmentedButtonBorder'),
+    map.get($map, '$segmentedButtonBorderRadius'),
+    map.get($map, '$segmentedButtonPadding'),
+    map.get($map, '$segmentedButtonColumnGap'),
+    map.get($map, '$segmentedButtonHeight'),
+    map.get($map, '$segmentedButtonItemLabelPadding'),
+    map.get($map, '$segmentedButtonItemLabelBorderRadius'),
+    map.get($map, '$segmentedButtonItemLabelMinWidth'),
+    map.get($map, '$segmentedButtonItemLabelFontSize'),
+    map.get($map, '$segmentedButtonItemLabelFontWeight'),
+    map.get($map, '$segmentedButtonItemLabelFontLineHeight'),
+    map.get($map, '$segmentedButtonItemLabelMargin'),
+    map.get($map, '$segmentedButtonItemLabelColor'),
+    map.get($map, '$segmentedButtonItemLabelHeight'),
+    map.get($map, '$segmentedButtonItemLabelNotFirstChildLeft'),
+    map.get($map, '$segmentedButtonItemLabelNotFirstChildBorderLeft'),
+    map.get($map, '$segmentedButtonItemLabelNotFirstChildBorderHeight'),
+    map.get($map, '$segmentedButtonItemInputCheckedLabelBackground'),
+    map.get($map, '$segmentedButtonItemInputCheckedLabelColor'),
+    map.get($map, '$segmentedButtonItemInputDisabledLabelBackground'),
+    map.get($map, '$segmentedButtonItemInputDisabledLabelColor'),
+    map.get($map, '$segmentedButtonItemInputNotCheckedDisabledLabelBackground'),
+    map.get($map, '$segmentedButtonItemInputNotCheckedDisabledLabelColor'),
+    map.get($map, '$segmentedButtonItemInputNotCheckedHoverLabelBackground'),
+    map.get($map, '$segmentedButtonItemInputDisabledHoverLabelBackground'),
+    map.get($map, '$segmentedButtonItemInputDisabledHoverLabelColor'),
+    map.get($map, '$segmentedButtonItemInputNotCheckedDisabledHoverLabelBackground'),
+    map.get($map, '$segmentedButtonItemInputNotCheckedDisabledHoverLabelColor'),
+    map.get($map, '$segmentedButtonItemInputFocusVisibleOutline'),
+    map.get($map, '$segmentedButtonItemInputFocusVisibleOutlineOffset')
+  );
+}

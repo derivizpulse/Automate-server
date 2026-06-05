@@ -1,0 +1,36 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/droppableOverlay' as lightDroppable;
+@use '../../../settings/themes/test/droppableOverlay' as testDroppable;
+
+// @use '../../../settings/themes/dark/droppableOverlay' as darkDroppable;
+@use 'droppableOverlayMixin' as droppableOverlayMixin;
+
+@mixin droppableOverlay($theme) {
+  @if $theme == theme.$theme-light {
+    @include droppableOverlayStyles(lightDroppable.$map, $theme);
+  }
+
+  // @if $theme == theme.$theme-dark {
+  //   @include droppableOverlayStyles(darkDroppable.$map, $theme);
+  // }
+
+  @if $theme == theme.$theme-test {
+    @include droppableOverlayStyles(testDroppable.$map, $theme);
+  }
+}
+
+@mixin droppableOverlayStyles($map, $theme) {
+  @include droppableOverlayMixin.droppableOverlayMixin(
+    $theme,
+    map.get($map, 'droppableOverlayBorderRadius'),
+    map.get($map, 'droppableOverlayBorder'),
+    map.get($map, 'droppableOverlayBackgroundColor'),
+    map.get($map, 'droppableOverlayPadding'),
+    map.get($map, 'droppableOverlayColor'),
+    map.get($map, 'droppableOverlayFontSize'),
+    map.get($map, 'droppableOverlayLineHeight'),
+    map.get($map, 'droppableOverlayFontWeight')
+  );
+}

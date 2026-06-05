@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin paginationMixin(
+  $theme,
+  $paginationColumnGap,
+  $paginationActionColumnGap
+) {
+  $pagination: component.$pagination;
+
+  .#{$pagination} {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: $paginationColumnGap;
+
+    .#{$pagination}__actions {
+      display: flex;
+      align-items: center;
+      column-gap: $paginationActionColumnGap;
+    }
+  }
+}

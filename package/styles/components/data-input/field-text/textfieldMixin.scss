@@ -1,0 +1,71 @@
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin textfieldMixin(
+  $theme,
+  $textfieldOutlineWidth,
+  $textfieldHeight,
+  $textfieldBackgroundColor,
+  $textfieldBorder,
+  $textfieldBorderRadius,
+  $textfieldPadding,
+  $textfieldColor,
+  $textfieldPlaceholderColor,
+  $textfieldHoverBorder,
+  $textfieldHoverBackgroundColor,
+  $textfieldFocusBorder,
+  $textfieldFocusOutline,
+  $textfieldDisabledBorder,
+  $textfieldDisabledBackgroundColor,
+  $textfieldDisabledColor,
+  $textfieldHaserrorBorderColor,
+  $textfieldHaserrorHoverBorderColor,
+  $textfieldHaserrorHoverOutlineColor
+) {
+  $text-field: component.$text-field;
+  .#{$text-field} {
+    outline-width: $textfieldOutlineWidth;
+    height: $textfieldHeight;
+    background-color: $textfieldBackgroundColor;
+    border: $textfieldBorder;
+    border-radius: $textfieldBorderRadius;
+    padding: $textfieldPadding;
+    color: $textfieldColor;
+    display: block;
+    width: 100%;
+    text-overflow: ellipsis;
+
+    &::placeholder {
+      color: $textfieldPlaceholderColor;
+    }
+
+    &:hover:not(:disabled) {
+      border: $textfieldHoverBorder;
+      background-color: $textfieldHoverBackgroundColor;
+    }
+
+    &:focus:not(:disabled),
+    &:active:not(:disabled) {
+      border: $textfieldFocusBorder;
+      outline: $textfieldFocusOutline;
+    }
+
+    &:disabled {
+      border: $textfieldDisabledBorder;
+      background-color: $textfieldDisabledBackgroundColor;
+      color: $textfieldDisabledColor;
+    }
+  }
+
+  // Handle Error
+  .has-error .#{$text-field} {
+    border-color: $textfieldHaserrorBorderColor;
+
+    &:hover,
+    &:focus,
+    &:active {
+      border-color: $textfieldHaserrorBorderColor;
+      outline-color: $textfieldHaserrorHoverOutlineColor;
+    }
+  }
+}

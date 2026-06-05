@@ -1,0 +1,32 @@
+/* stylelint-disable scss/dollar-variable-empty-line-before */
+@use 'sass:map';
+@use 'maps/typography' as typography;
+@use 'maps/corner' as corner;
+@use 'maps/color' as colors;
+
+$map: (
+  '$badgePadding': 0 0.4rem ,
+  '$badgeMinWidth': 1.6rem ,
+  '$badgeHeight': 1.6rem ,
+  '$badgeBorder': 0.1rem solid map.get(colors.$color, 'white') ,
+  '$badgeBorderRadius': 1.2rem ,
+  '$badgeColor': map.get(colors.$color, 'white') ,
+  '$badgeFontWeight': map.get(typography.$typography, 'weight', 'regular') ,
+  '$badgeFontSize': map.get(typography.$typography, 'scale', 'base', 'size') ,
+  '$badgeLineHeight': map.get(typography.$typography, 'scale', 'base', 'height') ,
+  '$badgeCounterQuantityBackgroundColor': map.get(colors.$color, 'grayscale', 60) ,
+  '$badgeCounterAlertBackgroundColor': map.get(colors.$color, 'indicator', 'red', 80) ,
+  '$badgeStateSuccessPadding': 0 ,
+  '$badgeStateSuccessBackgroundColor': map.get(colors.$color, 'indicator', 'green', 80) ,
+  '$badgeStateSuccessFontSize': map.get(typography.$typography, 'scale', 'sm', 'size') ,
+  '$badgeStatusCautionPadding': 0 ,
+  '$badgeStatusCautionBackgroundColor': map.get(colors.$color, 'indicator', 'orange', 80) ,
+  '$badgeStatusCautionFontSize': map.get(typography.$typography, 'scale', 'sm', 'size') ,
+  '$badgeLabelPatientBackgroundColor': map.get(colors.$color, 'indicator', 'red', 80) ,
+  '$badgeLabelProviderBackgroundColor': map.get(colors.$color, 'indicator', 'orange', 80) ,
+  '$badgeDotPadding': 0 ,
+  '$badgeDotWidth': 0.8rem ,
+  '$badgeDotMinWidth': 0 ,
+  '$badgeDotHeight': 0.8rem ,
+  '$badgeDotBackgroundColor': map.get(colors.$color, 'indicator', 'red', 80) ,
+);

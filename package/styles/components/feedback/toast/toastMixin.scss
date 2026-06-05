@@ -1,0 +1,155 @@
+///
+/// Careflow Toast Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin toastMixin(
+  $theme,
+  $toastRowGap,
+  $toastGroupTopStartTop,
+  $toastGroupTopStartLeft,
+  $toastGroupTopEndTop,
+  $toastGroupTopEndRight,
+  $toastGroupBottomStartBottom,
+  $toastGroupBottomStartLeft,
+  $toastGroupBottomEndBottom,
+  $toastGroupBottomEndRight,
+  $toastWidth,
+  $toastPadding,
+  $toastColumnGap,
+  $toastBorder,
+  $toastBorderRadius,
+  $toastBoxShadow,
+  $toastIconContainerWidth,
+  $toastIconContainerHeight,
+  $toastIconContainerBorderRadius,
+  $toastIconContainerFontSize,
+  $toastContentMarginRight,
+  $toastActionColor,
+  $toastActionWidth,
+  $toastActionHeight,
+  $toastActionFontSize,
+  $toastSuccessBackground,
+  $toastSuccessColor,
+  $toastSuccessIconContainerBackgroundColor,
+  $toastFailureBackground,
+  $toastFailureColor,
+  $toastFailureIconContainerBackgroundColor,
+  $toastInfoBackground,
+  $toastInfoColor,
+  $toastInfoIconContainerBackgroundColor,
+  $toastCautionBackground,
+  $toastCautionColor,
+  $toastCautionIconContainerBackgroundColor
+) {
+  $toast: component.$toast;
+
+  .#{$toast}-group {
+    position: fixed;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    row-gap: $toastRowGap;
+
+    &.#{$toast}-group--top-start {
+      top: $toastGroupTopStartTop;
+      left: $toastGroupTopStartLeft;
+      align-items: flex-start;
+    }
+
+    &.#{$toast}-group--top-end {
+      top: $toastGroupTopEndTop;
+      right: $toastGroupTopEndRight;
+      align-items: flex-end;
+    }
+
+    &.#{$toast}-group--bottom-start {
+      bottom: $toastGroupBottomStartBottom;
+      left: $toastGroupBottomStartLeft;
+      align-items: flex-start;
+    }
+
+    &.#{$toast}-group--bottom-end {
+      bottom: $toastGroupBottomEndBottom;
+      right: $toastGroupBottomEndRight;
+      align-items: flex-end;
+    }
+  }
+
+  .#{$toast} {
+    width: $toastWidth;
+    padding: $toastPadding;
+    display: flex;
+    align-items: center;
+    column-gap: $toastColumnGap;
+    border: $toastBorder;
+    border-radius: $toastBorderRadius;
+    box-shadow: $toastBoxShadow;
+
+    .#{$toast}__icon-container {
+      width: $toastIconContainerWidth;
+      height: $toastIconContainerHeight;
+      border-radius: $toastIconContainerBorderRadius;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: $toastIconContainerFontSize;
+    }
+
+    .#{$toast}__content {
+      flex: 1;
+      min-width: 0;
+      margin-right: $toastContentMarginRight;
+    }
+
+    .#{$toast}__action {
+      color: $toastActionColor !important;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: $toastActionWidth;
+      height: $toastActionHeight;
+      font-size: $toastActionFontSize;
+    }
+
+    &.#{$toast}--success {
+      background: $toastSuccessBackground;
+      color: $toastSuccessColor;
+
+      .#{$toast}__icon-container {
+        background-color: $toastSuccessIconContainerBackgroundColor;
+      }
+    }
+
+    &.#{$toast}--failure {
+      background: $toastFailureBackground;
+      color: $toastFailureColor;
+
+      .#{$toast}__icon-container {
+        background-color: $toastFailureIconContainerBackgroundColor;
+      }
+    }
+
+    &.#{$toast}--info {
+      background: $toastInfoBackground;
+      color: $toastInfoColor;
+
+      .#{$toast}__icon-container {
+        background-color: $toastInfoIconContainerBackgroundColor;
+      }
+    }
+
+    &.#{$toast}--caution {
+      background: $toastCautionBackground;
+      color: $toastCautionColor;
+
+      .#{$toast}__icon-container {
+        background-color: $toastCautionIconContainerBackgroundColor;
+      }
+    }
+  }
+}

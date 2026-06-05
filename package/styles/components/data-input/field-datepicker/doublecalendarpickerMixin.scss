@@ -1,0 +1,112 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/color' as colors;
+@use '../../../settings/typography' as typography;
+
+@mixin fieldDoubleCalendarPickerMixin(
+  $theme,
+  $fieldDoubleCalendarPickerBackground,
+  $fieldDoubleCalendarPickerBorder,
+  $fieldDoubleCalendarPickerBoxShadow,
+  $fieldDoubleCalendarPickerBorderRadius,
+  $fieldDoubleCalendarPickerHeaderPadding,
+  $fieldDoubleCalendarPickerHeaderBorderBottom,
+  $fieldDoubleCalendarPickerCalendarAreaPadding,
+  $fieldDoubleCalendarPickerCalendarBorderRadius,
+  $fieldDoubleCalendarPickerCalendarLastChildBorderLeft,
+  $fieldDoubleCalendarPickerCalendarLastChildBorderRadius,
+  $fieldDoubleCalendarPickerCalendarWeekColumnGap,
+  $fieldDoubleCalendarPickerCalendarDayWidth,
+  $fieldDoubleCalendarPickerDatesMarginBottom,
+  $fieldDoubleCalendarPickerDatesColumnGap,
+  $fieldDoubleCalendarPickerDatesFontWeight,
+  $fieldDoubleCalendarPickerDatesFontSize,
+  $fieldDoubleCalendarPickerDatesLineHeight,
+  $fieldDoubleCalendarPickerDatesColor,
+  $fieldDoubleCalendarPickerDateFontWeight,
+  $fieldDoubleCalendarPickerDateFontSize,
+  $fieldDoubleCalendarPickerDateLineHeight,
+  $fieldDoubleCalendarPickerDateColor,
+  $fieldDoubleCalendarPickerDateMarginLeft,
+  $fieldDoubleCalendarPickerFooterBorderTop,
+  $fieldDoubleCalendarPickerFooterBorderRadius,
+  $fieldDoubleCalendarPickerFooterPadding,
+  $fieldDoubleCalendarPickerPlaceholderColor,
+  $fieldDoubleCalendarPickerPlaceholderFontSize,
+  $fieldDoubleCalendarPickerPlaceholderFontWeight,
+  $fieldDoubleCalendarPickerPlaceholderLineHeight
+) {
+  .cfc-field-double-calendar-picker {
+    background: $fieldDoubleCalendarPickerBackground;
+    border: $fieldDoubleCalendarPickerBorder;
+    box-shadow: $fieldDoubleCalendarPickerBoxShadow;
+    border-radius: $fieldDoubleCalendarPickerBorderRadius;
+    width: fit-content;
+
+    &__header {
+      padding: $fieldDoubleCalendarPickerHeaderPadding;
+      border-bottom: $fieldDoubleCalendarPickerHeaderBorderBottom;
+    }
+
+    &__calendar-area {
+      padding: $fieldDoubleCalendarPickerCalendarAreaPadding;
+    }
+
+    &__calendars {
+      display: flex;
+
+      .cfc-field-datepicker {
+        &-calendar {
+          box-shadow: none;
+          flex: 1;
+          border-radius: $fieldDoubleCalendarPickerCalendarBorderRadius;
+
+          &:last-child {
+            border-left: $fieldDoubleCalendarPickerCalendarLastChildBorderLeft;
+            border-radius: $fieldDoubleCalendarPickerCalendarLastChildBorderRadius;
+          }
+        }
+
+        &__week {
+          column-gap: $fieldDoubleCalendarPickerCalendarWeekColumnGap;
+        }
+
+        &__day {
+          width: $fieldDoubleCalendarPickerCalendarDayWidth;
+        }
+      }
+    }
+
+    &__dates {
+      margin-bottom: $fieldDoubleCalendarPickerDatesMarginBottom;
+      display: flex;
+      align-items: center;
+      column-gap: $fieldDoubleCalendarPickerDatesColumnGap;
+      font-weight: $fieldDoubleCalendarPickerDatesFontWeight;
+      font-size: $fieldDoubleCalendarPickerDatesFontSize;
+      line-height: $fieldDoubleCalendarPickerDatesLineHeight;
+      color: $fieldDoubleCalendarPickerDatesColor;
+    }
+
+    &__date {
+      font-weight: $fieldDoubleCalendarPickerDateFontWeight;
+      font-size: $fieldDoubleCalendarPickerDateFontSize;
+      line-height: $fieldDoubleCalendarPickerDateLineHeight;
+      color: $fieldDoubleCalendarPickerDateColor;
+      margin-left: $fieldDoubleCalendarPickerDateMarginLeft;
+    }
+
+    &__footer {
+      border-top: $fieldDoubleCalendarPickerFooterBorderTop;
+      border-radius: $fieldDoubleCalendarPickerFooterBorderRadius;
+      padding: $fieldDoubleCalendarPickerFooterPadding;
+    }
+
+    &--placeholder {
+      color: $fieldDoubleCalendarPickerPlaceholderColor;
+      font-size: $fieldDoubleCalendarPickerPlaceholderFontSize;
+      font-weight: $fieldDoubleCalendarPickerPlaceholderFontWeight;
+      line-height: $fieldDoubleCalendarPickerPlaceholderLineHeight;
+    }
+  }
+}

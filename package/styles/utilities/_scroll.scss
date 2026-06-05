@@ -1,0 +1,44 @@
+@use '../settings/theme' as theme;
+@use '../settings/themes/light/mixins/scroll.mixin' as lscroll;
+@use '../settings/themes/dark/mixins/scroll.mixin' as dscroll;
+@use '../settings/themes/test/mixins/scroll.mixin' as tscroll;
+
+@mixin scroll($theme) {
+  @include scrollStyles($theme);
+}
+
+@mixin scrollStyles($theme) {
+  .cfu-scroll {
+    &-none {
+      overflow: visible;
+    }
+
+    &-both,
+    &-horizontal,
+    &-vertical {
+      overflow: auto;
+      max-height: 30rem;
+      max-width: 100%;
+
+      @if $theme == theme.$theme-light {
+        @include lscroll.scroll;
+      }
+
+      @if $theme == theme.$theme-dark {
+        @include dscroll.scroll;
+      }
+
+      @if $theme == theme.$theme-test {
+        @include tscroll.scroll;
+      }
+    }
+
+    &-horizontal {
+      overflow-y: hidden;
+    }
+
+    &-vertical {
+      overflow-x: hidden;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+@use 'sass:meta';
+@use 'action-menu' as actionMenu;
+@use 'button' as button;
+@use 'data-table' as dataTable;
+@use 'droppable' as droppable;
+@use 'droppable-overlay' as droppableOverlay;
+@use 'field-check' as fieldCheck;
+@use 'field-check-group' as fieldCheckGroup;
+@use 'field-datepicker' as fieldDatepicker;
+@use 'field-dropdown' as fieldDropdown;
+@use 'field-group' as fieldGroup;
+@use 'field-text' as fieldText;
+@use 'field-textarea' as fieldTextarea;
+@use 'form-control' as formControl;
+@use 'form-group' as formGroup;
+@use 'segment-button' as segmentedButton;
+@use 'timepicker' as timePicker;
+@use 'toggle-switch' as toggleSwitch;
+@use 'trigger-button' as triggerButton;
+
+@mixin dataInput($theme) {
+  @include actionMenu.actionMenu($theme);
+  @include button.button($theme);
+  @include dataTable.dataTable($theme);
+  @include droppable.droppable($theme);
+  @include droppableOverlay.droppableOverlay($theme);
+  @include fieldCheck.fieldCheck($theme);
+  @include fieldCheckGroup.fieldCheckGroup($theme);
+  @include fieldDatepicker.fieldDatepicker($theme);
+  @include fieldDropdown.fieldDropdown($theme);
+  @include fieldGroup.fieldGroup($theme);
+  @include fieldText.fieldText($theme);
+  @include fieldTextarea.fieldTextarea($theme);
+  @include formControl.formControl($theme);
+  @include formGroup.formGroup($theme);
+  @include segmentedButton.segmentedButton($theme);
+  @include timePicker.timePicker($theme);
+  @include toggleSwitch.toggleSwitch($theme);
+  @include triggerButton.triggerButton($theme);
+}

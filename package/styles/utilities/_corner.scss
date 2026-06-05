@@ -1,0 +1,34 @@
+@use 'sass:map';
+@use '../settings/theme' as theme;
+@use '../settings/themes/light/maps/corner' as lightCorner;
+@use '../settings/themes/dark/maps/corner' as darkCorner;
+
+@mixin corner($theme) {
+  @if $theme == theme.$theme-light {
+    @include cornerStyles(lightCorner.$corner);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include cornerStyles(darkCorner.$corner);
+  }
+}
+
+@mixin cornerStyles($corner) {
+  .cfu-corner {
+    &-small {
+      border-radius: map.get($corner, 'small');
+    }
+
+    &-default {
+      border-radius: map.get($corner, 'default');
+    }
+
+    &-medium {
+      border-radius: map.get($corner, 'medium');
+    }
+
+    &-full {
+      border-radius: map.get($corner, 'full');
+    }
+  }
+}

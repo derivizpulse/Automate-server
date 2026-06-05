@@ -1,0 +1,214 @@
+@use 'sass:map';
+@use '../settings/theme' as theme;
+@use '../settings/themes/light/maps/typography' as lightTypeMap;
+@use '../settings/themes/dark/maps/typography' as darkTypeMap;
+
+@mixin typography($theme) {
+  @if $theme == theme.$theme-light {
+    @include typographyStyles(lightTypeMap.$typography);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include typographyStyles(darkTypeMap.$typography);
+  }
+}
+
+@mixin typographyStyles($typography) {
+  .cfu-text {
+    ///
+    ///  Weights
+    ///
+
+    &-regular {
+      font-weight: map.get($typography, 'weight', 'regular');
+    }
+
+    &-medium {
+      font-weight: map.get($typography, 'weight', 'medium');
+    }
+
+    &-bold {
+      font-weight: map.get($typography, 'weight', 'bold');
+    }
+
+    ///
+    /// Sizes
+    ///
+
+    &-sm {
+      font-size: map.get($typography, 'scale', 'sm', 'size');
+      line-height: map.get($typography, 'scale', 'sm', 'height');
+    }
+
+    &-base {
+      font-size: map.get($typography, 'scale', 'base', 'size');
+      line-height: map.get($typography, 'scale', 'base', 'height');
+    }
+
+    &-lg {
+      font-size: map.get($typography, 'scale', 'lg', 'size');
+      line-height: map.get($typography, 'scale', 'lg', 'height');
+    }
+
+    &-xl {
+      font-size: map.get($typography, 'scale', 'xl', 'size');
+      line-height: map.get($typography, 'scale', 'xl', 'height');
+    }
+
+    &-2xl {
+      font-size: map.get($typography, 'scale', '2xl', 'size');
+      line-height: map.get($typography, 'scale', '2xl', 'height');
+    }
+
+    &-3xl {
+      font-size: map.get($typography, 'scale', '3xl', 'size');
+      line-height: map.get($typography, 'scale', '3xl', 'height');
+    }
+
+    ///
+    /// Alignment
+    ///
+
+    &-align {
+      &-left {
+        text-align: left;
+      }
+
+      &-center {
+        text-align: center;
+      }
+
+      &-right {
+        text-align: right;
+      }
+    }
+
+    ///
+    ///  Truncate
+    ///
+
+    &-truncate {
+      max-width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    ///
+    /// Clamp
+    ///
+
+    &-clamp {
+      @for $i from 1 through 10 {
+        &-#{$i} {
+          /* stylelint-disable-next-line value-no-vendor-prefix */
+          display: -webkit-box;
+          overflow: hidden;
+          -webkit-line-clamp: $i;
+          -webkit-box-orient: vertical;
+        }
+      }
+    }
+
+    ///
+    /// Inline Clamp
+    ///
+
+    &-inline-clamp {
+      @for $i from 1 through 10 {
+        &-#{$i} {
+          /* stylelint-disable-next-line value-no-vendor-prefix */
+          display: -webkit-inline-box;
+          overflow: hidden;
+          -webkit-line-clamp: $i;
+          -webkit-box-orient: vertical;
+        }
+      }
+    }
+
+    ///
+    ///  Word Wrap
+    ///
+
+    &-wrap {
+      overflow-wrap: break-word;
+    }
+
+    &-nowrap {
+      white-space: nowrap;
+    }
+
+    ///
+    /// Style
+    ///
+
+    &-italic {
+      font-style: italic;
+    }
+
+    &-oblique {
+      font-style: oblique;
+    }
+
+    ///
+    /// Variant
+    ///
+
+    &-small-caps {
+      font-variant: small-caps;
+    }
+
+    ///
+    /// Decoration
+    ///
+
+    &-decoration {
+      &-overline {
+        text-decoration: overline;
+      }
+
+      &-line-through {
+        text-decoration: line-through;
+      }
+
+      &-underline {
+        text-decoration: underline;
+      }
+
+      &-underline-overline {
+        text-decoration: underline overline;
+      }
+
+      // Style
+      &-style {
+        &-solid {
+          text-decoration-style: solid;
+        }
+
+        &-wavy {
+          text-decoration-style: wavy;
+        }
+
+        &-dotted {
+          text-decoration-style: dotted;
+        }
+
+        &-dashed {
+          text-decoration-style: dashed;
+        }
+
+        &-double {
+          text-decoration-style: double;
+        }
+      }
+    }
+
+    ///
+    /// Selection
+    ///
+
+    &-noselect {
+      user-select: none;
+    }
+  }
+}

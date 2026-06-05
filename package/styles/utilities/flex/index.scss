@@ -1,0 +1,11 @@
+@use 'direction' as direction;
+@use 'flex' as flex;
+@use 'grow' as grow;
+@use 'wrap' as wrap;
+
+@mixin flex($theme) {
+  @include direction.direction($theme);
+  @include flex.flex($theme);
+  @include grow.grow($theme);
+  @include wrap.wrap($theme);
+}

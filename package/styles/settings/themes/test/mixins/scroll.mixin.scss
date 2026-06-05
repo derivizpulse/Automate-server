@@ -1,0 +1,31 @@
+$track-color: rgba(150, 163, 175, 8%);
+$thumb-color: rgba(150, 163, 175, 80%);
+
+@mixin scroll() {
+
+  /* stylelint-disable-next-line function-url-quotes */
+  @-moz-document url-prefix() {
+    scrollbar-width: thin;
+    scrollbar-color: $thumb-color $track-color;
+    overscroll-behavior: none;
+  }
+
+  // Remove all (!important) later
+  &::-webkit-scrollbar {
+    width: 0.6rem !important;
+    height: 0.6rem !important;
+  }
+
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0.6rem !important;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: $track-color !important;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $thumb-color !important;
+  }
+}

@@ -1,0 +1,93 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/mixins/block.mixin' as lblock;
+@use '../../../settings/themes/dark/mixins/block.mixin' as dblock;
+@use '../../../settings/themes/test/mixins/block.mixin' as tblock;
+
+@mixin popoverMixin(
+  $theme,
+  $popoverBorder,
+  $popoverBackground,
+  $popoverBoxShadow,
+  $popoverBorderRadius,
+  $popoverMaxHeight,
+  $popoverHeaderPadding,
+  $popoverHeaderBackground,
+  $popoverFooterPadding,
+  $popoverFooterBorderTop,
+  $popoverWidthXXSmall,
+  $popoverWidthXSmall,
+  $popoverWidthSmall,
+  $popoverWidthMedium,
+  $popoverWidthLarge,
+  $popoverWidthXLarge,
+  $popoverWidthXXLarge,
+) {
+  $popover: component.$popover-new;
+
+  .#{$popover} {
+    border: $popoverBorder;
+    background: $popoverBackground;
+    box-shadow: $popoverBoxShadow;
+    border-radius: $popoverBorderRadius;
+    max-height: $popoverMaxHeight;
+    overflow: hidden;
+
+    @if $theme == theme.$theme-light {
+      @include lblock.block($popover);
+    }
+
+    @if $theme == theme.$theme-dark {
+      @include dblock.block($popover);
+    }
+
+    @if $theme == theme.$theme-test {
+      @include tblock.block($popover);
+    }
+
+    .#{$popover}__header {
+      padding: $popoverHeaderPadding;
+      background: $popoverHeaderBackground;
+    }
+
+    .#{$popover}__content {
+      &:focus-visible {
+        outline: none;
+      }
+    }
+
+    .#{$popover}__footer {
+      padding: $popoverFooterPadding;
+      border-top: $popoverFooterBorderTop;
+    }
+
+    &.#{$popover}--xx-small {
+      width: 12rem;
+    }
+
+    &.#{$popover}--x-small {
+      width: 20rem;
+    }
+
+    &.#{$popover}--small {
+      width: 30rem;
+    }
+
+    &.#{$popover}--medium {
+      width: 40rem;
+    }
+
+    &.#{$popover}--large {
+      width: 50rem;
+    }
+
+    &.#{$popover}--x-large {
+      width: 60rem;
+    }
+
+    &.#{$popover}--xx-large {
+      width: 70rem;
+    }
+  }
+}

@@ -1,0 +1,61 @@
+///
+/// Careflow Data Table Mixin
+///
+
+@use 'sass:map';
+@use 'maps/typography' as typographyMap;
+@use 'maps/corner' as cornerMap;
+@use 'maps/color' as colorMap;
+
+$map: (
+  'tableContainerRowGap': 1.4rem,
+  'tableFontSize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'tableLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'tableLineFontWeight': map.get(typographyMap.$typography, 'weight', 'regular'),
+  'tableColor': map.get(colorMap.$color, 'grayscale', 100),
+  'tableBorder': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  'tableBorderRadius': map.get(cornerMap.$corner, 'default'),
+  'tableThDefaultPadding': 0.8rem,
+  'tableThPadding': 0.8rem,
+  'tableThBackground': map.get(colorMap.$color, 'grayscale', 10),
+  'tableThFontSize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'tableThLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'tableThWeight': map.get(typographyMap.$typography, 'weight', 'medium'),
+  'tableThColor': map.get(colorMap.$color, 'grayscale', 80),
+  'tableThNotLastChildBorderRight': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  'tableTdPadding': 0.8rem,
+  'tableTdSelectCellPadding': 0,
+  'tableTdNotLastChildBorderRight': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  'tableHeadTrBorderBottom': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  'tableTrColor': map.get(colorMap.$color, 'grayscale', 80),
+  'tableTrFontSize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'tableTrLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'tableBodyTrBorderBottom': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  'tableBodyTrIsActiveBackgroundColor': map.get(colorMap.$color, 'interactive', 5),
+  'tableBodyTrTdHowerBackgroundImage': linear-gradient(rgb(0 69 122 / 5%), rgb(0 69 122 / 5%)),
+  'tableFooterBorderTop': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  'tableFooterBackgroundColor': map.get(colorMap.$color, 'grayscale', 5),
+  'tableEmptyMinHeight': 26rem,
+  'tableEmptyRowGap': 1.2rem,
+  'tableEmptyTextFontSize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'tableEmptyTextLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'tableEmptyTextFontWeight': map.get(typographyMap.$typography, 'weight', 'regular'),
+  'tableEmptyTextColor': map.get(colorMap.$color, 'grayscale', 40),
+  'tableHeaderLabelFontSize': 1.2rem,
+  'tableHeaderLabelLineHeight': 1.6rem,
+  'tableHeaderLabelFontWeight': 600,
+  'tableHeaderLabelColor': map.get(colorMap.$color, 'grayscale', 80),
+  'tablePaginationColumnGap':1.8rem,
+  'tablePaginationIconFontSize':1.2rem,
+  'tablePaginationIconColor':map.get(colorMap.$color, 'interactive', 80),
+  'tablePaginationIconIsDisabledColor': map.get(colorMap.$color, 'grayscale', 40),
+  'tablePaginationTextColor': map.get(colorMap.$color, 'grayscale', 100),
+  'tablePaginationTextFontSize': map.get(typographyMap.$typography, 'scale', 'sm', 'size'),
+  'tablePaginationTextLineHeight': map.get(typographyMap.$typography, 'scale', 'sm', 'height'),
+  'tablePaginationTextFontWeight': map.get(typographyMap.$typography, 'weight', 'regular'),
+  'tableHeaderCellRowGap': 0.4rem,
+  'tableHeaderCellTopColumnGap': 0.4rem,
+  'tableHeaderCellTopLeftColumnGap': 0.4rem,
+  'tableHeaderCellTopRightColumnGap': 0.4rem,
+  'tableHeaderCellBottomHeight': 2.4rem
+);

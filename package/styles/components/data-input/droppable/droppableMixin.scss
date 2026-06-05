@@ -1,0 +1,108 @@
+///
+/// Careflow Droppable Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin droppableMixin(
+  $theme,
+  $droppableRowGap,
+  $droppableBorderRadius,
+  $droppableBorder,
+  $droppableBackgroundColor,
+  $droppablePadding,
+  $droppableIsActiveBorderColor,
+  $droppableIsActiveBackgroundColor,
+  $droppableHelperRowGap,
+  $droppableHelperTextFontWeight,
+  $droppableHelperDividerColumnGap,
+  $droppableHelperDividerColor,
+  $droppableHelperDividerbeforeWidth,
+  $droppableHelperDividerbeforeHeight,
+  $droppableHelperDividerbeforeBackgroundColor,
+  $droppableHelperActionsColumnGap,
+  $droppableHelperSubtextColor,
+  $droppableHelperSubtextFontSize,
+  $droppableHelperSubtextLineHeight,
+  $droppableHelperActionTextFontWeight,
+  $droppableHelperActionTextColor
+) {
+  $droppable: component.$droppable;
+  .#{$droppable} {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    row-gap: $droppableRowGap;
+    border-radius: $droppableBorderRadius;
+    border: $droppableBorder;
+    background-color: $droppableBackgroundColor;
+    padding: $droppablePadding;
+
+    &.is-active {
+      border-color: $droppableIsActiveBorderColor;
+      background-color: $droppableIsActiveBackgroundColor;
+
+      .#{$droppable}__helper {
+        display: none;
+      }
+
+      .#{$droppable}__helper-active-text {
+        display: block;
+      }
+    }
+
+    .#{$droppable}__helper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      row-gap: $droppableHelperRowGap;
+
+      .#{$droppable}__helper-text {
+        font-weight: $droppableHelperTextFontWeight;
+        text-align: center;
+      }
+
+      .#{$droppable}__helper-divider {
+        display: flex;
+        align-items: center;
+        column-gap: $droppableHelperDividerColumnGap;
+        color: $droppableHelperDividerColor;
+
+        &::before,
+        &::after {
+          content: '';
+          display: block;
+          height: $droppableHelperDividerbeforeHeight;
+          width: $droppableHelperDividerbeforeWidth;
+          background-color: $droppableHelperDividerbeforeBackgroundColor;
+        }
+      }
+
+      .#{$droppable}__helper-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: $droppableHelperActionsColumnGap;
+      }
+
+      .#{$droppable}__helper-subtext {
+        color: $droppableHelperSubtextColor;
+        font-size: $droppableHelperSubtextFontSize;
+        line-height: $droppableHelperSubtextLineHeight;
+        text-align: center;
+      }
+    }
+
+    .#{$droppable}__helper-active-text {
+      display: none;
+      font-weight: $droppableHelperActionTextFontWeight;
+      color: $droppableHelperActionTextColor;
+      text-align: center;
+    }
+  }
+}

@@ -1,0 +1,197 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/color' as colors;
+@use '../../../settings/typography' as typography;
+@use '../../../settings/spacing' as spacing;
+@use '../../../settings/elevation' as elevation;
+
+@mixin fieldDatePickerMixin(
+  $theme,
+  $fieldDatePickerWidth,
+  $fieldDatePickerCalendarBorder,
+  $fieldDatePickerCalendarBoxShadow,
+  $fieldDatePickerCalendarBorderRadius,
+  $fieldDatePickerCalendarBackground,
+  $fieldDatePickerHeaderColumnGap,
+  $fieldDatePickerHeaderBorderBottom,
+  $fieldDatePickerHeaderBorderRadius,
+  $fieldDatePickerHeaderPadding,
+  $fieldDatePickerSelectWrapperColumnGap,
+  $fieldDatePickerWeekBackground,
+  $fieldDatePickerWeekBorderBottom,
+  $fieldDatePickerWeekPadding,
+  $fieldDatePickerWeekColumnGap,
+  $fieldDatePickerWeekDayFontWeight,
+  $fieldDatePickerWeekDayFontSize,
+  $fieldDatePickerWeekDayLineHeight,
+  $fieldDatePickerWeekDayColor,
+  $fieldDatePickerDayFontWeight,
+  $fieldDatePickerDayFontSize,
+  $fieldDatePickerDayLineHeight,
+  $fieldDatePickerDayColor,
+  $fieldDatePickerDayHeight,
+  $fieldDatePickerDayWidth,
+  $fieldDatePickerDayTodayDateTextDecorationColor,
+  $fieldDatePickerDayTodayDateTextUnderlineOffset,
+  $fieldDatePickerDayTodayDateColor,
+  $fieldDatePickerDayDateRangeBackgroundColor,
+  $fieldDatePickerDayDateRangeStartBorderLeft,
+  $fieldDatePickerDayDateRangeStartBackgroundColor,
+  $fieldDatePickerDayDateRangeStartBorderRadius,
+  $fieldDatePickerDayDateRangeEndBorderRight,
+  $fieldDatePickerDayDateRangeEndBackgroundColor,
+  $fieldDatePickerDayDateRangeEndBorderRadius,
+  $fieldDatePickerDayHoverBackground,
+  $fieldDatePickerDayHoverColor,
+  $fieldDatePickerDaySelectedBackground,
+  $fieldDatePickerDaySelectedColor,
+  $fieldDatePickerDaySelectedBorderRadius,
+  $fieldDatePickerDayInactiveColor,
+  $fieldDatePickerDayDisabledBackground,
+  $fieldDatePickerDayDisabledColor,
+  $fieldDatePickerFooterBackgroundColor,
+  $fieldDatePickerFooterBorder,
+  $fieldDatePickerFooterBorderTop,
+  $fieldDatePickerFooterPadding,
+  $fieldDatePickerFooterFontWeight,
+  $fieldDatePickerFooterFontSize,
+  $fieldDatePickerFooterLineHeight,
+  $fieldDatePickerFooterColor,
+  $fieldDatePickerFooterBorderRadius,
+  $fieldDatePickerFooterBoxShadow,
+  $fieldDatePickerCalendarfooterBorderRadius,
+) {
+  .cfc-field-datepicker {
+    display: block;
+    width: $fieldDatePickerWidth;
+
+    &-calendar {
+      border: $fieldDatePickerCalendarBorder;
+      box-shadow: $fieldDatePickerCalendarBoxShadow;
+      border-radius: $fieldDatePickerCalendarBorderRadius;
+      display: block;
+      background: $fieldDatePickerCalendarBackground;
+    }
+
+    &__header {
+      display: flex;
+      align-items: center;
+      column-gap: $fieldDatePickerHeaderColumnGap;
+      border-bottom: $fieldDatePickerHeaderBorderBottom;
+      border-radius: $fieldDatePickerHeaderBorderRadius;
+      padding: $fieldDatePickerHeaderPadding;
+    }
+
+    &__select-wrapper {
+      display: flex;
+      align-items: center;
+      column-gap: $fieldDatePickerSelectWrapperColumnGap;
+    }
+
+    &__week {
+      background: $fieldDatePickerWeekBackground;
+      border-bottom: $fieldDatePickerWeekBorderBottom;
+      display: flex;
+      align-items: center;
+      padding: $fieldDatePickerWeekPadding;
+      column-gap: $fieldDatePickerWeekColumnGap;
+    }
+
+    &__week-day {
+      font-weight: $fieldDatePickerWeekDayFontWeight;
+      font-size: $fieldDatePickerWeekDayFontSize;
+      line-height: $fieldDatePickerWeekDayLineHeight;
+      color: $fieldDatePickerWeekDayColor;
+      text-align: center;
+      flex: 1;
+    }
+
+    &__days {
+      display: flex;
+      align-items: center;
+    }
+
+    &__day {
+      font-weight: $fieldDatePickerDayFontWeight;
+      font-size: $fieldDatePickerDayFontSize;
+      line-height: $fieldDatePickerDayLineHeight;
+      color: $fieldDatePickerDayColor;
+      height: $fieldDatePickerDayHeight;
+      width: $fieldDatePickerDayWidth;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+
+      &--todays-date {
+        text-decoration: underline;
+        text-decoration-color: $fieldDatePickerDayTodayDateTextDecorationColor;
+        text-underline-offset: $fieldDatePickerDayTodayDateTextUnderlineOffset;
+        color: $fieldDatePickerDayTodayDateColor;
+      }
+
+      &--date-range {
+        background-color: $fieldDatePickerDayDateRangeBackgroundColor;
+
+        &.start {
+          border-left: $fieldDatePickerDayDateRangeStartBorderLeft;
+          background-color: $fieldDatePickerDayDateRangeStartBackgroundColor;
+          border-radius: $fieldDatePickerDayDateRangeStartBorderRadius;
+        }
+
+        &.end {
+          border-right: $fieldDatePickerDayDateRangeEndBorderRight;
+          background-color: $fieldDatePickerDayDateRangeEndBackgroundColor;
+          border-radius: $fieldDatePickerDayDateRangeEndBorderRadius;
+        }
+      }
+
+      &--hover {
+        background: $fieldDatePickerDayHoverBackground;
+        color: $fieldDatePickerDayHoverColor;
+      }
+
+      &:not(.inactive,.disabled,.selected):hover {
+        background: $fieldDatePickerDayHoverBackground;
+        color: $fieldDatePickerDayHoverColor;
+      }
+
+      &.selected {
+        background: $fieldDatePickerDaySelectedBackground;
+        color: $fieldDatePickerDaySelectedColor;
+        border-radius: $fieldDatePickerDaySelectedBorderRadius;
+      }
+
+      &.inactive {
+        cursor: default;
+        color: $fieldDatePickerDayInactiveColor;
+      }
+
+      &.disabled {
+        background: $fieldDatePickerDayDisabledBackground;
+        color: $fieldDatePickerDayDisabledColor;
+        cursor: default;
+      }
+    }
+
+    &__footer {
+      background-color: $fieldDatePickerFooterBackgroundColor;
+      border: $fieldDatePickerFooterBorder;
+      border-top: $fieldDatePickerFooterBorderTop;
+      padding: $fieldDatePickerFooterPadding;
+      font-weight: $fieldDatePickerFooterFontWeight;
+      font-size: $fieldDatePickerFooterFontSize;
+      line-height: $fieldDatePickerFooterLineHeight;
+      text-align: center;
+      color: $fieldDatePickerFooterColor;
+      border-radius: $fieldDatePickerFooterBorderRadius;
+      box-shadow: $fieldDatePickerFooterBoxShadow;
+    }
+
+    &--footer {
+      .cfc-field-datepicker-calendar {
+        border-radius: $fieldDatePickerCalendarfooterBorderRadius;
+      }
+    }
+  }
+}

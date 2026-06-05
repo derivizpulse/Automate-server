@@ -1,0 +1,37 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/card' as lightCard;
+@use '../../../settings/themes/test/card' as testCard;
+@use 'cardMixin' as cardMixin;
+
+@mixin card($theme) {
+  @if $theme == theme.$theme-light {
+    @include cardStyles(lightCard.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include cardStyles(testCard.$map, $theme);
+  }
+}
+
+@mixin cardStyles($map, $theme) {
+  @include cardMixin.cardMixin(
+    $theme,
+    map.get($map, 'cardBorder'),
+    map.get($map, 'cardBackgroundColor'),
+    map.get($map, 'cardBorderRadius'),
+    map.get($map, 'cardHeaderMinHeight'),
+    map.get($map, 'cardHeaderBackgroundColor'),
+    map.get($map, 'cardHeaderPadding'),
+    map.get($map, 'cardHeaderBorderBottom'),
+    map.get($map, 'cardPanelMinHeight'),
+    map.get($map, 'cardPanelPadding'),
+    map.get($map, 'cardPanelBorderBottom'),
+    map.get($map, 'cardFooterMinHeight'),
+    map.get($map, 'cardFooterBorderTop'),
+    map.get($map, 'cardFooterPadding'),
+    map.get($map, 'cardAccordionHeaderHeight'),
+    map.get($map, 'cardAccordionHeaderBorderBottom'),
+    map.get($map, 'cardAccordionIsActiveHeaderBorderBottomColor')
+  );
+}

@@ -1,0 +1,16 @@
+@use 'sass:map';
+@use 'maps/color' as color;
+@use 'maps/corner' as corner;
+@use 'maps/typography' as typography;
+@use '../../spacing' as spacing;
+
+$map: (
+  'droppableOverlayBorderRadius': map.get(corner.$corner, 'default'),
+  'droppableOverlayBorder': 1px dashed map.get(color.$color, 'accent', 'blue', 80),
+  'droppableOverlayBackgroundColor': rgba(63, 113, 200, 40%) ,
+  'droppableOverlayPadding': 2.4rem 1.2rem,
+  'droppableOverlayColor': map.get(color.$color, 'white'),
+  'droppableOverlayFontSize': map.get(typography.$typography, 'scale', '2xl', 'size'),
+  'droppableOverlayLineHeight': map.get(typography.$typography, 'scale', '2xl', 'height'),
+  'droppableOverlayFontWeight': map.get(typography.$typography, 'weight', 'medium'),
+);

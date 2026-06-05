@@ -1,0 +1,45 @@
+@use 'sass:map';
+@use '../../../../settings/components' as component;
+@use '../../../../settings/theme' as theme;
+@use '../../../../settings/themes/light/buttonGroup' as lightButtonGroup;
+@use '../../../../settings/themes/dark/buttonGroup' as darkButtonGroup;
+@use '../../../../settings/themes/test/buttonGroup' as testButtonGroup;
+
+@mixin buttonGroup($theme) {
+  @if $theme == theme.$theme-light {
+    @include buttonGroupStyles(lightButtonGroup.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include buttonGroupStyles(darkButtonGroup.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include buttonGroupStyles(testButtonGroup.$map, $theme);
+  }
+}
+
+@mixin buttonGroupStyles($map, $theme) {
+  $button-group: component.$button-group;
+
+  .#{$button-group} {
+    column-gap: map.get($map, 'buttonGroupColumnGap');
+    display: flex;
+    align-items: center;
+
+    // Modifier Left
+    &.#{$button-group}--left {
+      justify-content: flex-start;
+    }
+
+    // Modifier Center
+    &.#{$button-group}--center {
+      justify-content: center;
+    }
+
+    // Modifier Right
+    &.#{$button-group}--right {
+      justify-content: flex-end;
+    }
+  }
+}

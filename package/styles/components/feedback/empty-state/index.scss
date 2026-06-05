@@ -1,0 +1,61 @@
+@use 'sass:map';
+@use 'emptyStateMixin' as emptyStateMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/emptyState' as lightEmptyState;
+@use '../../../settings/themes/dark/emptyState' as darkEmptyState;
+@use '../../../settings/themes/test/emptyState' as testEmptyState;
+
+@mixin emptyState($theme) {
+  @if $theme == theme.$theme-light {
+    @include emptyStateStyles(lightEmptyState.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include emptyStateStyles(darkEmptyState.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include emptyStateStyles(testEmptyState.$map, $theme);
+  }
+}
+
+@mixin emptyStateStyles($map, $theme) {
+  @include emptyStateMixin.emptyStateMixin(
+    $theme,
+    map.get($map, 'emptyStatePadding'),
+    map.get($map, 'emptyStateRowGap'),
+    map.get($map, 'emptyStateImageWidth'),
+    map.get($map, 'emptyStateImageHeight'),
+    map.get($map, 'emptyStateContentRowGap'),
+    map.get($map, 'emptyStateContentTitleColor'),
+    map.get($map, 'emptyStateContentTitleFontSize'),
+    map.get($map, 'emptyStateContentTitleFontWeight'),
+    map.get($map, 'emptyStateContentTitleLineHeight'),
+    map.get($map, 'emptyStateContentTextColor'),
+    map.get($map, 'emptyStateContentTextFontSize'),
+    map.get($map, 'emptyStateContentTextFontWeight'),
+    map.get($map, 'emptyStateContentTextLineHeight'),
+    map.get($map, 'emptyStateActionColor'),
+    map.get($map, 'emptyStateActionColumnGap'),
+    map.get($map, 'emptyStateActionFontSize'),
+    map.get($map, 'emptyStateActionFontWeight'),
+    map.get($map, 'emptyStateActionLineHeight'),
+    map.get($map, 'emptyStateNoDataBackgroundImage'),
+    map.get($map, 'emptyStateInformationBackgroundImage'),
+    map.get($map, 'emptyStateUserActionBackgroundImage'),
+    map.get($map, 'emptyStateErrorBackgroundImage'),
+    map.get($map, 'emptyStateNoOperatoryBackgroundImage'),
+    map.get($map, 'emptyStateUploadBackgroundImage'),
+    map.get($map, 'emptyStateClickActionBackgroundImage'),
+    map.get($map, 'emptyStateErrorLoadingBackgroundImage'),
+    map.get($map, 'emptyStateDarkBackgroundColor'),
+    map.get($map, 'emptyStateDarkNoDataBackgroundImage'),
+    map.get($map, 'emptyStateDarkInformationBackgroundImage'),
+    map.get($map, 'emptyStateDarkUserActionBackgroundImage'),
+    map.get($map, 'emptyStateDarkErrorBackgroundImage'),
+    map.get($map, 'emptyStateDarkNoOperatoryBackgroundImage'),
+    map.get($map, 'emptyStateDarkUploadBackgroundImage'),
+    map.get($map, 'emptyStateDarkClickActionBackgroundImage'),
+    map.get($map, 'emptyStateDarkErrorLoadingBackgroundImage')
+  );
+}

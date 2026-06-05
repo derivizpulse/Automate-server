@@ -1,0 +1,62 @@
+@use 'sass:map';
+@use 'alertMixin' as alertMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/alert' as lightAlert;
+@use '../../../settings/themes/dark/alert' as darkAlert;
+@use '../../../settings/themes/test/alert' as testAlert;
+
+@mixin alert($theme) {
+  @if $theme == theme.$theme-light {
+    @include alertStyles(lightAlert.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include alertStyles(darkAlert.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include alertStyles(testAlert.$map, $theme);
+  }
+}
+
+@mixin alertStyles($map, $theme) {
+  @include alertMixin.alertMixin(
+    $theme,
+    map.get($map, 'alertPadding'),
+    map.get($map, 'alertPaddingLeft'),
+    map.get($map, 'alertLeftPadding'),
+    map.get($map, 'alertColumnGap'),
+    map.get($map, 'alertRowGap'),
+    map.get($map, 'alertBorderRadius'),
+    map.get($map, 'alertBeforeWidth'),
+    map.get($map, 'alertInfoColor'),
+    map.get($map, 'alertInfoBoxShadow'),
+    map.get($map, 'alertInfoBackgroundColor'),
+    map.get($map, 'alertInfoBeforeBackgroundColor'),
+    map.get($map, 'alertSuccessColor'),
+    map.get($map, 'alertSuccessBoxShadow'),
+    map.get($map, 'alertSuccessBackgroundColor'),
+    map.get($map, 'alertSuccessBeforeBackgroundColor'),
+    map.get($map, 'alertCautionColor'),
+    map.get($map, 'alertCautionBoxShadow'),
+    map.get($map, 'alertCautionBackgroundColor'),
+    map.get($map, 'alertCautionBeforeBackgroundColor'),
+    map.get($map, 'alertWarningColor'),
+    map.get($map, 'alertWarningBoxShadow'),
+    map.get($map, 'alertWarningBackgroundColor'),
+    map.get($map, 'alertWarningBeforeBackgroundColor'),
+    map.get($map, 'alertLeftColumnGap'),
+    map.get($map, 'alertLeftIconFontSize'),
+    map.get($map, 'alertLeftContentRowGap'),
+    map.get($map, 'alertLeftContentTitleFontSize'),
+    map.get($map, 'alertLeftContentTitleLineHeight'),
+    map.get($map, 'alertLeftContentTitleFontWeight'),
+    map.get($map, 'alertLeftContentTextFontSize'),
+    map.get($map, 'alertLeftContentTextFontWeight'),
+    map.get($map, 'alertLeftContentTextLineHeight'),
+    map.get($map, 'alertLeftContentTextColor'),
+    map.get($map, 'alertRightColumnGap'),
+    map.get($map, 'alertRightpadding'),
+    map.get($map, 'alertIconMarginTop'),
+  );
+}

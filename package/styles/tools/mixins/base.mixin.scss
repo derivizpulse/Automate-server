@@ -1,0 +1,13 @@
+@use 'sass:map';
+@use '../../settings/themes/light/base' as base;
+
+// REMOVE IT LATER
+
+@mixin base {
+  color: map.get(base.$map, 'baseColor');
+  font-family: map.get(base.$map, 'baseFontFamily');
+  font-size: map.get(base.$map, 'baseFontSize');
+  line-height: map.get(base.$map, 'baseLineHeight');
+}
+
+// REMOVE IT LATER

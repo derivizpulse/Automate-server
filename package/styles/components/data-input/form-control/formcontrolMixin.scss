@@ -1,0 +1,51 @@
+///
+/// Careflow Form control Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/spacing' as spacing;
+@use '../../../settings/typography' as typography;
+@use '../../../settings/corner' as corner;
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin formcontrolMixin(
+  $theme,
+  $formcontrolRowGap,
+  $formcontrolFieldColumnGap,
+  $formcontrolMessageFontSize,
+  $formcontrolMessageLineHeight,
+  $formcontrolMessageColor,
+  $formcontrolMessageHaserrorColor
+) {
+  $form-control: component.$form-control;
+
+  .#{$form-control} {
+    display: flex;
+    flex-direction: column;
+    row-gap: $formcontrolRowGap;
+
+    .#{$form-control}__field {
+      // Placeholder for Inputs
+      display: flex;
+      column-gap: $formcontrolFieldColumnGap;
+
+      > * {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+
+    .#{$form-control}__message {
+      // Placeholder for Assistive text
+      font-size: $formcontrolMessageFontSize;
+      line-height: $formcontrolMessageLineHeight;
+      color: $formcontrolMessageColor;
+    }
+  }
+
+  // Handle Error
+  .has-error .#{$form-control}__message {
+    color: $formcontrolMessageHaserrorColor;
+  }
+}

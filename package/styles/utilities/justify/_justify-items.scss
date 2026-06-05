@@ -1,0 +1,59 @@
+@mixin justifyItems($theme) {
+  @include justifyItemsStyles;
+}
+
+@mixin justifyItemsStyles {
+  .cfu-justify-items {
+    &-normal {
+      justify-items: normal;
+    }
+
+    &-stretch {
+      justify-items: stretch;
+    }
+
+    &-center {
+      justify-items: center;
+    }
+
+    &-start {
+      justify-items: start;
+    }
+
+    &-end {
+      justify-items: end;
+    }
+
+    &_flex {
+      &-start {
+        justify-items: flex-start;
+      }
+
+      &-end {
+        justify-items: flex-end;
+      }
+    }
+
+    &-self {
+      &-start {
+        justify-items: self-start;
+      }
+
+      &-end {
+        justify-items: self-end;
+      }
+    }
+
+    &-left {
+      justify-items: left;
+    }
+
+    &-right {
+      justify-items: right;
+    }
+
+    &-baseline {
+      justify-items: baseline;
+    }
+  }
+}

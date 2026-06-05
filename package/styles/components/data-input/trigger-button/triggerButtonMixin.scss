@@ -1,0 +1,99 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin triggerButtonMixin(
+  $theme,
+  $triggerButtonMinWidth,
+  $triggerButtonHeight,
+  $triggerButtonBorderRadius,
+  $triggerButtonColumnGap,
+  $triggerButtonIconFontSize,
+  $triggerButtonIconColor,
+  $triggerButtonTextColor,
+  $triggerButtonTextFontSize,
+  $triggerButtonTextLineHeight,
+  $triggerButtonTextFontWeight,
+  $triggerButtonHoverBackgroundColor,
+  $triggerButtonFocusVisibleOutline,
+  $triggerButtonFocusVisibleOutlineOffset,
+  $triggerButtonIsDisabledIconColor,
+  $triggerButtonIsDisabledTextColor,
+  $triggerButtonBlackIconColor,
+  $triggerButtonBlackTextColor,
+  $triggerButtonBlackHoverBackgroundColor,
+  $triggerButtonBlackIsDisabledIconColor,
+  $triggerButtonBlackIsDisabledTextColor
+) {
+  $trigger: component.$trigger;
+
+  .#{$trigger} {
+    border-width: 0;
+    background: none;
+    min-width: $triggerButtonMinWidth;
+    height: $triggerButtonHeight;
+    border-radius: $triggerButtonBorderRadius;
+
+    // Flex
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: $triggerButtonColumnGap;
+    transition: background 150ms linear;
+
+    .#{$trigger}__icon {
+      font-size: $triggerButtonIconFontSize;
+      color: $triggerButtonIconColor;
+    }
+
+    .#{$trigger}__text {
+      color: $triggerButtonTextColor;
+      font-size: $triggerButtonTextFontSize;
+      line-height: $triggerButtonTextLineHeight;
+      font-weight: $triggerButtonTextFontWeight;
+    }
+
+    // State: Hover
+    &:hover:not(.is-disabled) {
+      background-color: $triggerButtonHoverBackgroundColor;
+      cursor: pointer;
+    }
+
+    &:focus-visible {
+      outline: $triggerButtonFocusVisibleOutline;
+      outline-offset: $triggerButtonFocusVisibleOutlineOffset;
+    }
+
+    &.is-disabled {
+      .#{$trigger}__icon {
+        color: $triggerButtonIsDisabledIconColor;
+      }
+      .#{$trigger}__text {
+        color: $triggerButtonIsDisabledTextColor;
+      }
+    }
+
+    &.#{$trigger}--black {
+      .#{$trigger}__icon {
+        color: $triggerButtonBlackIconColor;
+      }
+
+      .#{$trigger}__text {
+        color: $triggerButtonBlackTextColor;
+      }
+
+      &:hover:not(.is-disabled) {
+        background-color: $triggerButtonBlackHoverBackgroundColor;
+      }
+
+      &.is-disabled {
+        .#{$trigger}__icon {
+          color: $triggerButtonBlackIsDisabledIconColor;
+        }
+        .#{$trigger}__text {
+          color: $triggerButtonBlackIsDisabledTextColor;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,164 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin slideoutMixin(
+  $theme,
+  $slideoutLayoutBackground,
+  $slideoutContainerBackgroundColor,
+  $slideoutContainerFilter,
+  $slideoutcontainerWidthXsmall,
+  $slideoutcontainerWidthSmall,
+  $slideoutcontainerWidthMedium,
+  $slideoutcontainerWidthLarge,
+  $slideoutcontainerWidthXlarge,
+  $slideoutcontainerWidthXxlarge,
+  $slideoutHeaderBackground,
+  $slideoutHeaderPadding,
+  $slideoutHeaderColumnGap,
+  $slideoutHeaderBorderBottom,
+  $slideoutCloseWidth,
+  $slideoutCloseHeight,
+  $slideoutCloseColor,
+  $slideoutContentInnerPadding,
+  $slideoutFooterPadding,
+  $slideoutFooterBorderTop
+) {
+  $slideout: component.$slideout;
+  .#{$slideout} {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    transition: all 0.2s linear;
+    overflow: auto;
+    z-index: 100;
+
+    .#{$slideout}__layout {
+      position: fixed;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      transition: all 0.2s linear;
+      opacity: 0;
+      background: $slideoutLayoutBackground;
+    }
+
+    .#{$slideout}__container {
+      position: fixed;
+      left: 0;
+      top: 0;
+      height: 100dvh;
+      transform: translateX(-100%);
+      background-color: $slideoutContainerBackgroundColor;
+      transition: all 0.4s ease-in-out;
+      filter: $slideoutContainerFilter;
+      display: flex;
+      flex-direction: column;
+
+      &.#{$slideout}--right {
+        left: auto;
+        right: 0;
+        transform: translateX(100%);
+      }
+    }
+
+    &.#{$slideout}--x-small {
+      .#{$slideout}__container {
+        width: $slideoutcontainerWidthXsmall;
+      }
+    }
+
+    &.#{$slideout}--small {
+      .#{$slideout}__container {
+        width: $slideoutcontainerWidthSmall;
+      }
+    }
+
+    &.#{$slideout}--medium {
+      .#{$slideout}__container {
+        width: $slideoutcontainerWidthMedium;
+      }
+    }
+
+    &.#{$slideout}--large {
+      .#{$slideout}__container {
+        width: $slideoutcontainerWidthLarge;
+      }
+    }
+
+    &.#{$slideout}--x-large {
+      .#{$slideout}__container {
+        width: $slideoutcontainerWidthXlarge;
+      }
+    }
+
+    &.#{$slideout}--xx-large {
+      .#{$slideout}__container {
+        width: $slideoutcontainerWidthXxlarge;
+      }
+    }
+
+    &.is-active {
+      .#{$slideout}__layout {
+        opacity: 1;
+      }
+
+      .#{$slideout}__container {
+        transform: translateX(0);
+      }
+    }
+
+    .#{$slideout}__header {
+      background: $slideoutHeaderBackground;
+      padding: $slideoutHeaderPadding;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      column-gap: $slideoutHeaderColumnGap;
+      border-bottom: $slideoutHeaderBorderBottom;
+
+      .#{$slideout}__header-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .#{$slideout}__close {
+      width: $slideoutCloseWidth;
+      height: $slideoutCloseHeight;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $slideoutCloseColor;
+    }
+
+    .#{$slideout}__content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+
+      .#{$slideout}__content-inner {
+        flex: 1;
+        min-height: 0;
+        padding: $slideoutContentInnerPadding;
+        overflow: hidden auto;
+      }
+    }
+
+    .#{$slideout}__footer {
+      padding: $slideoutFooterPadding;
+      border-top: $slideoutFooterBorderTop;
+    }
+  }
+}

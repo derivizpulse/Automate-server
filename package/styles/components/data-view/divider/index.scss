@@ -1,0 +1,27 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/divider' as lightDivider;
+@use '../../../settings/themes/test/divider' as testDivider;
+@use 'dividerMixin' as dividerMixin;
+
+@mixin divider($theme) {
+  @if $theme == theme.$theme-light {
+    @include dividerStyles(lightDivider.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include dividerStyles(testDivider.$map, $theme);
+  }
+}
+
+@mixin dividerStyles($map, $theme) {
+  @include dividerMixin.dividerMixin(
+    $theme,
+    map.get($map, 'dividerHeight'),
+    map.get($map, 'dividerPrimaryBackgroundColor'),
+    map.get($map, 'dividerSecondaryBackgroundColor'),
+    map.get($map, 'dividerDarkPrimaryBackgroundColor'),
+    map.get($map, 'dividerDarkSecondaryBackgroundColor'),
+    map.get($map, 'dividerVerticalWidth'),
+  );
+}

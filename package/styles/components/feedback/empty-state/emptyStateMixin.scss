@@ -1,0 +1,170 @@
+///
+/// Careflow Alert Mixin
+///
+
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin emptyStateMixin(
+  $theme,
+  $emptyStatePadding,
+  $emptyStateRowGap,
+  $emptyStateImageWidth,
+  $emptyStateImageHeight,
+  $emptyStateContentRowGap,
+  $emptyStateContentTitleColor,
+  $emptyStateContentTitleFontSize,
+  $emptyStateContentTitleFontWeight,
+  $emptyStateContentTitleLineHeight,
+  $emptyStateContentTextColor,
+  $emptyStateContentTextFontSize,
+  $emptyStateContentTextFontWeight,
+  $emptyStateContentTextLineHeight,
+  $emptyStateActionColor,
+  $emptyStateActionColumnGap,
+  $emptyStateActionFontSize,
+  $emptyStateActionFontWeight,
+  $emptyStateActionLineHeight,
+  $emptyStateNoDataBackgroundImage,
+  $emptyStateInformationBackgroundImage,
+  $emptyStateUserActionBackgroundImage,
+  $emptyStateErrorBackgroundImage,
+  $emptyStateNoOperatoryBackgroundImage,
+  $emptyStateUploadBackgroundImage,
+  $emptyStateClickActionBackgroundImage,
+  $emptyStateErrorLoadingBackgroundImage,
+  $emptyStateDarkBackgroundColor,
+  $emptyStateDarkNoDataBackgroundImage,
+  $emptyStateDarkInformationBackgroundImage,
+  $emptyStateDarkUserActionBackgroundImage,
+  $emptyStateDarkErrorBackgroundImage,
+  $emptyStateDarkNoOperatoryBackgroundImage,
+  $emptyStateDarkUploadBackgroundImage,
+  $emptyStateDarkClickActionBackgroundImage,
+  $emptyStateDarkErrorLoadingBackgroundImage
+) {
+  $empty-state: component.$empty-state;
+
+  .#{$empty-state} {
+    padding: $emptyStatePadding;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: $emptyStateRowGap;
+
+    .#{$empty-state}__image {
+      width: $emptyStateImageWidth;
+      height: $emptyStateImageHeight;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+
+    .#{$empty-state}__content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      row-gap: $emptyStateContentRowGap;
+      text-align: center;
+
+      .#{$empty-state}__title {
+        color: $emptyStateContentTitleColor;
+        font-size: $emptyStateContentTitleFontSize;
+        font-weight: $emptyStateContentTitleFontWeight;
+        line-height: $emptyStateContentTitleLineHeight;
+      }
+
+      .#{$empty-state}__text {
+        color: $emptyStateContentTextColor;
+        font-size: $emptyStateContentTextFontSize;
+        font-weight: $emptyStateContentTextFontWeight;
+        line-height: $emptyStateContentTextLineHeight;
+      }
+    }
+
+    .#{$empty-state}__action {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $emptyStateActionColor;
+      column-gap: $emptyStateActionColumnGap;
+      font-size: $emptyStateActionFontSize;
+      font-weight: $emptyStateActionFontWeight;
+      line-height: $emptyStateActionLineHeight;
+    }
+
+    // Modifiers
+
+    &.#{$empty-state}--no-data .#{$empty-state}__image {
+      background-image: $emptyStateNoDataBackgroundImage;
+    }
+
+    &.#{$empty-state}--information .#{$empty-state}__image {
+      background-image: $emptyStateInformationBackgroundImage;
+    }
+
+    &.#{$empty-state}--user-action .#{$empty-state}__image {
+      background-image: $emptyStateUserActionBackgroundImage;
+    }
+
+    &.#{$empty-state}--error .#{$empty-state}__image {
+      background-image: $emptyStateErrorBackgroundImage;
+    }
+
+    &.#{$empty-state}--no-operatory .#{$empty-state}__image {
+      background-image: $emptyStateNoOperatoryBackgroundImage;
+    }
+
+    &.#{$empty-state}--upload .#{$empty-state}__image {
+      background-image: $emptyStateUploadBackgroundImage;
+    }
+
+    &.#{$empty-state}--click-action .#{$empty-state}__image {
+      background-image: $emptyStateClickActionBackgroundImage;
+    }
+
+    &.#{$empty-state}--error-loading .#{$empty-state}__image {
+      background-image: $emptyStateErrorLoadingBackgroundImage;
+    }
+
+    &.#{$empty-state}--dark {
+      background-color: $emptyStateDarkBackgroundColor;
+      &.#{$empty-state}--no-data .#{$empty-state}__image {
+        background-image: $emptyStateDarkNoDataBackgroundImage;
+      }
+
+      &.#{$empty-state}--information .#{$empty-state}__image {
+        background-image: $emptyStateDarkInformationBackgroundImage;
+      }
+
+      &.#{$empty-state}--user-action .#{$empty-state}__image {
+        background-image: $emptyStateDarkUserActionBackgroundImage;
+      }
+
+      &.#{$empty-state}--error .#{$empty-state}__image {
+        background-image: $emptyStateDarkErrorBackgroundImage;
+      }
+
+      &.#{$empty-state}--no-operatory .#{$empty-state}__image {
+        background-image: $emptyStateDarkNoOperatoryBackgroundImage;
+      }
+
+      &.#{$empty-state}--upload .#{$empty-state}__image {
+        background-image: $emptyStateDarkUploadBackgroundImage;
+      }
+
+      &.#{$empty-state}--click-action .#{$empty-state}__image {
+        background-image: $emptyStateDarkClickActionBackgroundImage;
+      }
+
+      &.#{$empty-state}--error-loading .#{$empty-state}__image {
+        background-image: $emptyStateDarkErrorLoadingBackgroundImage;
+      }
+    }
+  }
+}

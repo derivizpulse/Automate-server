@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use 'maps/typography' as typography;
+@use 'maps/color' as color;
+
+$map: (
+  'titleColumnGap': 0.8rem,
+  'titleMainColor': map.get(color.$color, 'grayscale', 60),
+  'titleMainBlackColor': map.get(color.$color, 'white'),
+  'titlePrimaryMainFontSize': map.get(typography.$typography, 'scale', 'lg', 'size'),
+  'titleSecondaryMainFontSize': map.get(typography.$typography, 'scale', 'base', 'size'),
+  'titlePrimaryMainLineHeight': map.get(typography.$typography, 'scale', 'lg', 'height'),
+  'titleSecondaryMainLineHeight': map.get(typography.$typography, 'scale', 'base', 'height'),
+  'titleMainFontWeight': map.get(typography.$typography, 'weight', 'bold'),
+  'titleMainColumnGap': 0.4rem,
+  'titleSubPaddingLeft': 0.9rem,
+  'titleSubColor': map.get(color.$color, 'grayscale', 60),
+  'titleSubBlackColor': map.get(color.$color, 'grayscale', 20),
+  'titleSubFontSize': map.get(typography.$typography, 'scale', 'base', 'size'),
+  'titleSubLineHeight': map.get(typography.$typography, 'scale', 'base', 'height'),
+  'titleSubFontWeight': map.get(typography.$typography, 'weight', 'regular'),
+  'titleSubDividerHeight': 1.2rem,
+  'titleSubDividerBackgroundColor': map.get(color.$color, 'grayscale', 20),
+  'titleSubDividerBlackBackgroundColor': map.get(color.$color, 'grayscale', 40),
+);

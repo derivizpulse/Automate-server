@@ -1,0 +1,29 @@
+@use 'sass:map';
+@use 'maps/corner' as cornerMap;
+@use 'maps/color' as colorMap;
+@use '../../elevation' as elevationMap;
+
+$map: (
+  '$popoverBackground': map.get(colorMap.$color, 'white'),
+  '$popoverBoxShadow': map.get(elevationMap.$elevation, 2),
+  '$popoverBorder': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  '$popoverBorderRadius': map.get(cornerMap.$corner, 'default'),
+  '$popoverMaxHeight': calc(100dvh - 12rem),
+  '$popoverHeaderPadding': 0.8rem 1.2rem,
+  '$popoverHeaderBackground': linear-gradient(90deg, #354756 0%, #5d6f7e 100.17%),
+  '$popoverCloseWidth': 2.4rem,
+  '$popoverCloseHeight': 2.4rem,
+  '$popoverCloseColor': map.get(colorMap.$color, 'white'),
+  '$popoverCloseFontSize': 1.2rem,
+  '$popoverContentInnerPadding': 1.2rem,
+  '$popoverFooterPadding': 0.8rem 1.2rem,
+  '$popoverFooterBorderTop': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  '$popoverWidthXXSmall': 15rem,
+  '$popoverWidthXSmall': 20rem,
+  '$popoverWidthSmall': 30rem,
+  '$popoverWidthMedium': 40rem,
+  '$popoverWidthLarge': 60rem,
+  '$popoverWidthXLarge': 70rem,
+  '$popoverWidthXXLarge': 80rem,
+  '$popoverRegularBorder': 0.1rem solid transparent
+);

@@ -1,0 +1,185 @@
+///
+/// Field - Dropdown Styles
+///
+
+@use 'sass:map';
+@use '../../../settings/color' as color;
+@use '../../../settings/theme' as theme;
+
+@mixin fieldDropdownMenuMixin(
+  $theme,
+  $fieldDropdownMenuBackgroundColor,
+  $fieldDropdownMenuVirtualScrollHeight,
+  $fieldDropdownMenuItemMinHeight,
+  $fieldDropdownMenuItemPadding,
+  $fieldDropdownMenuItemColor,
+  $fieldDropdownMenuItemFocusOutline,
+  $fieldDropdownMenuItemFocusOutlineOffset,
+  $fieldDropdownMenuItemHoverBackground,
+  $fieldDropdownMenuItemSelectedBackground,
+  $fieldDropdownMenuItemInactiveBackgroundColor,
+  $fieldDropdownMenuItemInactiveColor,
+  $fieldDropdownMenuItemInactiveFocusOutline,
+  $fieldDropdownMenuItemInactiveFieldCheckTextColor,
+  $fieldDropdownMenuItemLabelFontSize,
+  $fieldDropdownMenuItemLabelLineHeight,
+  $fieldDropdownMenuEntryFieldGap,
+  $fieldDropdownMenuEntryFieldColor,
+  $fieldDropdownMenuEntryFieldBorderRadius,
+  $fieldDropdownMenuEntryFieldPadding,
+  $fieldDropdownMenuEntryFieldHoverBackgroundColor,
+  $fieldDropdownMenuEntryFieldSelectedBackgroundColor,
+  $fieldDropdownMenuEmptyMinHeight,
+  $fieldDropdownMenuEmptyColor,
+  $fieldDropdownMenuEmptyFontSize,
+  $fieldDropdownMenuEmptyLineHeight,
+  $fieldDropdownMenuEmptyOptionColor,
+  $fieldDropdownMenuEmptyOptionFontSize,
+  $fieldDropdownMenuEmptyOptionLineHeight,
+  $fieldDropdownMenuEmptyOptionPadding,
+  $fieldDropdownMenuEmptyOptionMaxHeight,
+  $fieldDropdownMenuCellGap,
+  $fieldDropdownMenuCellContentRowGap,
+  $fieldDropdownMenuCellHeadingGap,
+  $fieldDropdownMenuCellTitleFontSize,
+  $fieldDropdownMenuCellTitleLineHeight,
+  $fieldDropdownMenuCellTitleColor,
+  $fieldDropdownMenuCellTextColor
+) {
+  .cfc-field-dropdown-menu {
+    background-color: $fieldDropdownMenuBackgroundColor;
+
+    // For virtual Scroller
+    &__height {
+      height: $fieldDropdownMenuVirtualScrollHeight;
+    }
+
+    &__item {
+      min-height: $fieldDropdownMenuItemMinHeight;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $fieldDropdownMenuItemPadding;
+      color: $fieldDropdownMenuItemColor;
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: $fieldDropdownMenuItemFocusOutline;
+        outline-offset: $fieldDropdownMenuItemFocusOutlineOffset;
+      }
+
+      &:hover:not(.is-inactive) {
+        background: $fieldDropdownMenuItemHoverBackground;
+      }
+
+      &.is-selected {
+        background: $fieldDropdownMenuItemSelectedBackground;
+      }
+
+      &.is-inactive {
+        background-color: $fieldDropdownMenuItemInactiveBackgroundColor;
+        color: $fieldDropdownMenuItemInactiveColor;
+        cursor: default;
+        pointer-events: none;
+
+        &:focus-visible {
+          outline: $fieldDropdownMenuItemInactiveFocusOutline;
+        }
+
+        .cfc-field-check__body {
+          opacity: 0;
+        }
+
+        .cfc-field-check__text {
+          color: $fieldDropdownMenuItemInactiveFieldCheckTextColor;
+        }
+      }
+
+      &--heading {
+        cursor: default;
+
+        &:hover {
+          background: inherit;
+        }
+      }
+
+      &-label {
+        font-size: $fieldDropdownMenuItemLabelFontSize;
+        line-height: $fieldDropdownMenuItemLabelLineHeight;
+      }
+
+      &--create-entry {
+        &:hover {
+          background: none;
+        }
+      }
+    }
+
+    &__entry-field {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      gap: $fieldDropdownMenuEntryFieldGap;
+      border-radius: $fieldDropdownMenuEntryFieldBorderRadius;
+      padding: $fieldDropdownMenuEntryFieldPadding;
+      color: $fieldDropdownMenuEntryFieldColor;
+      transition: all 0.2s linear;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $fieldDropdownMenuEntryFieldHoverBackgroundColor;
+      }
+
+      &.is-selected {
+        background-color: $fieldDropdownMenuEntryFieldSelectedBackgroundColor;
+      }
+    }
+
+    &__empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: $fieldDropdownMenuEmptyMinHeight;
+      color: $fieldDropdownMenuEmptyColor;
+      font-size: $fieldDropdownMenuEmptyFontSize;
+      line-height: $fieldDropdownMenuEmptyLineHeight;
+    }
+
+    &__empty-option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $fieldDropdownMenuEmptyOptionColor;
+      font-size: $fieldDropdownMenuEmptyOptionFontSize;
+      line-height: $fieldDropdownMenuEmptyOptionLineHeight;
+      padding: $fieldDropdownMenuEmptyOptionPadding;
+      max-height: $fieldDropdownMenuEmptyOptionMaxHeight;
+    }
+
+    &__cell {
+      display: flex;
+      gap: $fieldDropdownMenuCellGap;
+
+      &-content {
+        flex-direction: column;
+        row-gap: $fieldDropdownMenuCellContentRowGap;
+      }
+
+      &-heading {
+        display: flex;
+        align-items: baseline;
+        gap: $fieldDropdownMenuCellHeadingGap;
+      }
+
+      &-title {
+        font-size: $fieldDropdownMenuCellTitleFontSize;
+        line-height: $fieldDropdownMenuCellTitleLineHeight;
+        color: $fieldDropdownMenuCellTitleColor;
+      }
+
+      &-text {
+        color: $fieldDropdownMenuCellTextColor;
+      }
+    }
+  }
+}

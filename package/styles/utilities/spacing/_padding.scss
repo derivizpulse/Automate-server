@@ -1,0 +1,41 @@
+@use '../../settings/spacing' as spacing;
+
+@mixin padding($theme) {
+  @include paddingStyles(spacing.$spacing);
+}
+
+@mixin paddingStyles($spacing) {
+  .cfu-padding {
+    @each $label, $value in $spacing {
+      &-#{$label} {
+        padding: $value;
+      }
+
+      &-top-#{$label} {
+        padding-top: $value;
+      }
+
+      &-right-#{$label} {
+        padding-right: $value;
+      }
+
+      &-bottom-#{$label} {
+        padding-bottom: $value;
+      }
+
+      &-left-#{$label} {
+        padding-left: $value;
+      }
+
+      &-horizontal-#{$label} {
+        padding-left: $value;
+        padding-right: $value;
+      }
+
+      &-vertical-#{$label} {
+        padding-top: $value;
+        padding-bottom: $value;
+      }
+    }
+  }
+}

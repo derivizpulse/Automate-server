@@ -1,0 +1,44 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/tooltip' as lightTooltip;
+@use '../../../settings/themes/dark/tooltip' as darkTooltip;
+@use '../../../settings/themes/test/tooltip' as testTooltip;
+@use 'tooltipMixin' as tooltipMixin;
+
+@mixin tooltip($theme) {
+  @if $theme == theme.$theme-light {
+    @include tooltipStyles(lightTooltip.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include tooltipStyles(darkTooltip.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include tooltipStyles(testTooltip.$map, $theme);
+  }
+}
+
+@mixin tooltipStyles($map, $theme) {
+  @include tooltipMixin.tooltipMixin(
+    $theme,
+    map.get($map, 'tooltipPadding'),
+    map.get($map, 'tooltipBorderRadius'),
+    map.get($map, 'tooltipFontsize'),
+    map.get($map, 'tooltipLineHeight'),
+    map.get($map, 'tooltipFontWeight'),
+    map.get($map, 'tooltipColor'),
+    map.get($map, 'tooltipBackground'),
+    map.get($map, 'tooltipBoxShadow'),
+    map.get($map, 'tooltipBorder'),
+    map.get($map, 'tooltipInvertBackground'),
+    map.get($map, 'tooltipInvertColor'),
+    map.get($map, 'tooltipInvertBoxShadow'),
+    map.get($map, 'tooltipAngleBorderTransparent'),
+    map.get($map, 'tooltipAngleBorderSolid'),
+    map.get($map, 'tooltipAngleBackground'),
+    map.get($map, 'invertedBorderColor'),
+    map.get($map, 'tooltipTopBottomAnglePosition'),
+    map.get($map, 'tooltipLeftRightAnglePosition')
+  );
+}

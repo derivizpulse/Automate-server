@@ -1,0 +1,85 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin badgeMixin(
+  $theme,
+  $badgePadding,
+  $badgeMinWidth,
+  $badgeHeight,
+  $badgeBorder,
+  $badgeBorderRadius,
+  $badgeColor,
+  $badgeFontWeight,
+  $badgeFontSize,
+  $badgeLineHeight,
+  $badgeCounterQuantityBackgroundColor,
+  $badgeCounterAlertBackgroundColor,
+  $badgeStateSuccessPadding,
+  $badgeStateSuccessBackgroundColor,
+  $badgeStateSuccessFontSize,
+  $badgeStatusCautionPadding,
+  $badgeStatusCautionBackgroundColor,
+  $badgeStatusCautionFontSize,
+  $badgeLabelPatientBackgroundColor,
+  $badgeLabelProviderBackgroundColor,
+  $badgeDotPadding,
+  $badgeDotWidth,
+  $badgeDotMinWidth,
+  $badgeDotHeight,
+  $badgeDotBackgroundColor
+) {
+  $badge: component.$badge;
+
+  .#{$badge} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: $badgePadding;
+    min-width: $badgeMinWidth;
+    height: $badgeHeight;
+    border-radius: $badgeBorderRadius;
+    color: $badgeColor;
+    font-weight: $badgeFontWeight;
+    font-size: $badgeFontSize;
+    line-height: $badgeLineHeight;
+    text-align: center;
+    border: $badgeBorder;
+
+    &.#{$badge}--counter-quantity {
+      background-color: $badgeCounterQuantityBackgroundColor;
+    }
+
+    &.#{$badge}--counter-alert {
+      background-color: $badgeCounterAlertBackgroundColor;
+    }
+
+    &.#{$badge}--status-success {
+      padding: $badgeStateSuccessPadding;
+      background-color: $badgeStateSuccessBackgroundColor;
+      font-size: $badgeStateSuccessFontSize;
+    }
+
+    &.#{$badge}--status-caution {
+      padding: $badgeStatusCautionPadding;
+      background-color: $badgeStatusCautionBackgroundColor;
+      font-size: $badgeStatusCautionFontSize;
+    }
+
+    &.#{$badge}--label-patient {
+      background-color: $badgeLabelPatientBackgroundColor;
+    }
+
+    &.#{$badge}--label-provider {
+      background-color: $badgeLabelProviderBackgroundColor;
+    }
+
+    &.#{$badge}--dot {
+      padding: $badgeDotPadding;
+      width: $badgeDotWidth;
+      min-width: $badgeDotMinWidth;
+      height: $badgeDotHeight;
+      background-color: $badgeDotBackgroundColor;
+    }
+  }
+}

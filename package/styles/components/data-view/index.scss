@@ -1,0 +1,31 @@
+@use 'sass:meta';
+@use 'avatar' as avatar;
+@use 'card' as card;
+@use 'chip' as chip;
+@use 'chip-new' as chip-new;
+@use 'data-tiles' as dataTile;
+@use 'divider' as divider;
+@use 'popover' as popover;
+@use 'popover-new' as popover-new;
+@use 'section' as section;
+@use 'tag' as tag;
+@use 'title' as title;
+@use 'tooltip' as tooltip;
+@use 'trend' as trend;
+
+@mixin dataView($theme) {
+  @include meta.load-css('accordion-deprecated');
+  @include avatar.avatar($theme);
+  @include card.card($theme);
+  @include chip.chip($theme);
+  @include chip-new.chip($theme);
+  @include dataTile.dataTile($theme);
+  @include divider.divider($theme);
+  @include popover.popover($theme);
+  @include popover-new.popover($theme);
+  @include section.section($theme);
+  @include tag.tag($theme);
+  @include title.title($theme);
+  @include tooltip.tooltip($theme);
+  @include trend.trend($theme);
+}

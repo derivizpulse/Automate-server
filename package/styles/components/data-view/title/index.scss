@@ -1,0 +1,120 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/title' as lightTitle;
+@use '../../../settings/themes/dark/title' as darkTitle;
+@use '../../../settings/themes/test/title' as testTitle;
+
+@mixin title($theme) {
+  @if $theme == theme.$theme-light {
+    @include titleStyles(lightTitle.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include titleStyles(darkTitle.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include titleStyles(testTitle.$map, $theme);
+  }
+}
+
+@mixin titleStyles($map, $theme) {
+  $title: component.$title;
+
+  .#{$title} {
+    display: flex;
+    align-items: center;
+
+    // width: 100%;
+    column-gap: map.get($map, 'titleColumnGap');
+
+    .#{$title}__main {
+      margin: 0;
+      padding: 0;
+      color: map.get($map, 'titleMainColor');
+      font-size: map.get($map, 'titlePrimaryMainFontSize');
+      line-height: map.get($map, 'titlePrimaryMainLineHeight');
+      font-weight: map.get($map, 'titleMainFontWeight');
+      display: flex;
+      column-gap: map.get($map, 'titleMainColumnGap');
+      white-space: nowrap;
+    }
+
+    .#{$title}__sub {
+      position: relative;
+      margin: 0;
+      padding: 0;
+      display: block;
+      padding-left: map.get($map, 'titleSubPaddingLeft');
+      color: map.get($map, 'titleSubColor');
+      font-size: map.get($map, 'titleSubFontSize');
+      line-height: map.get($map, 'titleSubLineHeight');
+      font-weight: map.get($map, 'titleSubFontWeight');
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      // titleSubDivider
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0.1rem;
+        height: map.get($map, 'titleSubDividerHeight');
+        background-color: map.get($map, 'titleSubDividerBackgroundColor');
+      }
+    }
+
+    ///
+    ///  Modifiers
+    ///
+
+    // Black
+    &.#{$title}--black {
+
+      .#{$title}__main {
+        color: map.get($map, 'titleMainBlackColor');
+      }
+
+      .#{$title}__sub {
+        color: map.get($map, 'titleSubBlackColor');
+
+        // titleSubDivider
+        &::before {
+          background-color: map.get($map, 'titleSubDividerBlackBackgroundColor');
+        }
+      }
+    }
+
+    // Small or Secondary
+    &.#{$title}--small .#{$title}__main, // Deprecated
+    &.#{$title}--secondary .#{$title}__main {
+      font-size: map.get($map, 'titleSecondaryMainFontSize');
+      line-height: map.get($map, 'titleSecondaryMainLineHeight');
+    }
+  }
+
+  // Refactor & Remove Later
+  .cfc-popover__header-content,
+  .cfc-slideout__header-content,
+  .cfc-popover-new__header-left,
+  .cfc-slideout-new__header-left {
+    .#{$title} {
+      .#{$title}__main {
+        color: map.get($map, 'titleMainBlackColor');
+      }
+
+      .#{$title}__sub {
+        color: map.get($map, 'titleSubBlackColor');
+
+        // titleSubDivider
+        &::before {
+          background-color: map.get($map, 'titleSubDividerBlackBackgroundColor');
+        }
+      }
+    }
+  }
+}

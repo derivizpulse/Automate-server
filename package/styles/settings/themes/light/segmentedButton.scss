@@ -1,0 +1,36 @@
+@use 'sass:map';
+@use 'maps/typography' as typographyMap;
+@use 'maps/color' as colorMap;
+
+$map: (
+  '$segmentedButtonBorder': 1px solid map.get(colorMap.$color, 'grayscale', 20),
+  '$segmentedButtonBorderRadius': 0.4rem,
+  '$segmentedButtonPadding': 0.1rem,
+  '$segmentedButtonColumnGap': 0.3rem,
+  '$segmentedButtonHeight': 2.4rem,
+  '$segmentedButtonItemLabelPadding': 0.2rem 0.8rem,
+  '$segmentedButtonItemLabelBorderRadius': 0.2rem,
+  '$segmentedButtonItemLabelMinWidth': 2.6rem,
+  '$segmentedButtonItemLabelFontSize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  '$segmentedButtonItemLabelFontWeight':  map.get(typographyMap.$typography, 'weight', 'regular'),
+  '$segmentedButtonItemLabelFontLineHeight':  map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  '$segmentedButtonItemLabelMargin': 0,
+  '$segmentedButtonItemLabelColor': map.get(colorMap.$color, 'grayscale', 80),
+  '$segmentedButtonItemLabelHeight': 2rem,
+  '$segmentedButtonItemLabelNotFirstChildLeft': -0.2rem,
+  '$segmentedButtonItemLabelNotFirstChildBorderLeft': 0.1rem solid map.get(colorMap.$color, 'grayscale', 10),
+  '$segmentedButtonItemLabelNotFirstChildBorderHeight': 80%,
+  '$segmentedButtonItemInputCheckedLabelBackground': map.get(colorMap.$color, 'interactive', 80),
+  '$segmentedButtonItemInputCheckedLabelColor': map.get(colorMap.$color, 'white'),
+  '$segmentedButtonItemInputDisabledLabelBackground': map.get(colorMap.$color, 'grayscale', 10),
+  '$segmentedButtonItemInputDisabledLabelColor': map.get(colorMap.$color, 'grayscale', 40),
+  '$segmentedButtonItemInputNotCheckedDisabledLabelBackground':map.get(colorMap.$color, 'white'),
+  '$segmentedButtonItemInputNotCheckedDisabledLabelColor': map.get(colorMap.$color, 'grayscale', 40),
+  '$segmentedButtonItemInputNotCheckedHoverLabelBackground':map.get(colorMap.$color, 'interactive', 10),
+  '$segmentedButtonItemInputDisabledHoverLabelBackground': map.get(colorMap.$color, 'grayscale', 10),
+  '$segmentedButtonItemInputDisabledHoverLabelColor': map.get(colorMap.$color, 'grayscale', 40),
+  '$segmentedButtonItemInputNotCheckedDisabledHoverLabelBackground':map.get(colorMap.$color, 'white'),
+  '$segmentedButtonItemInputNotCheckedDisabledHoverLabelColor': map.get(colorMap.$color, 'grayscale', 40),
+  '$segmentedButtonItemInputFocusVisibleOutline':0.2rem solid map.get(colorMap.$color, 'accent', 'blue', 80),
+  '$segmentedButtonItemInputFocusVisibleOutlineOffset': 0.1rem,
+);

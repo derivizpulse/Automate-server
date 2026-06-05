@@ -1,0 +1,7 @@
+@use 'background' as background;
+@use 'color' as color;
+
+@mixin color($theme) {
+  @include background.background($theme);
+  @include color.color($theme);
+}

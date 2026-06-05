@@ -1,0 +1,38 @@
+@use 'sass:map';
+@use 'maps/color' as colorMap;
+@use 'maps/typography' as typographyMap;
+
+$map: (
+  'textareaWrapperCountBottom': 0.2rem,
+  'textareaWrapperCountRight': 1.8rem,
+  'textareaWrapperCountColor': map.get(colorMap.$color, 'grayscale', 40),
+  'textareaWrapperCountBackgroundColor': map.get(colorMap.$color, 'white'),
+  'textareaWrapperCountPadding': 0 0.4rem,
+  'textareaWrapperCountFontsize': map.get(typographyMap.$typography, 'scale', 'small', 'size'),
+  'textareaWrapperCountLineHeight': map.get(typographyMap.$typography, 'scale', 'small', 'height'),
+  'textareaWrapperTextareapadding': 0.8rem 0.8rem 1.8rem,
+  'textareaOutlineWidth': 0,
+  'textareaHeight': 2.4rem,
+  'textareaBackgroundColor': map.get(colorMap.$color, 'white'),
+  'textareaborder': 0.1rem solid map.get(colorMap.$color, 'grayscale', 20),
+  'textareaBorderRadius': 0.4rem,
+  'textareaPadding': 0.8rem,
+  'textareaColor': map.get(colorMap.$color, 'grayscale', 100),
+  'textareaminheight': 8.5rem,
+  'textareaFontsize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'textareaLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'textareaFontWeight': map.get(typographyMap.$typography, 'weight', 'regular'),
+  'textareaResizerBackgroundSize': 1.2rem,
+  'textareaResizerBackgroundPosition': bottom 0.2rem right 0.2rem,
+  'textareaResizerBackgroundimage': url('data:image/svg+xml,<svg viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg" version="1.1"><g fill="%2396a3af"><path d="m-1.1785e-8 8.3048 8.3048-8.3047 1.0381 1.0381-8.3048 8.3047"/><path d="m3.3416 8.878 5.5365-5.5365 1.0381 1.0381-5.5365 5.5365"/><path d="m6.6937 9.462 2.7683-2.7682 1.038 1.0381-2.7682 2.7682"/></g></svg>'),
+  'textareaPlaceHolderColor': map.get(colorMap.$color, 'grayscale', 40),
+  'textareaHoverBorder': 0.1rem solid map.get(colorMap.$color, 'grayscale', 40),
+  'textareaHoverBackgroundColor': map.get(colorMap.$color, 'white'),
+  'textareaFocusBorder': 0.1rem solid map.get(colorMap.$color, 'accent', 'blue', 80),
+  'textareaFocusOutline': 0.1rem solid map.get(colorMap.$color, 'accent', 'blue', 80),
+  'textareaDisabledBackgroundColor': map.get(colorMap.$color, 'grayscale', 10),
+  'textareaDisableColor': map.get(colorMap.$color, 'grayscale', 60),
+  'textareaHaserrorBorderColor': map.get(colorMap.$color, 'indicator', 'red', 80),
+  'textareaHaserrorHoverBorderColor': map.get(colorMap.$color, 'indicator', 'red', 80),
+  'textareaHaserrorHoverOutlineColor': map.get(colorMap.$color, 'indicator', 'red', 80),
+);

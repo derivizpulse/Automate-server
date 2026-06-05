@@ -1,0 +1,48 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/popover' as lightPopover;
+@use '../../../settings/themes/dark/popover' as darkPopover;
+@use '../../../settings/themes/test/popover' as testPopover;
+@use 'popoverMixin' as popoverMixin;
+
+@mixin popover($theme) {
+  @if $theme == theme.$theme-light {
+    @include popoverStyles(lightPopover.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include popoverStyles(darkPopover.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include popoverStyles(testPopover.$map, $theme);
+  }
+}
+
+@mixin popoverStyles($map, $theme) {
+  @include popoverMixin.popoverMixin(
+    $theme,
+    map.get($map, '$popoverBackground'),
+    map.get($map, '$popoverBoxShadow'),
+    map.get($map, '$popoverBorder'),
+    map.get($map, '$popoverBorderRadius'),
+    map.get($map, '$popoverMaxHeight'),
+    map.get($map, '$popoverHeaderPadding'),
+    map.get($map, '$popoverHeaderBackground'),
+    map.get($map, '$popoverCloseWidth'),
+    map.get($map, '$popoverCloseHeight'),
+    map.get($map, '$popoverCloseColor'),
+    map.get($map, '$popoverCloseFontSize'),
+    map.get($map, '$popoverContentInnerPadding'),
+    map.get($map, '$popoverFooterPadding'),
+    map.get($map, '$popoverFooterBorderTop'),
+    map.get($map, '$popoverWidthXXSmall'),
+    map.get($map, '$popoverWidthXSmall'),
+    map.get($map, '$popoverWidthSmall'),
+    map.get($map, '$popoverWidthMedium'),
+    map.get($map, '$popoverWidthLarge'),
+    map.get($map, '$popoverWidthXLarge'),
+    map.get($map, '$popoverWidthXXLarge'),
+    map.get($map, '$popoverRegularBorder')
+  );
+}

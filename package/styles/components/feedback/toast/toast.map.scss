@@ -1,0 +1,21 @@
+@use 'sass:map';
+@use '../../../settings/color' as color;
+
+$toast: (
+  success: (
+    'background': map.get(color.$color, 'indicator', 'green', 80),
+    'icon': map.get(color.$color, 'indicator', 'green', 100)
+  ),
+  failure: (
+    'background': map.get(color.$color, 'indicator', 'red', 80),
+    'icon': map.get(color.$color, 'indicator', 'red', 100)
+  ),
+  info: (
+    'background': map.get(color.$color, 'accent', 'blue', 80),
+    'icon': map.get(color.$color, 'accent', 'blue', 100)
+  ),
+  caution: (
+    'background': map.get(color.$color, 'indicator', 'orange', 80),
+    'icon': map.get(color.$color, 'indicator', 'orange', 100)
+  )
+);

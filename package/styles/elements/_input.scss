@@ -1,0 +1,35 @@
+@use 'sass:map';
+@use '../settings/themes/light/base' as lightBase;
+@use '../settings/themes/dark/base' as darkBase;
+@use '../settings/themes/test/base' as testBase;
+@use '../settings/theme' as theme;
+
+@mixin input($theme) {
+  @if $theme == theme.$theme-light {
+    @include inputStyles(lightBase.$map);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include inputStyles(darkBase.$map);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include inputStyles(testBase.$map);
+  }
+}
+
+@mixin inputStyles($map) {
+  input,
+  textarea,
+  select,
+  button {
+    background: none;
+    border-width: 0;
+    outline: none;
+    appearance: none;
+    color: map.get($map, 'baseColor');
+    font-family: map.get($map, 'baseFontFamily');
+    font-size: map.get($map, 'baseFontSize');
+    line-height: map.get($map, 'baseLineHeight');
+  }
+}

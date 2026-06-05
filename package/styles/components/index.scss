@@ -1,0 +1,16 @@
+@use 'sass:meta';
+@use 'data-input' as dataInput;
+@use 'data-view' as dataView;
+@use 'feedback' as feedback;
+@use 'loading' as loading;
+@use 'navigation' as navigation;
+@use 'template' as template;
+
+@mixin components($theme) {
+  @include dataInput.dataInput($theme);
+  @include dataView.dataView($theme);
+  @include feedback.feedback($theme);
+  @include loading.loading($theme);
+  @include navigation.navigation($theme);
+  @include template.template($theme);
+}

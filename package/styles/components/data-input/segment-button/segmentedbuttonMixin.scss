@@ -1,0 +1,168 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin segmentedbuttonMixin(
+  $theme,
+  $segmentedButtonBorder,
+  $segmentedButtonBorderRadius,
+  $segmentedButtonPadding,
+  $segmentedButtonColumnGap,
+  $segmentedButtonHeight,
+  $segmentedButtonItemLabelPadding,
+  $segmentedButtonItemLabelBorderRadius,
+  $segmentedButtonItemLabelMinWidth,
+  $segmentedButtonItemLabelFontSize,
+  $segmentedButtonItemLabelFontWeight,
+  $segmentedButtonItemLabelFontLineHeight,
+  $segmentedButtonItemLabelMargin,
+  $segmentedButtonItemLabelColor,
+  $segmentedButtonItemLabelHeight,
+  $segmentedButtonItemLabelNotFirstChildLeft,
+  $segmentedButtonItemLabelNotFirstChildBorderLeft,
+  $segmentedButtonItemLabelNotFirstChildBorderHeight,
+  $segmentedButtonItemInputCheckedLabelBackground,
+  $segmentedButtonItemInputCheckedLabelColor,
+  $segmentedButtonItemInputDisabledLabelBackground,
+  $segmentedButtonItemInputDisabledLabelColor,
+  $segmentedButtonItemInputNotCheckedDisabledLabelBackground,
+  $segmentedButtonItemInputNotCheckedDisabledLabelColor,
+  $segmentedButtonItemInputNotCheckedHoverLabelBackground,
+  $segmentedButtonItemInputDisabledHoverLabelBackground,
+  $segmentedButtonItemInputDisabledHoverLabelColor,
+  $segmentedButtonItemInputNotCheckedDisabledHoverLabelBackground,
+  $segmentedButtonItemInputNotCheckedDisabledHoverLabelColor,
+  $segmentedButtonItemInputFocusVisibleOutline,
+  $segmentedButtonItemInputFocusVisibleOutlineOffset
+) {
+  $segmented-button: component.$segmented-button;
+
+  .#{$segmented-button} {
+    display: inline-flex;
+    border: $segmentedButtonBorder;
+    border-radius: $segmentedButtonBorderRadius;
+    padding: $segmentedButtonPadding;
+    gap: $segmentedButtonColumnGap;
+    height: $segmentedButtonHeight;
+
+    .#{$segmented-button}__item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      label {
+        position: relative;
+        padding: $segmentedButtonItemLabelPadding;
+        border-radius: $segmentedButtonItemLabelBorderRadius;
+        min-width: $segmentedButtonItemLabelMinWidth;
+        transition: all 0.2s ease-in-out;
+        z-index: 1;
+        font-size: $segmentedButtonItemLabelFontSize;
+        font-weight: $segmentedButtonItemLabelFontWeight;
+        line-height: $segmentedButtonItemLabelFontLineHeight;
+        margin: $segmentedButtonItemLabelMargin;
+        color: $segmentedButtonItemLabelColor;
+        height: $segmentedButtonItemLabelHeight;
+      }
+
+      &:not(:first-child) {
+        label {
+          &::before {
+            content: '';
+            top: 50%;
+            left: $segmentedButtonItemLabelNotFirstChildLeft;
+            display: block;
+            position: absolute;
+            border-left: $segmentedButtonItemLabelNotFirstChildBorderLeft;
+            height: $segmentedButtonItemLabelNotFirstChildBorderHeight;
+            transform: translateY(-50%);
+            transition: all 0.2s linear;
+          }
+        }
+      }
+
+      input {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 2;
+        cursor: pointer;
+
+        &:checked,
+        &:disabled {
+          cursor: default;
+        }
+
+        &:checked ~ label {
+          background: $segmentedButtonItemInputCheckedLabelBackground;
+          color: $segmentedButtonItemInputCheckedLabelColor;
+
+          &::before {
+            display: none;
+          }
+        }
+
+        &:disabled ~ label {
+          background: $segmentedButtonItemInputDisabledLabelBackground;
+          color: $segmentedButtonItemInputDisabledLabelColor;
+        }
+
+        &:not(:checked):disabled ~ label {
+          background: $segmentedButtonItemInputNotCheckedDisabledLabelBackground;
+          color: $segmentedButtonItemInputNotCheckedDisabledLabelColor;
+        }
+
+        &:not(:checked):hover ~ label {
+          background: $segmentedButtonItemInputNotCheckedHoverLabelBackground;
+        }
+
+        &:disabled:hover ~ label {
+          background: $segmentedButtonItemInputDisabledHoverLabelBackground;
+          color: $segmentedButtonItemInputDisabledHoverLabelColor;
+        }
+
+        &:not(:checked):disabled:hover ~ label {
+          background: $segmentedButtonItemInputNotCheckedDisabledHoverLabelBackground;
+          color: $segmentedButtonItemInputNotCheckedDisabledHoverLabelColor;
+        }
+      }
+
+      &:has(>input:checked) + .#{$segmented-button}__item,
+      &:has(>input:not(:disabled):hover) + .#{$segmented-button}__item {
+        label {
+          &::before {
+            opacity: 0;
+          }
+        }
+      }
+    }
+
+    .#{$segmented-button}__item input[type="radio"]:focus-visible + label {
+      outline: $segmentedButtonItemInputFocusVisibleOutline;
+      outline-offset: $segmentedButtonItemInputFocusVisibleOutlineOffset;
+    }
+
+    &--vertical {
+      height: auto;
+      flex-direction: column;
+
+      .#{$segmented-button}__item {
+        label {
+          height: auto;
+          width: 100%;
+          text-align: center;
+        }
+
+        &:not(:first-child) {
+          label {
+            &::before {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+@use 'sass:map';
+@use '../settings/themes/light/base' as lightBase;
+@use '../settings/themes/dark/base' as darkBase;
+@use '../settings/themes/test/base' as testBase;
+@use '../settings/theme' as theme;
+
+@mixin body($theme) {
+  @if $theme == theme.$theme-light {
+    @include bodyStyles(lightBase.$map);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include bodyStyles(darkBase.$map);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include bodyStyles(testBase.$map);
+  }
+}
+
+@mixin bodyStyles($map) {
+  body,
+  .cfs-body {
+    width: 100%;
+    height: 100%;
+    color: map.get($map, 'baseColor');
+    font-family: map.get($map, 'baseFontFamily');
+    font-size: map.get($map, 'baseFontSize');
+    line-height: map.get($map, 'baseLineHeight');
+    overflow: hidden; // Prevents scrollbars from appearing on the body
+  }
+}

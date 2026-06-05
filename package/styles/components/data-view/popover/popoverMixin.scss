@@ -1,0 +1,124 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin popoverMixin(
+  $theme,
+  $popoverBackground,
+  $popoverBoxShadow,
+  $popoverBorder,
+  $popoverBorderRadius,
+  $popoverMaxHeight,
+  $popoverHeaderPadding,
+  $popoverHeaderBackground,
+  $popoverCloseWidth,
+  $popoverCloseHeight,
+  $popoverCloseColor,
+  $popoverCloseFontSize,
+  $popoverContentInnerPadding,
+  $popoverFooterPadding,
+  $popoverFooterBorderTop,
+  $popoverWidthXXSmall,
+  $popoverWidthXSmall,
+  $popoverWidthSmall,
+  $popoverWidthMedium,
+  $popoverWidthLarge,
+  $popoverWidthXLarge,
+  $popoverWidthXXLarge,
+  $popoverRegularBorder
+) {
+  $popover: component.$popover;
+  .#{$popover} {
+    position: relative;
+    background: $popoverBackground;
+    box-shadow: $popoverBoxShadow;
+    border: $popoverBorder;
+    border-radius: $popoverBorderRadius;
+    z-index: 20;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    max-height: $popoverMaxHeight;
+    overflow: hidden;
+
+    &.#{$popover}--xx-small {
+      width: $popoverWidthXXSmall;
+    }
+
+    &.#{$popover}--x-small {
+      width: $popoverWidthXSmall;
+    }
+
+    &.#{$popover}--small {
+      width: $popoverWidthSmall;
+    }
+
+    &.#{$popover}--medium {
+      width: $popoverWidthMedium;
+    }
+
+    &.#{$popover}--large {
+      width: $popoverWidthLarge;
+    }
+
+    &.#{$popover}--x-large {
+      width: $popoverWidthXLarge;
+    }
+    &.#{$popover}--xx-large {
+      width: $popoverWidthXXLarge;
+    }
+
+    .#{$popover}__header {
+      padding: $popoverHeaderPadding;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: $popoverHeaderBackground;
+
+      .#{$popover}__header-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+      }
+    }
+
+    .#{$popover}__close {
+      width: $popoverCloseWidth;
+      height: $popoverCloseHeight;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      span {
+        color: $popoverCloseColor;
+        font-size: $popoverCloseFontSize;
+      }
+    }
+
+    .#{$popover}__content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .#{$popover}__content-inner {
+      flex: 1;
+      min-height: 0;
+      padding: $popoverContentInnerPadding;
+    }
+
+    .#{$popover}__footer {
+      padding: $popoverFooterPadding;
+      border-top: $popoverFooterBorderTop;
+    }
+
+    &.#{$popover}--regular {
+      &.#{$popover} {
+        border: $popoverRegularBorder;
+      }
+    }
+  }
+}

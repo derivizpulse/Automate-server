@@ -1,0 +1,138 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin dataTileMixin(
+  $theme,
+  $dataTileMinHeight,
+  $dataTileMinWidth,
+  $dataTileBorder,
+  $dataTileBorderRadius,
+  $dataTileColumnGap,
+  $dataTilePadding,
+  $dataTileDataMinWidth,
+  $dataTileDataRowGap,
+  $dataTileHeaderColumnGap,
+  $dataTileTitleFontWeight,
+  $dataTileTitleFontSize,
+  $dataTileTitleLineHeight,
+  $dataTileTitleColor,
+  $dataTileValueFontWeight,
+  $dataTileValueFontSize,
+  $dataTileValueLineHeight,
+  $dataTileValueColor,
+  $dataTileSubtextColumnGap,
+  $dataTileSubtextFontWeight,
+  $dataTileSubtextFontSize,
+  $dataTileSubtextLineHeight,
+  $dataTileSubtextColor,
+  $dataTileGroupBorder,
+  $dataTileGroupBorderRadius,
+  $dataTileGroupTileBorder,
+  $dataTileGroupTileBeforeWidth,
+  $dataTileGroupTileBeforeHeight,
+  $dataTileGroupTileBeforeBackgroundColor,
+  $dataTileGroupTileBeforeTop
+
+) {
+  $data-tile: component.$data-tile;
+  .#{$data-tile} {
+    min-height: $dataTileMinHeight;
+    min-width: $dataTileMinWidth;
+    border: $dataTileBorder;
+    border-radius: $dataTileBorderRadius;
+    display: flex;
+    column-gap: $dataTileColumnGap;
+    justify-content: flex-start;
+    padding: $dataTilePadding;
+    overflow: hidden auto;
+
+    .#{$data-tile}__data {
+      min-width: $dataTileDataMinWidth;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      row-gap: $dataTileDataRowGap;
+      flex: 1;
+    }
+
+    .#{$data-tile}__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      column-gap: $dataTileHeaderColumnGap;
+    }
+
+    .#{$data-tile}__title {
+      font-weight: $dataTileTitleFontWeight;
+      font-size: $dataTileTitleFontSize;
+      line-height: $dataTileTitleLineHeight;
+      color: $dataTileTitleColor;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .#{$data-tile}__value {
+      font-weight: $dataTileValueFontWeight;
+      font-size: $dataTileValueFontSize;
+      line-height: $dataTileValueLineHeight;
+      color: $dataTileValueColor;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .#{$data-tile}__subtext {
+      display: flex;
+      column-gap: $dataTileSubtextColumnGap;
+      align-items: center;
+      font-weight: $dataTileSubtextFontWeight;
+      font-size: $dataTileSubtextFontSize;
+      line-height: $dataTileSubtextLineHeight;
+      color: $dataTileSubtextColor;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .#{$data-tile}__container-chart {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+  }
+
+  .#{$data-tile}-group {
+    align-items: center;
+    display: flex;
+    overflow: hidden auto;
+    border: $dataTileGroupBorder;
+    border-radius: $dataTileGroupBorderRadius;
+    justify-content: flex-start;
+
+    .#{$data-tile} {
+      flex: 1;
+      border: $dataTileGroupTileBorder;
+      position: relative;
+
+      &::before {
+        content: '';
+        display: block;
+        width: $dataTileGroupTileBeforeWidth;
+        height: $dataTileGroupTileBeforeHeight;
+        background-color: $dataTileGroupTileBeforeBackgroundColor;
+        position: absolute;
+        top: $dataTileGroupTileBeforeTop;
+        left: 0;
+      }
+
+      &:first-child::before {
+        display: none;
+      }
+    }
+  }
+}

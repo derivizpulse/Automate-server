@@ -1,0 +1,54 @@
+@use 'sass:map';
+@use 'actionMenuMixin' as actionMenuMixin;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/actionMenu' as lightActionMenu;
+@use '../../../settings/themes/dark/actionMenu' as darkActionMenu;
+@use '../../../settings/themes/test/actionMenu' as testActionMenu;
+
+@mixin actionMenu($theme) {
+  @if $theme == theme.$theme-light {
+    @include actionMenuStyles(lightActionMenu.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include actionMenuStyles(darkActionMenu.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include actionMenuStyles(testActionMenu.$map, $theme);
+  }
+}
+
+@mixin actionMenuStyles($map, $theme) {
+  @include actionMenuMixin.actionMenuMixin(
+    $theme,
+    map.get($map, 'actionMenuBlackItemColor'),
+    map.get($map, 'actionMenuBlackItemHoverBackgroundImage'),
+    map.get($map, 'actionMenuBlackItemActiveBackgroundColor'),
+    map.get($map, 'actionMenuBlackItemActiveColor'),
+    map.get($map, 'actionMenuBlackBorderItemBorder'),
+    map.get($map, 'actionMenuBlackBorderItemActiveColor'),
+    map.get($map, 'actionMenuBlackBorderItemActiveBorderColor'),
+    map.get($map, 'actionMenuItemPadding'),
+    map.get($map, 'actionMenuItemColumnGap'),
+    map.get($map, 'actionMenuItemColor'),
+    map.get($map, 'actionMenuItemHoverBackground'),
+    map.get($map, 'actionMenuItemfocusOutline'),
+    map.get($map, 'actionMenuItemActiveBackgroundColor'),
+    map.get($map, 'actionMenuItemLeftColumnGap'),
+    map.get($map, 'actionMenuItemRightColumnGap'),
+    map.get($map, 'actionMenuBorderItemBorderColor'),
+    map.get($map, 'actionMenuBorderItemfocusVisibleBorder'),
+    map.get($map, 'actionMenuBorderItemfocusVisibleOutline'),
+    map.get($map, 'actionMenuBorderItemActiveBorderColor'),
+    map.get($map, 'actionMenuCornerItemBorderRadius'),
+    map.get($map, 'actionMenuGap2RowGap'),
+    map.get($map, 'actionMenuGap4RowGap'),
+    map.get($map, 'actionMenuGap8RowGap'),
+    map.get($map, 'actionMenuAccordionBorderRadius'),
+    map.get($map, 'actionMenuAccordionFocus'),
+    map.get($map, 'actionMenuActiveBorderColor'),
+    map.get($map, 'actionMenuActiveHeaderBackgroundColor'),
+    map.get($map, 'actionMenuAccordionContentInnerPadding')
+  );
+}

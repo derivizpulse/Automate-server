@@ -1,0 +1,88 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/chip' as lightChip;
+@use '../../../settings/themes/dark/chip' as darkChip;
+@use '../../../settings/themes/test/chip' as testChip;
+@use 'chipMixin' as chipMixin;
+
+@mixin chip($theme) {
+  @if $theme == theme.$theme-light {
+    @include chipStyles(lightChip.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include chipStyles(darkChip.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include chipStyles(testChip.$map, $theme);
+  }
+}
+
+@mixin chipStyles($map, $theme) {
+  @include chipMixin.chipMixin(
+    $theme,
+    map.get($map, 'chipGroupGap'),
+    map.get($map, 'chipGroupInfoGap'),
+    map.get($map, 'chipWidth'),
+    map.get($map, 'chipColor'),
+    map.get($map, 'chipBackgroud'),
+    map.get($map, 'chipoBorder'),
+    map.get($map, 'chipPadding'),
+    map.get($map, 'chipBorderRadius'),
+    map.get($map, 'chipGap'),
+    map.get($map, 'chipInfoPadding'),
+    map.get($map, 'chipInfoBorderColor'),
+    map.get($map, 'chipInfoBackgroud'),
+    map.get($map, 'chipInfoColor'),
+    map.get($map, 'chipInfoInactiveColor'),
+    map.get($map, 'chipInfoInactiveBackgroundColor'),
+    map.get($map, 'chipFilterBorderColor'),
+    map.get($map, 'chipFilterColor'),
+    map.get($map, 'chilFilterHoverBorderColor'),
+    map.get($map, 'chipFilterHoverBackgroundColor'),
+    map.get($map, 'chipFilterSelectedBorderColor'),
+    map.get($map, 'chipFilterSelectedBackgroundColor'),
+    map.get($map, 'chipFilterSelectedColor'),
+    map.get($map, 'chipFilterSelectedHoverBorderImage'),
+    map.get($map, 'chipFilterSelectedHoverbackgroundImage'),
+    map.get($map, 'chipFilterDisabledBorderColor'),
+    map.get($map, 'chipFilterDisabledColor'),
+    map.get($map, 'chipFilterDisabledBackgroundColor'),
+    map.get($map, 'chipFilterDisabledFocusVisibleOutline'),
+    map.get($map, 'chipFilterDisabledFocusVisibleOutlineFocus'),
+    map.get($map, 'chipInputBorderColor'),
+    map.get($map, 'chipInputColor'),
+    map.get($map, 'chipInputBackgroundColor'),
+    map.get($map, 'chipInputIconLeftColor'),
+    map.get($map, 'chipInputHoverBorderColor'),
+    map.get($map, 'chipInputHoverBackgroundColor'),
+    map.get($map, 'chipInputHoverColor'),
+    map.get($map, 'chipInputSelectedColor'),
+    map.get($map, 'chipInputSelectedBorderColor'),
+    map.get($map, 'chipInputSelectedBackgroundColor'),
+    map.get($map, 'chipInputSelectedIconRightColor'),
+    map.get($map, 'chipInputSelectedHoverBorderImage'),
+    map.get($map, 'chipInputSelectedHoverBackgroundImage'),
+    map.get($map, 'chipInputDisabledBorderColor'),
+    map.get($map, 'chipInputDisabledColor'),
+    map.get($map, 'chipInputDisabledBackgroudColor'),
+    map.get($map, 'chipInputDisabledIconColor'),
+    map.get($map, 'chipInputDisabledFocusVisibleOutline'),
+    map.get($map, 'chipInputDisabledFocusVisibleOutlineOffset'),
+    map.get($map, 'chipSelectionBorderColor'),
+    map.get($map, 'chipSelectionColor'),
+    map.get($map, 'chipSelectionHoverBorderColor'),
+    map.get($map, 'chipSelectionHoverBackgroundColor'),
+    map.get($map, 'chipSelectionSelectedColor'),
+    map.get($map, 'chipSelectionSelectedBorderColor'),
+    map.get($map, 'chipSelectionSelectedBackgroundColor'),
+    map.get($map, 'chipSelectionSeletedHoverBorderImage'),
+    map.get($map, 'chipSelectionSeletedHoverBackgroundImage'),
+    map.get($map, 'chipSelectionDisabledBorderColor'),
+    map.get($map, 'chipSelectionDisabledColor'),
+    map.get($map, 'chipSelectionDisabledBackgroudColor'),
+    map.get($map, 'chipSelectionDisabledFocusVisibleOutline'),
+    map.get($map, 'chipSelectionDisabledFocusVisibleOutlineOffset')
+  );
+}

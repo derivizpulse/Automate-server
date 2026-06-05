@@ -1,0 +1,43 @@
+@use 'sass:map';
+@use 'maps/typography' as typographyMap;
+@use 'maps/color' as colorMap;
+@use 'maps/corner' as cornerMap;
+@use '../../spacing' as spacing;
+@use '../../elevation' as elevation;
+
+$map: (
+  'timePickerBackground': map.get(colorMap.$color, 'white'),
+  'timePickerWidth': 19.8rem,
+  'timePickerBorder': 0.1rem solid  map.get(colorMap.$color, 'grayscale', 20),
+  'timePickerBoxShadow': map.get(elevation.$elevation, 2),
+  'timePickerBorderRadius': map.get(cornerMap.$corner, 'default'),
+  'timePickerContentColumnGap': 0.2rem,
+  'timePickerContentPadding': 1.2rem,
+  'timePickerHoursRowGap': 0.2rem,
+  'timePickerHoursFocusVisibleOutline': 0.2rem solid map.get(colorMap.$color, 'accent', 'blue', 80),
+  'timePickerHoursCellIsSelectedFontWeight': map.get(typographyMap.$typography, 'weight', 'bold'),
+  'timePickerHoursCellIsSelectedBackground': map.get(colorMap.$color, 'interactive', 20),
+  'timePickerHoursCellIsSelectedBorderRadius':  0.4rem 0 0 0.4rem,
+  'timePickerMinutesRowGap': 0.2rem,
+  'timePickerMinutesFocusVisibleOutline': 0.2rem solid map.get(colorMap.$color, 'accent', 'blue', 80),
+  'timePickerMinutesCellIsSelectedFontWeight': map.get(typographyMap.$typography, 'weight', 'bold'),
+  'timePickerMinutesCellIsSelectedBackground': map.get(colorMap.$color, 'interactive', 20),
+  'timePickerMinutesCellIsSelectedBorderRadius': 0,
+  'timePickerDayNotationRowGap': 0.2rem,
+  'timePickerDayNotationFocusVisibleOutline': 0.2rem solid map.get(colorMap.$color, 'accent', 'blue', 80),
+  'timePickerDayNotationCellIsSelectedFontWeight': map.get(typographyMap.$typography, 'weight', 'bold'),
+  'timePickerDayNotationCellIsSelectedBackground': map.get(colorMap.$color, 'interactive', 20),
+  'timePickerDayNotationCellIsSelectedBorderRadius': 0 0.4rem 0.4rem 0,
+  'timePickerCellPadding':  0.8rem 1rem,
+  'timePickerCellFontWeight': map.get(typographyMap.$typography, 'weight', 'regular'),
+  'timePickerCellFontSize': map.get(typographyMap.$typography, 'scale', 'base', 'size'),
+  'timePickerCellLineHeight': map.get(typographyMap.$typography, 'scale', 'base', 'height'),
+  'timePickerCellColor': map.get(colorMap.$color, 'grayscale', 80),
+  'timePickerCellHoverBackground': rgba(13, 22, 29, 5%),
+  'timePickerCellHoverBorderRadius': 0.4rem,
+  'timePickerFooterBackgroundColor': map.get(colorMap.$color, 'white'),
+  'timePickerFooterBorderTop': 0.1rem solid  map.get(colorMap.$color, 'grayscale', 20),
+  'timePickerFooterBorderRadius': 0 0 0.4rem 0.4rem,
+  'timePickerFooterPadding':  0.8rem 1.2rem,
+  'timePickerFooterColumnGap':  0.8rem,
+);

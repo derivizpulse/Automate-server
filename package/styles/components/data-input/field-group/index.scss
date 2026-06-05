@@ -1,0 +1,44 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/fieldGroup' as lightFieldGroup;
+@use '../../../settings/themes/dark/fieldGroup' as darkFieldGroup;
+@use '../../../settings/themes/test/fieldGroup' as testFieldGroup;
+@use 'fieldgroupMixin' as fieldgroupMixin;
+
+$field-group: component.$field-group;
+
+@mixin fieldGroup($theme) {
+  @if $theme == theme.$theme-light {
+    @include fieldGroupStyles(lightFieldGroup.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include fieldGroupStyles(darkFieldGroup.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include fieldGroupStyles(testFieldGroup.$map, $theme);
+  }
+}
+
+@mixin fieldGroupStyles($map, $theme) {
+  @include fieldgroupMixin.fieldgroupMixin(
+    $theme,
+    map.get($map, 'fieldgroupActionsColumnGap'),
+    map.get($map, 'fieldgroupActionsRight'),
+    map.get($map, 'fieldgroupActionsColor'),
+    map.get($map, 'fieldgroupAction1FieldPaddingRight'),
+    map.get($map, 'fieldgroupAction2FieldPaddingRight'),
+    map.get($map, 'fieldgroupLabelTop'),
+    map.get($map, 'fieldgroupLabelWidth'),
+    map.get($map, 'fieldgroupLabelHeight'),
+    map.get($map, 'fieldgroupLabelBackgroundColor'),
+    map.get($map, 'fieldgroupLabelLeftFieldPaddingLeft'),
+    map.get($map, 'fieldgroupLabelLeftLabelLeft'),
+    map.get($map, 'fieldgroupLabelLeftLabelBorderRadius'),
+    map.get($map, 'fieldgroupLabelRightFieldPaddingRight'),
+    map.get($map, 'fieldgroupLabelRightLabelRight'),
+    map.get($map, 'fieldgroupLabelRightLabelBorderRadius')
+  );
+}

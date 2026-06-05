@@ -1,0 +1,11 @@
+@use 'sass:map';
+@use 'maps/color' as colorMap;
+
+$map: (
+  'formcontrolRowGap': 0.4rem,
+  'formcontrolFieldColumnGap': 0.8rem,
+  'formcontrolMessageFontSize': 1.2rem,
+  'formcontrolMessageLineHeight': 1.8rem,
+  'formcontrolMessageColor': map.get(colorMap.$color, 'font', 20),
+  'formcontrolMessageHaserrorColor': map.get(colorMap.$color, 'accent', 'red', 20)
+);

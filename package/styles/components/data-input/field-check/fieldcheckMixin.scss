@@ -1,0 +1,203 @@
+@use 'sass:map';
+
+@mixin fieldCheckboxMixin(
+  $fieldCheckboxWidth,
+  $fieldCheckboxHeight,
+  $fieldCheckboxBorder,
+  $fieldCheckboxBorderRadius,
+  $fieldCheckboxBackground,
+  $fieldCheckboxBeforeWidth,
+  $fieldCheckboxBeforeHeight,
+  $fieldCheckboxBeforeBackgroundImage,
+) {
+  cursor: pointer;
+  width: $fieldCheckboxWidth;
+  height: $fieldCheckboxHeight;
+  border: $fieldCheckboxBorder;
+  border-radius: $fieldCheckboxBorderRadius;
+  background: $fieldCheckboxBackground;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition-property: background-color, border-color, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+
+  &::before {
+    content: '';
+    display: block;
+    width: $fieldCheckboxBeforeWidth;
+    height: $fieldCheckboxBeforeHeight;
+    transition: opacity 0.2s linear;
+    background-image: $fieldCheckboxBeforeBackgroundImage;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    opacity: 0;
+  }
+}
+
+@mixin fieldCheckboxStatesMixin(
+  $fieldCheckboxStatesDisabledBorderColor,
+  $fieldCheckboxStatesDisabledBackgroundColor,
+  $fieldCheckboxStatesIndeterminateBorderColor,
+  $fieldCheckboxStatesIndeterminateBackgroundColor,
+  $fieldCheckboxStatesIndeterminateBeforeBackgroundImage,
+  $fieldCheckboxStatesCheckedBorderColor,
+  $fieldCheckboxStatesCheckedBackgroundColor,
+  $fieldCheckboxStatesDisabledIndeterminateBeforeBackgroundImage,
+  $fieldCheckboxStatesDisabledCheckedBeforeBackgroundImage,
+  $fieldCheckboxStatesHoverBorderColor,
+  $fieldCheckboxStatesHoverBackgroundColor,
+  $fieldCheckDisabledColor,
+  $fieldCheckDisabledOpacity,
+) {
+  &:disabled ~ .cfc-field-check__body {
+    border-color: $fieldCheckboxStatesDisabledBorderColor;
+    background-color: $fieldCheckboxStatesDisabledBackgroundColor;
+    cursor: default;
+
+    &::before {
+      background-image: none;
+    }
+  }
+
+  &[indeterminate] ~ .cfc-field-check__body, // remove later
+  &:indeterminate ~ .cfc-field-check__body {
+    background-color: $fieldCheckboxStatesIndeterminateBackgroundColor;
+    border-color: $fieldCheckboxStatesIndeterminateBorderColor;
+
+    &::before {
+      background-image: $fieldCheckboxStatesIndeterminateBeforeBackgroundImage;
+      display: block;
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  &:checked ~ .cfc-field-check__body {
+    background-color: $fieldCheckboxStatesCheckedBackgroundColor;
+    border-color: $fieldCheckboxStatesCheckedBorderColor;
+
+    &::after {
+      display: block;
+      opacity: 1;
+    }
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &:disabled ~ .cfc-field-check__text {
+    cursor: default;
+    color: $fieldCheckDisabledColor;
+  }
+
+  &:disabled {
+    &[indeterminate] ~ .cfc-field-check__body,
+    &:indeterminate ~ .cfc-field-check__body {
+      opacity: $fieldCheckDisabledOpacity;
+
+      &::before {
+        background-image: $fieldCheckboxStatesDisabledIndeterminateBeforeBackgroundImage;
+      }
+    }
+
+    &:checked ~ .cfc-field-check__body {
+      opacity: $fieldCheckDisabledOpacity;
+
+      &::before {
+        background-image: $fieldCheckboxStatesDisabledCheckedBeforeBackgroundImage;
+      }
+    }
+  }
+
+  &:hover:not(:disabled) {
+    &[indeterminate] ~ .cfc-field-check__body,
+    &:checked ~ .cfc-field-check__body {
+      border-color: $fieldCheckboxStatesHoverBorderColor;
+      background-color: $fieldCheckboxStatesHoverBackgroundColor;
+    }
+  }
+}
+
+@mixin fieldRadioMixin(
+  $fieldRadioWidth,
+  $fieldRadioHeight,
+  $fieldRadioBackgroundColor,
+  $fieldRadioBorder,
+  $fieldRadioBeforeWidth,
+  $fieldRadioBeforeHeight,
+  $fieldRadioBeforeBackgroundColor,
+) {
+  position: relative;
+  cursor: pointer;
+  border-radius: 50%;
+  border: $fieldRadioBorder;
+  display: block;
+  width: $fieldRadioWidth;
+  height: $fieldRadioHeight;
+  transition: background-color 0.1s ease;
+  flex-shrink: 0;
+  background-color: $fieldRadioBackgroundColor;
+
+  &::before {
+    content: '';
+    display: none;
+    width: $fieldRadioBeforeWidth;
+    height: 0.8rem;
+    background-color: $fieldRadioBeforeBackgroundColor;
+    border-radius: 50%;
+    transition: all 0.2s linear;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@mixin fieldRadioStatesMixin(
+  $fieldRadioStatesDisabledBorder,
+  $fieldRadioStatesDisabledBackground,
+  $fieldRadioStatesCheckedBorderColor,
+  $fieldRadioStatesCheckedBorderWidth,
+  $fieldRadioStatesCheckedHoverBorderColor,
+  $fieldRadioStatesCheckedHoverBeforeBackgroundColor,
+  $fieldCheckDisabledColor,
+  $fieldCheckDisabledOpacity
+) {
+  &:disabled ~ .cfc-field-check__body {
+    border: $fieldRadioStatesDisabledBorder;
+    background: $fieldRadioStatesDisabledBackground;
+    cursor: default;
+  }
+
+  &:checked ~ .cfc-field-check__body {
+    border-color: $fieldRadioStatesCheckedBorderColor;
+    border-width: $fieldRadioStatesCheckedBorderWidth;
+
+    &::before {
+      display: block;
+    }
+
+    &:hover {
+      border-color: $fieldRadioStatesCheckedHoverBorderColor;
+
+      &::before {
+        background-color: $fieldRadioStatesCheckedHoverBeforeBackgroundColor;
+      }
+    }
+  }
+
+  &:disabled ~ .cfc-field-check__text {
+    cursor: default;
+    color: $fieldCheckDisabledColor;
+  }
+
+  &:disabled {
+    &:checked ~ .cfc-field-check__body {
+      opacity: $fieldCheckDisabledOpacity;
+    }
+  }
+}

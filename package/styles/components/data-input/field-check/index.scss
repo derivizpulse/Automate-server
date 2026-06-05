@@ -1,0 +1,118 @@
+@use 'sass:map';
+@use 'sass:color';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/fieldcheck' as lightFieldCheck;
+@use '../../../settings/themes/dark/fieldcheck' as darkFieldCheck;
+@use '../../../settings/themes/test/fieldcheck' as testFieldCheck;
+@use 'fieldcheckMixin' as fieldcheckMixin;
+
+@mixin fieldCheck($theme) {
+  @if $theme == theme.$theme-light {
+    @include fieldCheckStyles(lightFieldCheck.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include fieldCheckStyles(darkFieldCheck.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include fieldCheckStyles(testFieldCheck.$map, $theme);
+  }
+}
+
+@mixin fieldCheckStyles($map, $theme) {
+  $field-check: component.$field-check;
+
+  .#{$field-check} {
+    display: flex;
+    align-items: flex-start;
+    width: max-content;
+    cursor: pointer;
+    gap: map.get($map, 'fieldCheckGap');
+    input[type='checkbox'] ~ .#{$field-check}__body {
+      @include fieldcheckMixin.fieldCheckboxMixin(
+        map.get($map, 'fieldCheckboxWidth'),
+        map.get($map, 'fieldCheckboxHeight'),
+        map.get($map, 'fieldCheckboxBorder'),
+        map.get($map, 'fieldCheckboxBorderRadius'),
+        map.get($map, 'fieldCheckboxBackground'),
+        map.get($map, 'fieldCheckboxBeforeWidth'),
+        map.get($map, 'fieldCheckboxBeforeHeight'),
+        map.get($map, 'fieldCheckboxBeforeBackgroundImage')
+      );
+    }
+    input[type='radio'] ~ .#{$field-check}__body {
+      @include fieldcheckMixin.fieldRadioMixin(
+        map.get($map, 'fieldRadioWidth'),
+        map.get($map, 'fieldRadioHeight'),
+        map.get($map, 'fieldRadioBackgroundColor'),
+        map.get($map, 'fieldRadioBorder'),
+        map.get($map, 'fieldRadioBeforeWidth'),
+        map.get($map, 'fieldRadioBeforeHeight'),
+        map.get($map, 'fieldRadioBeforeBackgroundColor')
+      );
+    }
+    .#{$field-check}__input {
+      position: absolute;
+      opacity: 0;
+      height: 0;
+      width: 0;
+      margin: 0;
+
+      &:not(disabled):hover ~ .#{$field-check}__body {
+        border: map.get($map, 'fieldCheckInputHoverBorder');
+        background-color: map.get($map, 'fieldCheckInputHoverBackgroundColor');
+      }
+
+      &:focus-visible ~ .#{$field-check}__body {
+        outline: map.get($map, 'fieldCheckFocusVisibleOutline');
+        outline-offset: map.get($map, 'fieldCheckFocusVisibleOutlineOffset');
+      }
+    }
+    .#{$field-check}__input[type='checkbox'] {
+      @include fieldcheckMixin.fieldCheckboxStatesMixin(
+        map.get($map, 'fieldCheckboxStatesDisabledBorderColor'),
+        map.get($map, 'fieldCheckboxStatesDisabledBackgroundColor'),
+        map.get($map, 'fieldCheckboxStatesIndeterminateBorderColor'),
+        map.get($map, 'fieldCheckboxStatesIndeterminateBackgroundColor'),
+        map.get($map, 'fieldCheckboxStatesIndeterminateBeforeBackgroundImage'),
+        map.get($map, 'fieldCheckboxStatesCheckedBorderColor'),
+        map.get($map, 'fieldCheckboxStatesCheckedBackgroundColor'),
+        map.get($map, 'fieldCheckboxStatesDisabledIndeterminateBeforeBackgroundImage'),
+        map.get($map, 'fieldCheckboxStatesDisabledCheckedBeforeBackgroundImage'),
+        map.get($map, 'fieldCheckboxStatesHoverBorderColor'),
+        map.get($map, 'fieldCheckboxStatesHoverBackgroundColor'),
+        map.get($map, 'fieldCheckDisabledColor'),
+        map.get($map, 'fieldCheckDisabledOpacity')
+      );
+    }
+
+    .#{$field-check}__input[type='radio'] {
+      @include fieldcheckMixin.fieldRadioStatesMixin(
+        map.get($map, 'fieldRadioStatesDisabledBorder'),
+        map.get($map, 'fieldRadioStatesDisabledBackground'),
+        map.get($map, 'fieldRadioStatesCheckedBorderColor'),
+        map.get($map, 'fieldRadioStatesCheckedBorderWidth'),
+        map.get($map, 'fieldRadioStatesCheckedHoverBorderColor'),
+        map.get($map, 'fieldRadioStatesCheckedHoverBeforeBackgroundColor'),
+        map.get($map, 'fieldCheckDisabledColor'),
+        map.get($map, 'fieldCheckDisabledOpacity')
+      );
+    }
+
+    .#{$field-check}__text,
+    .#{$field-check}__description {
+      cursor: pointer;
+      font-weight: map.get($map, 'fieldCheckTextFontWeight');
+      font-size: map.get($map, 'fieldCheckTextFontSize');
+      line-height: map.get($map, 'fieldCheckTextLineHeight');
+      color: map.get($map, 'fieldCheckTextColor');
+    }
+
+    .#{$field-check}__description {
+      color: map.get($map, 'fieldCheckDescriptionColor');
+      margin: map.get($map, 'fieldCheckDescriptionMargin');
+    }
+  }
+}

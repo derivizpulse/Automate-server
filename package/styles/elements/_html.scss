@@ -1,0 +1,11 @@
+@mixin html() {
+  // Since parent element is the HTML
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  text-size-adjust: 100%; // Prevent font scaling in landscape on iOS
+  scroll-behavior: smooth;
+  font-size: 10px;
+}

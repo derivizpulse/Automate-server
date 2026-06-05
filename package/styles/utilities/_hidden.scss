@@ -1,0 +1,23 @@
+@mixin hidden($theme) {
+  @include hiddenStyles;
+}
+
+@mixin hiddenStyles {
+  .cfu-hidden {
+    display: none;
+
+    &-visually {
+      border: 0;
+      padding: 0;
+      width: 0.1rem;
+      height: 0.1rem;
+      overflow: hidden;
+      position: absolute;
+      clip: rect(1px, 1px, 1px, 1px);
+    }
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}

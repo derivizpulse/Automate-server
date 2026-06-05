@@ -1,0 +1,125 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+
+@mixin toggleSwitchMixin(
+  $theme,
+  $toggleSwitchWidth,
+  $toggleSwitchHeight,
+  $toggleSwitchSliderHeight,
+  $toggleSwitchSliderBackgroundColor,
+  $toggleSwitchSliderBorder,
+  $toggleSwitchSliderBorderRadius,
+  $toggleSwitchSliderBeforeHeight,
+  $toggleSwitchSliderBeforeWidth,
+  $toggleSwitchSliderBeforeLeft,
+  $toggleSwitchSliderBeforeBackgroundColor,
+  $toggleSwitchSliderBeforeBorderRadius,
+  $toggleSwitchSliderBeforeBackgroundSize,
+  $toggleSwitchSliderInputCheckedBackgroundColor,
+  $toggleSwitchSliderInputCheckedBorderColor,
+  $toggleSwitchSliderInputCheckedBeforeBackgroundColor,
+  $toggleSwitchSliderInputCheckedBeforeBackgroundImage,
+  $toggleSwitchSliderInputCheckedBeforeLeft,
+  $toggleSwitchSliderInputFocusVisibleOutline,
+  $toggleSwitchSliderInputFocusVisibleOutlineOffset,
+  $toggleSwitchSliderInputNotCheckedHoverBorderColor,
+  $toggleSwitchSliderInputCheckedHoverBackgroundColor,
+  $toggleSwitchSliderInputDisabledBorderColor,
+  $toggleSwitchSliderInputDisabledBackgroundColor,
+  $toggleSwitchSliderInputDisabledBeforeBackgroundColor,
+  $toggleSwitchSliderInputCheckedDisabledBackgroundColor,
+  $toggleSwitchSliderInputCheckedDisabledBorder,
+  $toggleSwitchSliderInputCheckedDisabledBeforeBackgroundColor,
+  $toggleSwitchSliderInputCheckedDisabledBeforeBackgroundImage
+) {
+  $toggle-switch: component.$toggle-switch;
+
+  .#{$toggle-switch} {
+    position: relative;
+    display: block;
+    width: $toggleSwitchWidth;
+    height: $toggleSwitchHeight;
+
+    .#{$toggle-switch}__slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      height: $toggleSwitchSliderHeight;
+      width: 100%;
+      background: $toggleSwitchSliderBackgroundColor;
+      border: $toggleSwitchSliderBorder;
+      transition: background 0.2s, border 0.2s;
+      border-radius: $toggleSwitchSliderBorderRadius;
+
+      &::before {
+        content: '';
+        position: absolute;
+        height: $toggleSwitchSliderBeforeHeight;
+        width: $toggleSwitchSliderBeforeWidth;
+        left: $toggleSwitchSliderBeforeLeft;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: $toggleSwitchSliderBeforeBackgroundColor;
+        transition: 0.2s;
+        border-radius: $toggleSwitchSliderBeforeBorderRadius;
+        background-size: $toggleSwitchSliderBeforeBackgroundSize;
+        background-repeat: no-repeat;
+        background-position: center;
+      }
+    }
+    .#{$toggle-switch}__input {
+      opacity: 0;
+
+      &:checked + .#{$toggle-switch}__slider {
+        background-color: $toggleSwitchSliderInputCheckedBackgroundColor;
+        border-color: $toggleSwitchSliderInputCheckedBorderColor;
+
+        &::before {
+          background-color: $toggleSwitchSliderInputCheckedBeforeBackgroundColor;
+          background-image: $toggleSwitchSliderInputCheckedBeforeBackgroundImage;
+          left: $toggleSwitchSliderInputCheckedBeforeLeft;
+        }
+      }
+
+      &:focus-visible ~ .#{$toggle-switch}__slider {
+        outline: $toggleSwitchSliderInputFocusVisibleOutline;
+        outline-offset: $toggleSwitchSliderInputFocusVisibleOutlineOffset;
+      }
+
+      &:not(:checked):hover:not(:disabled) + .#{$toggle-switch}__slider {
+        border-color: $toggleSwitchSliderInputNotCheckedHoverBorderColor;
+      }
+
+      &:checked:hover + .#{$toggle-switch}__slider {
+        background: $toggleSwitchSliderInputCheckedHoverBackgroundColor;
+      }
+
+      &:disabled + .#{$toggle-switch}__slider {
+        cursor: default;
+        box-shadow: none;
+        border-color: $toggleSwitchSliderInputDisabledBorderColor;
+        background-color: $toggleSwitchSliderInputDisabledBackgroundColor;
+
+        &::before {
+          background-color: $toggleSwitchSliderInputDisabledBeforeBackgroundColor;
+        }
+      }
+
+      &:disabled {
+        &:checked + .#{$toggle-switch}__slider {
+          cursor: default;
+          box-shadow: none;
+          background: $toggleSwitchSliderInputCheckedDisabledBackgroundColor;
+          border: $toggleSwitchSliderInputCheckedDisabledBorder;
+
+          &::before {
+            background-color: $toggleSwitchSliderInputCheckedDisabledBeforeBackgroundColor;
+            background-image: $toggleSwitchSliderInputCheckedDisabledBeforeBackgroundImage;
+          }
+        }
+      }
+    }
+  }
+}

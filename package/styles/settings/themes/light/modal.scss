@@ -1,0 +1,28 @@
+@use 'sass:map';
+@use 'maps/typography' as typography;
+@use 'maps/color' as colorMap;
+@use '../../spacing' as spacing;
+
+$map: (
+  '$modalBackground': rgb(32 49 64 / 80%) ,
+  '$modalPadding': 6rem 0 ,
+  '$modalContainerBorder': none,
+  '$modalContainerBackgroundColor': map.get(colorMap.$color, 'white'),
+  '$modalContainerBoxShadow': 0 0.4rem 1.2rem rgb(13 22 29 / 24%),
+  '$modalContainerBorderRadius': 0.4rem,
+  '$modalHeaderHeight': 4rem,
+  '$modalHeaderPadding': map.get(spacing.$spacing, 8) map.get(spacing.$spacing, 12),
+  '$modalHeaderBackgroundColor': map.get(colorMap.$color, 'grayscale', 5),
+  '$modalHeaderBorderBottom': 1px solid map.get(colorMap.$color, 'grayscale', 10),
+  '$modalCloseWidth': 2.4rem,
+  '$modalCloseHeight': 2.4rem,
+  '$modalCloseColor': map.get(colorMap.$color, 'grayscale', 60),
+  '$modalContentInnerPadding': 1.2rem,
+  '$modalFooterBackgroundColor': map.get(colorMap.$color, 'white'),
+  '$modalFooterPadding': 0.8rem  1.2rem,
+  '$modalFooterBorderTop': 1px solid map.get(colorMap.$color, 'grayscale', 10),
+  '$modalSmallContainerWidth': calc(100vw / 12 * 3),
+  '$modalMediumContainerWidth': calc(100vw / 12 * 5),
+  '$modalLargeContainerWidth': calc(100vw / 12 * 7),
+  '$modalXLargeContainerWidth': calc(100vw / 12 * 9),
+);

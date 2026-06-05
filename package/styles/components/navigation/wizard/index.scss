@@ -1,0 +1,75 @@
+@use 'sass:map';
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/wizard' as lightWizard;
+@use '../../../settings/themes/dark/wizard' as darkWizard;
+@use '../../../settings/themes/test/wizard' as testWizard;
+@use 'wizardMixin' as wizardMixin;
+
+@mixin wizard($theme) {
+  @if $theme == theme.$theme-light {
+    @include wizardStyles(lightWizard.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include wizardStyles(darkWizard.$map, $theme);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include wizardStyles(testWizard.$map, $theme);
+  }
+}
+
+@mixin wizardStyles($map, $theme) {
+  @include wizardMixin.wizardMixin(
+    $theme,
+    map.get($map, 'wizardPadding'),
+    map.get($map, 'wizardMargin'),
+    map.get($map, 'wizardGap'),
+    map.get($map, 'wizardStepWidth'),
+    map.get($map, 'wizardStepHeight'),
+    map.get($map, 'wizardStepBorderRadius'),
+    map.get($map, 'wizardStepBorder'),
+    map.get($map, 'wizardStepBackground'),
+    map.get($map, 'wizardStepColor'),
+    map.get($map, 'wizardStepFontWeight'),
+    map.get($map, 'wizardHeaderColumnGap'),
+    map.get($map, 'wizardHeaderMinHeight'),
+    map.get($map, 'wizardTitleFontWeight'),
+    map.get($map, 'wizardTitleColor'),
+    map.get($map, 'wizardItemRowGap'),
+    map.get($map, 'wizardItemAfterWidth'),
+    map.get($map, 'wizardItemAfterHeight'),
+    map.get($map, 'wizardItemAfterBackground'),
+    map.get($map, 'wizardItemAfterBorder'),
+    map.get($map, 'wizardItemAfterBorderRadius'),
+    map.get($map, 'wizardItemAfterTop'),
+    map.get($map, 'wizardItemBeforeTop'),
+    map.get($map, 'wizardItemBeforeHeight'),
+    map.get($map, 'wizardItemBeforeBackground'),
+    map.get($map, 'wizardItemBeforeBackgroundSize'),
+    map.get($map, 'wizardItemIsActiveStepBackground'),
+    map.get($map, 'wizardItemIsActiveStepColor'),
+    map.get($map, 'wizardItemIsActiveStepBorderColor'),
+    map.get($map, 'wizardItemIsActiveTitleColor'),
+    map.get($map, 'wizardItemIsSelectedAfterBorderColor'),
+    map.get($map, 'wizardItemIsCompletedStepBackground'),
+    map.get($map, 'wizardItemIsCompletedStepColor'),
+    map.get($map, 'wizardItemIsCompletedStepBorderColor'),
+    map.get($map, 'wizardItemIsCompletedStepBeforeBackground'),
+    map.get($map, 'wizardItemIsCompletedStepBeforeWidth'),
+    map.get($map, 'wizardItemIsCompletedStepBeforeHeight'),
+    map.get($map, 'wizardItemIsCompletedStepBeforeBackgroundImage'),
+    map.get($map, 'wizardItemIsCompletedTitleColor'),
+    map.get($map, 'wizardItemIsCompletedIsSelectedAfterBorderColor'),
+    map.get($map, 'wizardVerticalPaddingLeft'),
+    map.get($map, 'wizardVerticalBodyRowGap'),
+    map.get($map, 'wizardVerticalContentPaddingBottom'),
+    map.get($map, 'wizardVerticalItemColumnGap'),
+    map.get($map, 'wizardVerticalItemMinHeight'),
+    map.get($map, 'wizardVerticalItemAfterLeft'),
+    map.get($map, 'wizardVerticalItemBeforeWidth'),
+    map.get($map, 'wizardVerticalItemBeforeLeft'),
+    map.get($map, 'wizardVerticalItemBeforeTop'),
+    map.get($map, 'wizardVerticalItemBeforeBackground')
+  );
+}

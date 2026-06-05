@@ -1,0 +1,21 @@
+@use 'sass:map';
+@use 'maps/color' as colorMap;
+
+$map: (
+  'formgroupPadding': 0.6rem 0,
+  'formgroupLabelWidth': 12rem,
+  'formgroupLabelPaddingRight': 2.4rem,
+  'formgroupLabelColor': map.get(colorMap.$color, 'grayscale', 60),
+  'formgroupLabelBeforeTop': 0,
+  'formgroupLabelBeforeRight': 1.2rem,
+  'formgroupLabelXsmallWidth': 6.8rem,
+  'formgroupLabelSmallWidth': 9.6rem,
+  'formgroupLabelMediumWidth': 12rem,
+  'formgroupLabelLargeWidth': 18rem,
+  'formgroupLabelXlargeWidth': 24rem,
+  'formgroupIsmandatoryLabelAfterMarginLeft': 0.2rem,
+  'formgroupIsmandatoryLabelAfterColor': map.get(colorMap.$color, 'indicator', 'red', 100),
+  'formgroupValueMinWidth': 0,
+  'formgroupHorizontalColumnGap': 1.2rem,
+  'formgroupVerticalRowGap': 1.2rem,
+);

@@ -1,0 +1,35 @@
+@use 'sass:map';
+@use '../settings/themes/light/base' as lightBase;
+@use '../settings/themes/dark/base' as darkBase;
+@use '../settings/themes/test/base' as testBase;
+@use '../settings/theme' as theme;
+
+@mixin headings($theme) {
+  @if $theme == theme.$theme-light {
+    @include headingsStyles(lightBase.$map);
+  }
+
+  @if $theme == theme.$theme-dark {
+    @include headingsStyles(darkBase.$map);
+  }
+
+  @if $theme == theme.$theme-test {
+    @include headingsStyles(testBase.$map);
+  }
+}
+
+@mixin headingsStyles($map) {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    color: map.get($map, 'baseColor');
+    font-family: map.get($map, 'baseFontFamily');
+    font-size: map.get($map, 'baseFontSize');
+    line-height: map.get($map, 'baseLineHeight');
+    font-weight: 400;
+  }
+}

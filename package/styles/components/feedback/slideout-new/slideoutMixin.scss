@@ -1,0 +1,144 @@
+@use 'sass:map';
+@use '../../../settings/components' as component;
+@use '../../../settings/theme' as theme;
+@use '../../../settings/themes/light/mixins/block.mixin' as lblock;
+@use '../../../settings/themes/dark/mixins/block.mixin' as dblock;
+@use '../../../settings/themes/test/mixins/block.mixin' as tblock;
+@use '../../../settings/themes/light/mixins/scroll.mixin' as lscroll;
+@use '../../../settings/themes/dark/mixins/scroll.mixin' as dscroll;
+@use '../../../settings/themes/test/mixins/scroll.mixin' as tscroll;
+
+@mixin slideoutMixin(
+  $theme,
+  $slideoutBackgroundColor,
+  $slideoutBoxShadow,
+  $slideoutHeaderBackground,
+  $slideoutHeaderPadding,
+  $slideoutHeaderBorderBottom,
+  $slideoutFooterPadding,
+  $slideoutFooterBorderTop,
+  $slideoutWidthXsmall,
+  $slideoutWidthSmall,
+  $slideoutWidthMedium,
+  $slideoutWidthLarge,
+  $slideoutWidthXlarge,
+  $slideoutWidthXxlarge,
+) {
+  $slideout: component.$slideout-new;
+
+  .#{$slideout} {
+    height: 100dvh;
+    background-color: $slideoutBackgroundColor;
+    transition: all 0.4s ease-in-out;
+    box-shadow: $slideoutBoxShadow;
+    position: absolute;
+
+    @if $theme == theme.$theme-light {
+      @include lblock.block($slideout);
+    }
+
+    @if $theme == theme.$theme-dark {
+      @include dblock.block($slideout);
+    }
+
+    @if $theme == theme.$theme-test {
+      @include tblock.block($slideout);
+    }
+
+    .#{$slideout}__header {
+      background: $slideoutHeaderBackground;
+      padding: $slideoutHeaderPadding;
+      border-bottom: $slideoutHeaderBorderBottom;
+    }
+
+    .#{$slideout}__content {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+
+      &:focus-visible {
+        outline: none;
+      }
+    }
+
+    .#{$slideout}__content-inner {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden auto;
+
+      @if $theme == theme.$theme-light {
+        @include lscroll.scroll;
+      }
+
+      @if $theme == theme.$theme-dark {
+        @include dscroll.scroll;
+      }
+
+      @if $theme == theme.$theme-test {
+        @include tscroll.scroll;
+      }
+    }
+
+    .#{$slideout}__footer {
+      padding: $slideoutFooterPadding;
+      border-top: $slideoutFooterBorderTop;
+    }
+
+    &.#{$slideout}--left {
+      left: 0;
+      transform: translateX(-100%);
+    }
+
+    &.#{$slideout}--right {
+      right: 0;
+      transform: translateX(100%);
+    }
+
+    &.#{$slideout}--x-small {
+      &.#{$slideout} {
+        width: $slideoutWidthXsmall;
+      }
+    }
+
+    &.#{$slideout}--small {
+      &.#{$slideout} {
+        width: $slideoutWidthSmall;
+      }
+    }
+
+    &.#{$slideout}--medium {
+      &.#{$slideout} {
+        width: $slideoutWidthMedium;
+      }
+    }
+
+    &.#{$slideout}--large {
+      &.#{$slideout} {
+        width: $slideoutWidthLarge;
+      }
+    }
+
+    &.#{$slideout}--x-large {
+      &.#{$slideout} {
+        width: $slideoutWidthXlarge;
+      }
+    }
+
+    &.#{$slideout}--xx-large {
+      &.#{$slideout} {
+        width: $slideoutWidthXxlarge;
+      }
+    }
+
+    &.is-active {
+      &.#{$slideout}--left {
+        transform: translateX(0);
+      }
+
+      &.#{$slideout}--right {
+        transform: translateX(0);
+      }
+    }
+  }
+}

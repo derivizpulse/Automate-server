@@ -1,0 +1,13 @@
+@mixin order($theme) {
+  @include ordertStyles;
+}
+
+@mixin ordertStyles {
+  .cfu-order {
+    @for $i from 1 through 10 {
+      &-#{$i} {
+        order: $i;
+      }
+    }
+  }
+}

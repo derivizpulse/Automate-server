@@ -1,0 +1,18 @@
+@use 'sass:map';
+@use 'maps/color' as colorMap;
+@use 'maps/corner' as cornerMap;
+
+$map: (
+  'linkBorderRadius': map.get(cornerMap.$corner, 'default'),
+  'linkOutlineOffset': 0.1rem,
+  'linkDefaultColor': map.get(colorMap.$color, 'primary', 60),
+  'linkDefaultHoverColor': map.get(colorMap.$color, 'primary', 40),
+  'linkDefaultActiveColor': map.get(colorMap.$color, 'primary', 80),
+  'linkDefaultFocusOutline': 0.2rem solid #003940,
+  'linkDefaultDisabledColor': map.get(colorMap.$color, 'font', 40),
+  'linkDangerColor': map.get(colorMap.$color, 'accent', 'red', 20),
+  'linkDangerHoverColor': map.get(colorMap.$color, 'accent', 'red', 10),
+  'linkDangerActiveColor': map.get(colorMap.$color, 'accent', 'red', 60),
+  'linkDangerFocusOutline': 0.2rem solid #003940,
+  'linkDangerDisabledColor': map.get(colorMap.$color, 'font', 40),
+);
